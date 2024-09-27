@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 #include <stdint.h>
 
 struct Color
@@ -11,17 +12,26 @@ public:
 		, blue(b)
 	{}
 
-	uint8_t red = 0;
-	uint8_t green = 0;
-	uint8_t blue = 0;
+	const uint32_t red = 0;
+	const uint32_t green = 0;
+	const uint32_t blue = 0;
+
+	constexpr Color multiply(const Color& other) const
+	{
+		return Color(
+			std::min<uint32_t>((red * other.red) / 0xFF, 0xFF),
+			std::min<uint32_t>((green * other.green) / 0xFF, 0xFF),
+			std::min<uint32_t>((blue * other.blue) / 0xFF, 0xFF)
+		);
+	}
 
 	constexpr uint32_t toRGBA() const
 	{
 		return
-			static_cast<uint32_t>(0xFF) << 24 |
-			static_cast<uint32_t>(blue) << 16 |
-			static_cast<uint32_t>(green) << 8 |
-			static_cast<uint32_t>(red) << 0;
+			0xFFUL << 24 |
+			blue << 16 |
+			green << 8 |
+			red << 0;
 	}
 };
 
