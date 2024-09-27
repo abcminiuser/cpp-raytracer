@@ -2,14 +2,25 @@
 
 #include "Color.hpp"
 #include "Vector.hpp"
-#include "Scene.hpp"
+
+struct Scene;
 
 class Ray
 {
 public:
-			Ray(Vector pos, Vector dir);
+					Ray(Vector pos, Vector dir);
 
-	Color	trace(const Scene& scene) const;
+	const Vector&	position() const
+	{
+		return m_position;
+	}
+
+	const Vector&	direction() const
+	{
+		return m_direction;
+	}
+
+	Color			trace(const Scene& scene) const;
 
 private:
 	Vector	m_position;

@@ -14,6 +14,7 @@ add_executable (RayTracer
 	"Engine/Renderer.cpp"
     "Engine/Camera.cpp"
     "Engine/Ray.cpp"
+    "Engine/Sphere.cpp"
 )
 
 target_include_directories (RayTracer PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})

@@ -1,4 +1,6 @@
 ﻿#include "Engine/Renderer.hpp"
+#include "Engine/Scene.hpp"
+#include "Engine/Sphere.hpp"
 
 #include <SFML/Graphics.hpp>
 
@@ -19,8 +21,19 @@ int main(int argc, char* argv[])
 	sf::Sprite sprite;
 	sprite.setTexture(texture);
 
+	Scene scene;
+	scene.camera = Camera(Vector(0, 2, -8), StandardVectors::kUnitZ, 4.0f, 9.0f/4.0f);
+	scene.objects = {
+		std::make_shared<Sphere>(Vector(-4, 0, 4), 1.0f, Palette::kYellow),
+		std::make_shared<Sphere>(Vector(-2, 0, 2), 1.0f, Palette::kWhite),
+		std::make_shared<Sphere>(Vector( 0, 0, 0), 1.0f, Palette::kRed),
+		std::make_shared<Sphere>(Vector( 2, 0, 2), 1.0f, Palette::kGreen),
+		std::make_shared<Sphere>(Vector( 4, 0, 4), 1.0f, Palette::kBlue),
+	};
+
 	Renderer renderer(kWidth, kHeight, 8);
 	renderer.setRenderingEnabled(true);
+	renderer.setScene(std::move(scene));
 
 	while (window.isOpen())
 	{

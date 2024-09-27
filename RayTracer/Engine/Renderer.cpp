@@ -79,7 +79,10 @@ void Renderer::startRender()
 				{
 					for (size_t x = 0; x < m_width; x++)
 					{
-						*(currentPixel++) = m_scene.camera.trace(m_scene, x, y).toRGBA();
+						const auto cameraX = (float(x) / m_width) - .5f;
+						const auto cameraY = (float(y) / m_height) - .5f;
+
+						*(currentPixel++) = m_scene.camera.trace(m_scene, cameraX, cameraY).toRGBA();
 					}
 				}
 			});

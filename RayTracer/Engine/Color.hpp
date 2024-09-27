@@ -11,17 +11,17 @@ public:
 	{}
 
 	constexpr			Color(uint8_t r, uint8_t g, uint8_t b)
-		: red(r)
-		, green(g)
-		, blue(b)
+		: m_red(r)
+		, m_green(g)
+		, m_blue(b)
 	{}
 
 	constexpr Color		multiply(const Color& other) const
 	{
 		return Color(
-			std::min<uint32_t>((red * other.red) / 0xFF, 0xFF),
-			std::min<uint32_t>((green * other.green) / 0xFF, 0xFF),
-			std::min<uint32_t>((blue * other.blue) / 0xFF, 0xFF)
+			std::min<uint32_t>((m_red * other.m_red) / 0xFF, 0xFF),
+			std::min<uint32_t>((m_green * other.m_green) / 0xFF, 0xFF),
+			std::min<uint32_t>((m_blue * other.m_blue) / 0xFF, 0xFF)
 		);
 	}
 
@@ -29,15 +29,15 @@ public:
 	{
 		return
 			0xFFUL << 24 |
-			blue << 16 |
-			green << 8 |
-			red << 0;
+			m_blue << 16 |
+			m_green << 8 |
+			m_red << 0;
 	}
 
-public:
-	uint32_t red = 0;
-	uint32_t green = 0;
-	uint32_t blue = 0;
+private:
+	uint32_t m_red = 0;
+	uint32_t m_green = 0;
+	uint32_t m_blue = 0;
 };
 
 namespace Palette

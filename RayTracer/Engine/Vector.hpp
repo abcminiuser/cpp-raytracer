@@ -36,6 +36,11 @@ public:
 		return Vector(x - other.x, y - other.y, z - other.z);
 	}
 
+	constexpr Vector multiply(const Vector& other) const
+	{
+		return Vector(x * other.x, y * other.y, z * other.z);
+	}
+
 	constexpr Vector divide(const Vector& other) const
 	{
 		return Vector(other.x ? x / other.x : 0, other.y ? y / other.y : 0, other.z ? z / other.z : 0);
@@ -50,14 +55,14 @@ public:
 		);
 	}
 
-	constexpr Vector dotProduct(const Vector& other) const
+	constexpr float dotProduct(const Vector& other) const
 	{
-		return Vector(x * other.x, y * other.y, z * other.z);
+		return (x * other.x) + (y * other.y) + (z * other.z);
 	}
 
 	constexpr Vector scale(float factor) const
 	{
-		return factor ? Vector(x / factor, y / factor, z / factor) : Vector(0, 0, 0);
+		return Vector(x * factor, y * factor, z * factor);
 	}
 
 	constexpr Vector invert() const
@@ -65,12 +70,16 @@ public:
 		return Vector(-x, -y, -z);
 	}
 
-	constexpr Vector normalized() const
+	constexpr Vector unit() const
 	{
-		return scale(length());
+		const auto l = length();
+		if (! l)
+			return Vector();
+
+		return scale(1 / l);
 	}
 
-public:
+private:
 	float x = 0;
 	float y = 0;
 	float z = 0;

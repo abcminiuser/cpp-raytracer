@@ -3,15 +3,15 @@
 #include "Color.hpp"
 #include "Vector.hpp"
 
-class Scene;
+struct Scene;
 
 class Camera
 {
 public:
 			Camera();
-			Camera(Vector pos, Vector dir, float lensWidth, float lensHeight);
+			Camera(Vector pos, Vector target, float lensWidth, float lensHeight);
 
-	Color	trace(const Scene& scene, size_t screenX, size_t screenY) const;
+	Color	trace(const Scene& scene, float x, float y) const;
 
 private:
 	Vector	m_position;
