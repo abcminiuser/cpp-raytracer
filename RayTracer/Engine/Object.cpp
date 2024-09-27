@@ -8,7 +8,7 @@
 
 namespace
 {
-	constexpr auto kMinIntersectionDistance = 0.0001f;
+	constexpr float kMinIntersectionDistance = 0.0001f;
 }
 
 float Object::intersect(const Ray& ray) const

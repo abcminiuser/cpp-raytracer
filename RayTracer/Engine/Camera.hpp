@@ -21,5 +21,5 @@ private:
 	float	m_lensHeight;
 
 	Vector	m_right;
-	Vector	m_up;
+	Vector	m_down;
 };

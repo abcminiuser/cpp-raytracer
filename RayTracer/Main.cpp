@@ -6,10 +6,10 @@
 
 namespace
 {
-	constexpr auto kWidth		= 1920;
-	constexpr auto kHeight		= 1080;
+	constexpr size_t	kWidth		= 1920;
+	constexpr size_t	kHeight		= 1080;
 
-	constexpr auto kUpdateFps	= 5;
+	constexpr uint32_t	kUpdateFps	= 5;
 
 	Scene BuildScene()
 	{
@@ -47,11 +47,11 @@ int main(int argc, char* argv[])
 	renderer.setScene(BuildScene());
 	renderer.startRender();
 
-	bool wasRendering = true;
-
-	auto updateTitle = [&](bool rendering) { window.setTitle(std::string("Ray Tracer - Rendering ") + (rendering ? "In Progress" : "Done")); };
+	const auto updateTitle = [&](bool rendering) { window.setTitle(std::string("Ray Tracer - Rendering ") + (rendering ? "In Progress" : "Done")); };
 
 	updateTitle(false);
+
+	bool wasRendering = true;
 
 	while (window.isOpen())
 	{

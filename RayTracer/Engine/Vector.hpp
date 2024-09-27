@@ -1,7 +1,5 @@
 #pragma once
 
-#include <algorithm>
-#include <stdint.h>
 #include <cmath>
 
 struct Vector
@@ -74,7 +72,7 @@ public:
 
 	constexpr Vector	unit() const
 	{
-		const auto l = length();
+		const float l = length();
 		return l ? scale(1 / l) : Vector();
 	}
 

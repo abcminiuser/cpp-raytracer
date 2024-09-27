@@ -28,6 +28,6 @@ Color Ray::trace(const Scene& scene) const
 	if (closestIntersectionDistance == std::numeric_limits<float>::max())
 		return scene.background;
 
-	const auto closestCollisionPoint = m_position.add(m_direction.scale(closestIntersectionDistance));
+	const Vector closestCollisionPoint = m_position.add(m_direction.scale(closestIntersectionDistance));
 	return closestObject->illuminate(scene, closestCollisionPoint);
 }

@@ -46,7 +46,7 @@ void Renderer::startRender()
 	if (m_runRenderThreads)
 		return;
 
-	const auto linesPerThread = (m_height + (m_renderThreads.size() - 1)) / m_renderThreads.size();
+	const size_t linesPerThread = (m_height + (m_renderThreads.size() - 1)) / m_renderThreads.size();
 	size_t startLine = 0;
 
 	m_runRenderThreads = true;
@@ -66,11 +66,11 @@ void Renderer::startRender()
 					if (! m_runRenderThreads)
 						break;
 
-					const auto cameraY = (float(y) / m_height) - .5f;
+					const float cameraY = (float(y) / m_height) - .5f;
 
 					for (size_t x = 0; x < m_width; x++)
 					{
-						const auto cameraX = (float(x) / m_width) - .5f;
+						const float cameraX = (float(x) / m_width) - .5f;
 
 						*(currentPixel++) = m_scene.camera.trace(m_scene, cameraX, cameraY).toRGBA();
 					}
