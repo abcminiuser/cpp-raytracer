@@ -15,8 +15,7 @@ namespace
 int main(int argc, char* argv[])
 {
 	sf::RenderWindow window(sf::VideoMode(kWidth, kHeight), "RayTracer");
-
-	Scene scene(kWidth, kHeight, 8);
+	window.setFramerateLimit(5);
 
 	sf::Texture texture;
 	texture.create(kWidth, kHeight);
@@ -24,28 +23,20 @@ int main(int argc, char* argv[])
 	sf::Sprite sprite;
 	sprite.setTexture(texture);
 
+	Scene scene(kWidth, kHeight, 8);
+
 	while (window.isOpen())
 	{
 	    sf::Event event;
 	    while (window.pollEvent(event))
 	    {
-	        switch (event.type)
-	        {
-	            case sf::Event::Closed:
-	            {
-	                window.close();
-	                break;
-	            }
-
-	            default:
-	                break;
-			}
+	        if (event.type == sf::Event::Closed)
+				window.close();
 		}
 
 		texture.update(reinterpret_cast<const sf::Uint8*>(scene.pixels()));
 
 		window.draw(sprite);
-
 		window.display();
 	}
 }
