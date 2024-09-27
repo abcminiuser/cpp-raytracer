@@ -17,10 +17,18 @@ public:
 		, m_z(z)
 	{}
 
+	constexpr float		squaredEuclidianDistance() const
+	{
+		if (! m_squaredEuclidianDistance)
+			m_squaredEuclidianDistance = m_x * m_x + m_y * m_y + m_z * m_z;
+
+		return m_squaredEuclidianDistance;
+	}
+
 	constexpr float		length() const
 	{
 		if (! m_length)
-			m_length = std::sqrt(m_x * m_x + m_y * m_y + m_z * m_z);
+			m_length = std::sqrt(squaredEuclidianDistance());
 
 		return m_length;
 	}
@@ -38,15 +46,6 @@ public:
 	constexpr Vector	multiply(const Vector& other) const
 	{
 		return Vector(m_x * other.m_x, m_y * other.m_y, m_z * other.m_z);
-	}
-
-	constexpr Vector	divide(const Vector& other) const
-	{
-		return Vector(
-			other.m_x ? m_x / other.m_x : 0,
-			other.m_y ? m_y / other.m_y : 0,
-			other.m_z ? m_z / other.m_z : 0
-		);
 	}
 
 	constexpr Vector	crossProduct(const Vector& other) const
@@ -76,10 +75,7 @@ public:
 	constexpr Vector	unit() const
 	{
 		const auto l = length();
-		if (! l)
-			return Vector();
-
-		return scale(1 / l);
+		return l ? scale(1 / l) : Vector();
 	}
 
 private:
@@ -88,6 +84,7 @@ private:
 	float				m_z = 0;
 
 private:
+	mutable float		m_squaredEuclidianDistance = 0;
 	mutable float		m_length = 0;
 };
 

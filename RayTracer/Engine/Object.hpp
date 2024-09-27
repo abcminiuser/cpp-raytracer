@@ -20,6 +20,7 @@ public:
 
 protected:
 	using IntersectionDistances = std::array<float, 2>;
+
 	static inline constexpr float kNoIntersection = std::numeric_limits<float>::max();
 
 	virtual IntersectionDistances	intersectWith(const Ray& ray) const = 0;

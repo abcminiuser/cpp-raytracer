@@ -19,44 +19,33 @@ public:
 	constexpr Color		add(const Color& other) const
 	{
 		return Color(
-			(uint8_t)std::min<uint32_t>((m_red + other.m_red), 0xFF),
-			(uint8_t)std::min<uint32_t>((m_green + other.m_green), 0xFF),
-			(uint8_t)std::min<uint32_t>((m_blue + other.m_blue), 0xFF)
+			static_cast<uint8_t>(std::min<uint32_t>((m_red + other.m_red), 0xFF)),
+			static_cast<uint8_t>(std::min<uint32_t>((m_green + other.m_green), 0xFF)),
+			static_cast<uint8_t>(std::min<uint32_t>((m_blue + other.m_blue), 0xFF))
 		);
 	}
 
 	constexpr Color		multiply(const Color& other) const
 	{
 		return Color(
-			(uint8_t)std::min<uint32_t>((m_red * other.m_red) / 0xFF, 0xFF),
-			(uint8_t)std::min<uint32_t>((m_green * other.m_green) / 0xFF, 0xFF),
-			(uint8_t)std::min<uint32_t>((m_blue * other.m_blue) / 0xFF, 0xFF)
+			static_cast<uint8_t>(std::min<uint32_t>((m_red * other.m_red) / 0xFF, 0xFF)),
+			static_cast<uint8_t>(std::min<uint32_t>((m_green * other.m_green) / 0xFF, 0xFF)),
+			static_cast<uint8_t>(std::min<uint32_t>((m_blue * other.m_blue) / 0xFF, 0xFF))
 		);
 	}
 
 	constexpr Color		scale(float factor) const
 	{
 		return Color(
-			(uint8_t)std::min<uint32_t>(uint32_t(m_red * factor), 0xFF),
-			(uint8_t)std::min<uint32_t>(uint32_t(m_green * factor), 0xFF),
-			(uint8_t)std::min<uint32_t>(uint32_t(m_blue * factor), 0xFF)
+			static_cast<uint8_t>(std::min<uint32_t>(uint32_t(m_red * factor), 0xFF)),
+			static_cast<uint8_t>(std::min<uint32_t>(uint32_t(m_green * factor), 0xFF)),
+			static_cast<uint8_t>(std::min<uint32_t>(uint32_t(m_blue * factor), 0xFF))
 		);
 	}
 
-	constexpr uint32_t	red() const
-	{
-		return m_red;
-	}
-
-	constexpr uint32_t	green() const
-	{
-		return m_green;
-	}
-
-	constexpr uint32_t	blue() const
-	{
-		return m_blue;
-	}
+	constexpr uint32_t	red() const 	{ return m_red; }
+	constexpr uint32_t	green() const 	{ return m_green; }
+	constexpr uint32_t	blue() const	{ return m_blue; }
 
 	constexpr uint32_t	toRGBA() const
 	{

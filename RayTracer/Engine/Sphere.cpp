@@ -18,7 +18,7 @@ Object::IntersectionDistances Sphere::intersectWith(const Ray& ray) const
 	const auto os = ray.position().subtract(m_position);
 
 	float b = 2 * os.dotProduct(ray.direction());
-	float c = os.dotProduct(os) - (m_radius * m_radius);
+	float c = os.squaredEuclidianDistance() - (m_radius * m_radius);
 	float d = (b * b) - 4 * c;
 
 	if (d < 0)

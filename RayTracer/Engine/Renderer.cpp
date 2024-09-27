@@ -66,10 +66,11 @@ void Renderer::startRender()
 					if (! m_runRenderThreads)
 						break;
 
+					const auto cameraY = (float(y) / m_height) - .5f;
+
 					for (size_t x = 0; x < m_width; x++)
 					{
 						const auto cameraX = (float(x) / m_width) - .5f;
-						const auto cameraY = (float(y) / m_height) - .5f;
 
 						*(currentPixel++) = m_scene.camera.trace(m_scene, cameraX, cameraY).toRGBA();
 					}
