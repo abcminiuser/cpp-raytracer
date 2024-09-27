@@ -10,6 +10,29 @@ namespace
 	constexpr auto kHeight		= 1080;
 
 	constexpr auto kUpdateFps	= 5;
+
+	Scene BuildScene()
+	{
+		Scene scene;
+
+		scene.background = Color(64, 64, 64);
+
+		scene.camera = Camera(Vector(0, 2, -8), StandardVectors::kUnitZ, 4.0f, 9.0f / 4.0f);
+
+		scene.lights = {
+			std::make_shared<Light>(Vector(5, 10, -5), Palette::kWhite),
+		};
+
+		scene.objects = {
+			std::make_shared<Sphere>(Vector(-4, 0, 4), 1.0f, Material{.color = Palette::kYellow }),
+			std::make_shared<Sphere>(Vector(-2, 0, 2), 1.0f, Material{.color = Palette::kWhite }),
+			std::make_shared<Sphere>(Vector(0, 0, 0), 1.0f, Material{.color = Palette::kRed }),
+			std::make_shared<Sphere>(Vector(2, 0, 2), 1.0f, Material{.color = Palette::kGreen }),
+			std::make_shared<Sphere>(Vector(4, 0, 4), 1.0f, Material{.color = Palette::kBlue }),
+		};
+
+		return scene;
+	}
 }
 
 int main(int argc, char* argv[])
@@ -24,22 +47,8 @@ int main(int argc, char* argv[])
 	sf::Sprite sprite;
 	sprite.setTexture(texture);
 
-	Scene scene;
-	scene.background = Color(64, 64, 64);
-	scene.camera = Camera(Vector(0, 2, -8), StandardVectors::kUnitZ, 4.0f, 9.0f/4.0f);
-	scene.lights = {
-		std::make_shared<Light>(Vector(5, 10, -5), Palette::kWhite),
-	};
-	scene.objects = {
-		std::make_shared<Sphere>(Vector(-4, 0, 4), 1.0f, Material{ .color = Palette::kYellow }),
-		std::make_shared<Sphere>(Vector(-2, 0, 2), 1.0f, Material{ .color = Palette::kWhite }),
-		std::make_shared<Sphere>(Vector( 0, 0, 0), 1.0f, Material{ .color = Palette::kRed }),
-		std::make_shared<Sphere>(Vector( 2, 0, 2), 1.0f, Material{ .color = Palette::kGreen }),
-		std::make_shared<Sphere>(Vector( 4, 0, 4), 1.0f, Material{ .color = Palette::kBlue }),
-	};
-
 	Renderer renderer(kWidth, kHeight, std::thread::hardware_concurrency());
-	renderer.setScene(std::move(scene));
+	renderer.setScene(BuildScene());
 	renderer.startRender();
 
 	bool wasRendering = true;
