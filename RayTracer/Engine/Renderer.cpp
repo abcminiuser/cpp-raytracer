@@ -1,35 +1,66 @@
-#include "Scene.hpp"
+#include "Renderer.hpp"
 
 #include "Color.hpp"
 #include "Vector.hpp"
+#include "Camera.hpp"
 
-Scene::Scene(size_t width, size_t height, size_t numRenderThreads)
+Renderer::Renderer(size_t width, size_t height, size_t numRenderThreads)
 	: m_width(width)
 	, m_height(height)
 	, m_pixels(width * height)
 	, m_renderThreads(numRenderThreads)
 {
-	startRender();
+	std::fill(std::begin(m_pixels), std::end(m_pixels), Palette::kBlack.toRGBA());
 }
 
-Scene::~Scene()
+Renderer::~Renderer()
 {
 	stopRender();
 }
 
-void Scene::stopRender()
+void Renderer::setScene(Scene scene)
 {
+	stopRender();
+
+	m_scene = scene;
+
+	startRender();
+}
+
+void Renderer::setRenderingEnabled(bool enabled)
+{
+	if (m_enabled == enabled)
+		return;
+
+	stopRender();
+
+	m_enabled = enabled;
+
+	startRender();
+}
+
+void Renderer::stopRender()
+{
+	if (! m_runRenderThreads)
+		return;
+
 	m_runRenderThreads = false;
 	for (auto& t : m_renderThreads)
 	{
 		if (t.joinable())
 			t.join();
 	}
+
+	std::fill(std::begin(m_pixels), std::end(m_pixels), Palette::kBlack.toRGBA());
 }
 
-void Scene::startRender()
+void Renderer::startRender()
 {
-	stopRender();
+	if (m_runRenderThreads)
+		return;
+
+	if (! m_enabled)
+		return;
 
 	const auto linesPerThread = (m_height + (m_renderThreads.size() - 1)) / m_renderThreads.size();
 	size_t startLine = 0;
@@ -48,7 +79,7 @@ void Scene::startRender()
 				{
 					for (size_t x = 0; x < m_width; x++)
 					{
-						*(currentPixel++) = Palette::kWhite.toRGBA();
+						*(currentPixel++) = m_scene.camera.trace(m_scene, x, y).toRGBA();
 					}
 				}
 			});

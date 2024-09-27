@@ -1,4 +1,4 @@
-﻿#include "Engine/Scene.hpp"
+﻿#include "Engine/Renderer.hpp"
 
 #include <SFML/Graphics.hpp>
 
@@ -19,7 +19,8 @@ int main(int argc, char* argv[])
 	sf::Sprite sprite;
 	sprite.setTexture(texture);
 
-	Scene scene(kWidth, kHeight, 8);
+	Renderer renderer(kWidth, kHeight, 8);
+	renderer.setRenderingEnabled(true);
 
 	while (window.isOpen())
 	{
@@ -30,7 +31,7 @@ int main(int argc, char* argv[])
 				window.close();
 		}
 
-		texture.update(reinterpret_cast<const sf::Uint8*>(scene.pixels()));
+		texture.update(reinterpret_cast<const sf::Uint8*>(renderer.pixels()));
 
 		window.draw(sprite);
 		window.display();

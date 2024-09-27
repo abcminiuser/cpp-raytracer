@@ -6,13 +6,17 @@
 struct Color
 {
 public:
-	constexpr Color(uint8_t r, uint8_t g, uint8_t b)
+	constexpr			Color()
+							: Color(0, 0, 0)
+	{}
+
+	constexpr			Color(uint8_t r, uint8_t g, uint8_t b)
 		: red(r)
 		, green(g)
 		, blue(b)
 	{}
 
-	constexpr Color multiply(const Color& other) const
+	constexpr Color		multiply(const Color& other) const
 	{
 		return Color(
 			std::min<uint32_t>((red * other.red) / 0xFF, 0xFF),
@@ -21,7 +25,7 @@ public:
 		);
 	}
 
-	constexpr uint32_t toRGBA() const
+	constexpr uint32_t	toRGBA() const
 	{
 		return
 			0xFFUL << 24 |
@@ -31,9 +35,9 @@ public:
 	}
 
 public:
-	const uint32_t red = 0;
-	const uint32_t green = 0;
-	const uint32_t blue = 0;
+	uint32_t red = 0;
+	uint32_t green = 0;
+	uint32_t blue = 0;
 };
 
 namespace Palette

@@ -10,8 +10,10 @@ endif ()
 find_package (SFML CONFIG REQUIRED COMPONENTS graphics)
 
 add_executable (RayTracer
-    Main.cpp
-	"Engine/Scene.cpp"
+    "Main.cpp"
+	"Engine/Renderer.cpp"
+    "Engine/Camera.cpp"
+    "Engine/Ray.cpp"
 )
 
 target_include_directories (RayTracer PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
