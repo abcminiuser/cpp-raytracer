@@ -19,17 +19,13 @@ namespace
 
 		scene.camera = Camera(Vector(0, 2, -8), StandardVectors::kUnitZ, 4.0f, 9.0f / 4.0f);
 
-		scene.lights = {
-			std::make_shared<Light>(Vector(5, 10, -5), Palette::kWhite),
-		};
+		scene.lights.push_back(std::make_unique<Light>(Vector(5, 10, -5), Palette::kWhite));
 
-		scene.objects = {
-			std::make_shared<Sphere>(Vector(-4, 0, 4), 1.0f, Material{.color = Palette::kYellow }),
-			std::make_shared<Sphere>(Vector(-2, 0, 2), 1.0f, Material{.color = Palette::kWhite }),
-			std::make_shared<Sphere>(Vector(0, 0, 0), 1.0f, Material{.color = Palette::kRed }),
-			std::make_shared<Sphere>(Vector(2, 0, 2), 1.0f, Material{.color = Palette::kGreen }),
-			std::make_shared<Sphere>(Vector(4, 0, 4), 1.0f, Material{.color = Palette::kBlue }),
-		};
+		scene.objects.push_back(std::make_unique<Sphere>(Vector(-4, 0, 4), 1.0f, Material{.color = Palette::kYellow }));
+		scene.objects.push_back(std::make_unique<Sphere>(Vector(-2, 0, 2), 1.0f, Material{.color = Palette::kWhite }));
+		scene.objects.push_back(std::make_unique<Sphere>(Vector(0, 0, 0), 1.0f, Material{.color = Palette::kRed }));
+		scene.objects.push_back(std::make_unique<Sphere>(Vector(2, 0, 2), 1.0f, Material{.color = Palette::kGreen }));
+		scene.objects.push_back(std::make_unique<Sphere>(Vector(4, 0, 4), 1.0f, Material{.color = Palette::kBlue }));
 
 		return scene;
 	}

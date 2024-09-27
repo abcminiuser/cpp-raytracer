@@ -13,6 +13,6 @@ struct Scene
 public:
 	Camera									camera;
 	Color									background;
-	std::vector<std::shared_ptr<Light>>		lights;
-	std::vector<std::shared_ptr<Object>>	objects;
+	std::vector<std::unique_ptr<Light>>		lights;
+	std::vector<std::unique_ptr<Object>>	objects;
 };
