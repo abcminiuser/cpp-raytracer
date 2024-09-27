@@ -1,10 +1,10 @@
 #pragma once
 
-#include <stdint.h>
+#include <atomic>
 #include <stddef.h>
+#include <stdint.h>
 #include <thread>
 #include <vector>
-#include <atomic>
 
 class Scene
 {

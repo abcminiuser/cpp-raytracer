@@ -1,10 +1,6 @@
-﻿#include "Scene.hpp"
+﻿#include "Engine/Scene.hpp"
 
 #include <SFML/Graphics.hpp>
-
-#include <algorithm>
-#include <thread>
-#include <vector>
 
 namespace
 {

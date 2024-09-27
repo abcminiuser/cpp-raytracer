@@ -11,7 +11,7 @@ find_package (SFML CONFIG REQUIRED COMPONENTS graphics)
 
 add_executable (RayTracer
     Main.cpp
-	"Scene.cpp"
+	"Engine/Scene.cpp"
 )
 
 target_include_directories (RayTracer PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})

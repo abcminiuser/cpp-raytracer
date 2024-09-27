@@ -1,5 +1,7 @@
 #include "Scene.hpp"
 
+#include "Color.hpp"
+
 Scene::Scene(size_t width, size_t height, size_t numRenderThreads)
 	: m_width(width)
 	, m_height(height)
@@ -45,11 +47,7 @@ void Scene::startRender()
 				{
 					for (size_t x = 0; x < m_width; x++)
 					{
-						*(currentPixel++) =
-							static_cast<uint32_t>(0xFF) << 24 |
-							static_cast<uint32_t>(rand()) << 16 |
-							static_cast<uint32_t>(rand()) << 8 |
-							static_cast<uint32_t>(rand()) << 0;
+						*(currentPixel++) = Palette::kWhite.toRGBA();
 					}
 				}
 			});
