@@ -12,10 +12,6 @@ public:
 		, blue(b)
 	{}
 
-	const uint32_t red = 0;
-	const uint32_t green = 0;
-	const uint32_t blue = 0;
-
 	constexpr Color multiply(const Color& other) const
 	{
 		return Color(
@@ -33,6 +29,11 @@ public:
 			green << 8 |
 			red << 0;
 	}
+
+public:
+	const uint32_t red = 0;
+	const uint32_t green = 0;
+	const uint32_t blue = 0;
 };
 
 namespace Palette

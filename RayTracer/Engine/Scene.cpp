@@ -1,6 +1,7 @@
 #include "Scene.hpp"
 
 #include "Color.hpp"
+#include "Vector.hpp"
 
 Scene::Scene(size_t width, size_t height, size_t numRenderThreads)
 	: m_width(width)
