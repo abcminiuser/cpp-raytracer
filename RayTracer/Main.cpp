@@ -23,6 +23,9 @@ int main(int argc, char* argv[])
 
 	Scene scene;
 	scene.camera = Camera(Vector(0, 2, -8), StandardVectors::kUnitZ, 4.0f, 9.0f/4.0f);
+	scene.lights = {
+		std::make_shared<Light>(Vector(5, 10, -5), Palette::kWhite),
+	};
 	scene.objects = {
 		std::make_shared<Sphere>(Vector(-4, 0, 4), 1.0f, Palette::kYellow),
 		std::make_shared<Sphere>(Vector(-2, 0, 2), 1.0f, Palette::kWhite),

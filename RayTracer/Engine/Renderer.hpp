@@ -11,25 +11,25 @@
 class Renderer
 {
 public:
-									Renderer(size_t width, size_t height, size_t numRenderThreads);
-									~Renderer();
+								Renderer(size_t width, size_t height, size_t numRenderThreads);
+								~Renderer();
 
-	void							setScene(Scene scene);
+	void						setScene(Scene scene);
 
-	const uint32_t* 				pixels() const { return m_pixels.data(); }
+	const uint32_t* 			pixels() const { return m_pixels.data(); }
 
-	void							stopRender();
-	void							startRender();
-	bool							isRendering() const { return m_runRenderThreads; }
+	void						stopRender();
+	void						startRender();
+	bool						isRendering() const { return m_runRenderThreads; }
 
 private:
-	size_t							m_width = 0;
-	size_t							m_height = 0;
+	size_t						m_width = 0;
+	size_t						m_height = 0;
 
-	Scene							m_scene;
+	Scene						m_scene;
 
-	std::vector<std::thread>		m_renderThreads;
-	std::atomic_bool				m_runRenderThreads = false;
+	std::vector<std::thread>	m_renderThreads;
+	std::atomic_bool			m_runRenderThreads = false;
 
-	std::vector<uint32_t>			m_pixels;
+	std::vector<uint32_t>		m_pixels;
 };

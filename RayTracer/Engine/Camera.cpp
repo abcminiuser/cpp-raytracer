@@ -7,9 +7,9 @@ Camera::Camera()
 	: Camera(StandardVectors::kOrigin, StandardVectors::kUnitZ, 4.0f, 9.0f/4.0f)
 {}
 
-Camera::Camera(Vector pos, Vector target, float lensWidth, float lensHeight)
-	: m_position(std::move(pos))
-	, m_direction(target.subtract(pos).unit())
+Camera::Camera(Vector position, Vector target, float lensWidth, float lensHeight)
+	: m_position(std::move(position))
+	, m_direction(target.subtract(position).unit())
 	, m_lensWidth(lensWidth)
 	, m_lensHeight(lensHeight)
 	, m_right(StandardVectors::kUnitY.crossProduct(m_direction).unit().scale(m_lensWidth / 2))

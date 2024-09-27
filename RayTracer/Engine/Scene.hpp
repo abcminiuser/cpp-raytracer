@@ -1,7 +1,8 @@
 #pragma once
 
-#include "Color.hpp"
 #include "Camera.hpp"
+#include "Color.hpp"
+#include "Light.hpp"
 #include "Object.hpp"
 
 #include <memory>
@@ -12,5 +13,6 @@ struct Scene
 public:
 	Camera									camera;
 	Color									background;
+	std::vector<std::shared_ptr<Light>>		lights;
 	std::vector<std::shared_ptr<Object>>	objects;
 };

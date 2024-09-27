@@ -9,7 +9,7 @@ class Camera
 {
 public:
 			Camera();
-			Camera(Vector pos, Vector target, float lensWidth, float lensHeight);
+			Camera(Vector position, Vector target, float lensWidth, float lensHeight);
 
 	Color	trace(const Scene& scene, float x, float y) const;
 

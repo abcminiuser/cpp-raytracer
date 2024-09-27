@@ -8,16 +8,18 @@ class Sphere
 	: public Object
 {
 public:
-			Sphere(Vector pos, float size, Color color);
+			Sphere(Vector position, float radius, Color color);
 			~Sphere() = default;
 
 // Object i/f:
 public:
 	float	intersect(const Ray& ray) const override;
-	Color	color(const Vector& position) const;
+protected:
+	Vector	normalAt(const Vector& position) const override;
+	Color	colorAt(const Vector& position) const override;
 
 private:
 	Vector	m_position;
-	float	m_size;
+	float	m_radius;
 	Color	m_color;
 };

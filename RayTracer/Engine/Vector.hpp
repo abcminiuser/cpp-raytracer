@@ -2,75 +2,78 @@
 
 #include <algorithm>
 #include <stdint.h>
-#include <optional>
 #include <cmath>
 
 struct Vector
 {
 public:
-	constexpr		 Vector()
-						: Vector(0, 0, 0)
+	constexpr			Vector()
+							: Vector(0, 0, 0)
 	{}
 
-	constexpr 		Vector(float px, float py, float pz)
-		: x(px)
-		, y(py)
-		, z(pz)
+	constexpr			Vector(float x, float y, float z)
+		: m_x(x)
+		, m_y(y)
+		, m_z(z)
 	{}
 
-	constexpr float length() const
+	constexpr float		length() const
 	{
 		if (! m_length)
-			m_length = std::sqrt(x * x + y * y + z * z);
+			m_length = std::sqrt(m_x * m_x + m_y * m_y + m_z * m_z);
 
-		return *m_length;
+		return m_length;
 	}
 
-	constexpr Vector add(const Vector& other) const
+	constexpr Vector	add(const Vector& other) const
 	{
-		return Vector(x + other.x, y + other.y, z + other.z);
+		return Vector(m_x + other.m_x, m_y + other.m_y, m_z + other.m_z);
 	}
 
-	constexpr Vector subtract(const Vector& other) const
+	constexpr Vector	subtract(const Vector& other) const
 	{
-		return Vector(x - other.x, y - other.y, z - other.z);
+		return Vector(m_x - other.m_x, m_y - other.m_y, m_z - other.m_z);
 	}
 
-	constexpr Vector multiply(const Vector& other) const
+	constexpr Vector	multiply(const Vector& other) const
 	{
-		return Vector(x * other.x, y * other.y, z * other.z);
+		return Vector(m_x * other.m_x, m_y * other.m_y, m_z * other.m_z);
 	}
 
-	constexpr Vector divide(const Vector& other) const
-	{
-		return Vector(other.x ? x / other.x : 0, other.y ? y / other.y : 0, other.z ? z / other.z : 0);
-	}
-
-	constexpr Vector crossProduct(const Vector& other) const
+	constexpr Vector	divide(const Vector& other) const
 	{
 		return Vector(
-			(y * other.z) - (z * other.y),
-			(z * other.x) - (x * other.z),
-			(x * other.y) - (y * other.x)
+			other.m_x ? m_x / other.m_x : 0,
+			other.m_y ? m_y / other.m_y : 0,
+			other.m_z ? m_z / other.m_z : 0
 		);
 	}
 
-	constexpr float dotProduct(const Vector& other) const
+	constexpr Vector	crossProduct(const Vector& other) const
 	{
-		return (x * other.x) + (y * other.y) + (z * other.z);
+		return Vector(
+			(m_y * other.m_z) - (m_z * other.m_y),
+			(m_z * other.m_x) - (m_x * other.m_z),
+			(m_x * other.m_y) - (m_y * other.m_x)
+		);
 	}
 
-	constexpr Vector scale(float factor) const
+	constexpr float		dotProduct(const Vector& other) const
 	{
-		return Vector(x * factor, y * factor, z * factor);
+		return (m_x * other.m_x) + (m_y * other.m_y) + (m_z * other.m_z);
 	}
 
-	constexpr Vector invert() const
+	constexpr Vector	scale(float factor) const
 	{
-		return Vector(-x, -y, -z);
+		return Vector(m_x * factor, m_y * factor, m_z * factor);
 	}
 
-	constexpr Vector unit() const
+	constexpr Vector	invert() const
+	{
+		return Vector(-m_x, -m_y, -m_z);
+	}
+
+	constexpr Vector	unit() const
 	{
 		const auto l = length();
 		if (! l)
@@ -80,12 +83,12 @@ public:
 	}
 
 private:
-	float x = 0;
-	float y = 0;
-	float z = 0;
+	float				m_x = 0;
+	float				m_y = 0;
+	float				m_z = 0;
 
 private:
-	mutable std::optional<float> m_length;
+	mutable float		m_length = 0;
 };
 
 namespace StandardVectors

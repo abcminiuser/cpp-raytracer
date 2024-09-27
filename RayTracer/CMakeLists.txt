@@ -13,6 +13,8 @@ add_executable (RayTracer
     "Main.cpp"
 	"Engine/Renderer.cpp"
     "Engine/Camera.cpp"
+    "Engine/Light.cpp"
+    "Engine/Object.cpp"
     "Engine/Ray.cpp"
     "Engine/Sphere.cpp"
 )
