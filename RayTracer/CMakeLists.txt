@@ -11,11 +11,13 @@ find_package (SFML CONFIG REQUIRED COMPONENTS graphics)
 
 add_executable (RayTracer
     Main.cpp
+	"Scene.cpp"
 )
 
 target_include_directories (RayTracer PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries (RayTracer PRIVATE sfml-graphics)
-target_compile_features (RayTracer PUBLIC cxx_std_17)
+target_compile_features (RayTracer PUBLIC cxx_std_20)
+set_property(TARGET RayTracer PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
 
 if (MSVC)
     target_compile_options (RayTracer PUBLIC /W3 /WX)

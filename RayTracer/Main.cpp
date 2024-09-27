@@ -1,5 +1,9 @@
-﻿#include <SFML/Graphics.hpp>
+﻿#include "Scene.hpp"
 
+#include <SFML/Graphics.hpp>
+
+#include <algorithm>
+#include <thread>
 #include <vector>
 
 namespace
@@ -12,8 +16,7 @@ int main(int argc, char* argv[])
 {
 	sf::RenderWindow window(sf::VideoMode(kWidth, kHeight), "RayTracer");
 
-	std::vector<sf::Uint8> pixels(kWidth * kHeight * 4);
-	memset(pixels.data(), 0xFF, pixels.size());
+	Scene scene(kWidth, kHeight, 8);
 
 	sf::Texture texture;
 	texture.create(kWidth, kHeight);
@@ -39,7 +42,7 @@ int main(int argc, char* argv[])
 			}
 		}
 
-		texture.update(pixels.data());
+		texture.update(reinterpret_cast<const sf::Uint8*>(scene.pixels()));
 
 		window.draw(sprite);
 
