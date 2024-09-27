@@ -10,7 +10,7 @@ Renderer::Renderer(size_t width, size_t height, size_t numRenderThreads)
 	, m_pixels(width * height)
 	, m_renderThreads(numRenderThreads)
 {
-	std::fill(std::begin(m_pixels), std::end(m_pixels), Palette::kBlack.toRGBA());
+	clear();
 }
 
 Renderer::~Renderer()
@@ -21,6 +21,11 @@ Renderer::~Renderer()
 void Renderer::setScene(Scene scene)
 {
 	m_scene = std::move(scene);
+}
+
+void Renderer::clear()
+{
+	std::fill(std::begin(m_pixels), std::end(m_pixels), Palette::kBlack.toRGBA());
 }
 
 void Renderer::stopRender()
@@ -34,8 +39,6 @@ void Renderer::stopRender()
 		if (t.joinable())
 			t.join();
 	}
-
-	std::fill(std::begin(m_pixels), std::end(m_pixels), Palette::kBlack.toRGBA());
 }
 
 void Renderer::startRender()
@@ -50,6 +53,8 @@ void Renderer::startRender()
 	for (auto& t : m_renderThreads)
 	{
 		const size_t endLine = std::min(startLine + linesPerThread, m_height);
+
+		m_busyThreads++;
 
 		t = std::thread(
 			[this, startLine, endLine]()
@@ -69,6 +74,8 @@ void Renderer::startRender()
 						*(currentPixel++) = m_scene.camera.trace(m_scene, cameraX, cameraY).toRGBA();
 					}
 				}
+
+				--m_busyThreads;
 			});
 
 		startLine += linesPerThread;

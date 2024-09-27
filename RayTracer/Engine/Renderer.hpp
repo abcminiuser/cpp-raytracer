@@ -18,9 +18,10 @@ public:
 
 	const uint32_t* 			pixels() const { return m_pixels.data(); }
 
+	void						clear();
 	void						stopRender();
 	void						startRender();
-	bool						isRendering() const { return m_runRenderThreads; }
+	bool						isRendering() const { return m_busyThreads != 0; }
 
 private:
 	size_t						m_width = 0;
@@ -30,6 +31,8 @@ private:
 
 	std::vector<std::thread>	m_renderThreads;
 	std::atomic_bool			m_runRenderThreads = false;
+
+	std::atomic<uint64_t>		m_busyThreads = 0;
 
 	std::vector<uint32_t>		m_pixels;
 };

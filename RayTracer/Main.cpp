@@ -6,14 +6,17 @@
 
 namespace
 {
-	constexpr auto kWidth	= 1920;
-	constexpr auto kHeight	= 1080;
+	constexpr auto kWidth		= 1920;
+	constexpr auto kHeight		= 1080;
+
+	constexpr auto kUpdateFps	= 5;
 }
 
 int main(int argc, char* argv[])
 {
-	sf::RenderWindow window(sf::VideoMode(kWidth, kHeight), "RayTracer");
-	window.setFramerateLimit(5);
+	sf::RenderWindow window(sf::VideoMode(kWidth, kHeight), "RayTracer", sf::Style::Titlebar | sf::Style::Close);
+	window.setSize(sf::Vector2u(kWidth, kHeight));
+	window.setFramerateLimit(kUpdateFps);
 
 	sf::Texture texture;
 	texture.create(kWidth, kHeight);
@@ -38,6 +41,12 @@ int main(int argc, char* argv[])
 	renderer.setScene(std::move(scene));
 	renderer.startRender();
 
+	bool wasRendering = true;
+
+	auto updateTitle = [&](bool rendering) { window.setTitle(std::string("Ray Tracer - Rendering ") + (rendering ? "In Progress" : "Done")); };
+
+	updateTitle(false);
+
 	while (window.isOpen())
 	{
 	    sf::Event event;
@@ -47,7 +56,15 @@ int main(int argc, char* argv[])
 				window.close();
 		}
 
-		texture.update(reinterpret_cast<const sf::Uint8*>(renderer.pixels()));
+		const bool isRendering = renderer.isRendering();
+		if (isRendering || wasRendering)
+			texture.update(reinterpret_cast<const sf::Uint8*>(renderer.pixels()));
+
+		if (isRendering != wasRendering)
+		{
+			updateTitle(isRendering);
+			wasRendering = isRendering;
+		}
 
 		window.draw(sprite);
 		window.display();
