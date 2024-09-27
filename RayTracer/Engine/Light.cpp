@@ -5,7 +5,7 @@ Light::Light(Vector position, Color color)
 	, m_color(std::move(color))
 {}
 
-Color Light::illuminate(const Color& objectColor, const Vector& position, float brightness)
+Color Light::illuminate(const Color& objectColor, const Vector& position, float brightness) const
 {
 	return objectColor.multiply(m_color).scale(brightness);
 }

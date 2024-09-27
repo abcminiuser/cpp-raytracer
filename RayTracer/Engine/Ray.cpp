@@ -5,11 +5,6 @@
 
 #include <limits>
 
-namespace
-{
-	constexpr auto kMinCollisionDistance = 0.00001;
-}
-
 Ray::Ray(Vector pos, Vector dir)
 	: m_position(std::move(pos))
 	, m_direction(dir.unit())
@@ -23,9 +18,6 @@ Color Ray::trace(const Scene& scene) const
 	for (const auto& o : scene.objects)
 	{
 		float intersectionDistance = o->intersect(*this);
-		if (intersectionDistance < kMinCollisionDistance)
-			continue;
-
 		if (intersectionDistance > closestIntersectionDistance)
 			continue;
 

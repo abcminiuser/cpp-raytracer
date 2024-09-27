@@ -15,7 +15,7 @@ public:
 		return m_position;
 	}
 
-	Color			illuminate(const Color& objectColor, const Vector& position, float brightness);
+	Color			illuminate(const Color& objectColor, const Vector& position, float brightness) const;
 
 private:
 	Vector			m_position;

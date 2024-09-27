@@ -2,6 +2,9 @@
 
 #include "Color.hpp"
 
+#include <array>
+#include <limits>
+
 class Ray;
 
 struct Scene;
@@ -10,14 +13,16 @@ struct Vector;
 class Object
 {
 public:
-	virtual			~Object() = default;
+	virtual							~Object() = default;
 
-	Color			illuminate(const Scene& scene, const Vector& position);
-
-public:
-	virtual float	intersect(const Ray& ray) const = 0;
+	float							intersect(const Ray& ray) const;
+	Color							illuminate(const Scene& scene, const Vector& position) const;
 
 protected:
-	virtual Vector	normalAt(const Vector& position) const = 0;
-	virtual Color	colorAt(const Vector& position) const = 0;
+	using IntersectionDistances = std::array<float, 2>;
+	static inline constexpr float kNoIntersection = std::numeric_limits<float>::max();
+
+	virtual IntersectionDistances	intersectWith(const Ray& ray) const = 0;
+	virtual Vector					normalAt(const Vector& position) const = 0;
+	virtual Color					colorAt(const Scene& scene, const Ray& ray) const = 0;
 };

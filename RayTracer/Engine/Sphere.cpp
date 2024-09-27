@@ -1,20 +1,19 @@
 #include "Sphere.hpp"
 
+#include "Material.hpp"
 #include "Ray.hpp"
 
-#include <algorithm>
 #include <cmath>
-#include <limits>
 
-Sphere::Sphere(Vector position, float radius, Color color)
+Sphere::Sphere(Vector position, float radius, Material material)
 	: m_position(std::move(position))
 	, m_radius(radius)
-	, m_color(color)
+	, m_material(std::move(material))
 {
 
 }
 
-float Sphere::intersect(const Ray& ray) const
+Object::IntersectionDistances Sphere::intersectWith(const Ray& ray) const
 {
 	const auto os = ray.position().subtract(m_position);
 
@@ -25,22 +24,22 @@ float Sphere::intersect(const Ray& ray) const
 	if (d < 0)
 	{
 		// No intersection
-		return std::numeric_limits<float>::max();
+		return { kNoIntersection, kNoIntersection };
 	}
 	else if (d == 0)
 	{
 		// Single intersection (we hit along the edge)
-		return -b / 2;
+		return { -b / 2, kNoIntersection };
 	}
 	else
 	{
-		// Two intersection solution, choose the closet to the ray
 		const float dSqrt = std::sqrt(d);
 
-		const auto sol1 = (-b - dSqrt) / 2;
-		const auto sol2 = (-b + dSqrt) / 2;
-
-		return std::min(sol1, sol2);
+		// Two intersection solutions
+		return {
+			(-b - dSqrt) / 2,
+			(-b + dSqrt) / 2
+		};
 	}
 }
 
@@ -49,7 +48,7 @@ Vector Sphere::normalAt(const Vector& position) const
 	return position.subtract(m_position).unit();
 }
 
-Color Sphere::colorAt(const Vector& position) const
+Color Sphere::colorAt(const Scene& scene, const Ray& ray) const
 {
-	return m_color;
+	return m_material.color;
 }
