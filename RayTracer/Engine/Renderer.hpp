@@ -16,24 +16,20 @@ public:
 
 	void							setScene(Scene scene);
 
-	void							setRenderingEnabled(bool enabled);
-
 	const uint32_t* 				pixels() const { return m_pixels.data(); }
 
-private:
 	void							stopRender();
 	void							startRender();
+	bool							isRendering() const { return m_runRenderThreads; }
 
 private:
 	size_t							m_width = 0;
 	size_t							m_height = 0;
 
-	bool							m_enabled = false;
-
 	Scene							m_scene;
 
 	std::vector<std::thread>		m_renderThreads;
-	std::atomic_bool				m_runRenderThreads = true;
+	std::atomic_bool				m_runRenderThreads = false;
 
 	std::vector<uint32_t>			m_pixels;
 };

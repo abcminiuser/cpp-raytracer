@@ -20,23 +20,7 @@ Renderer::~Renderer()
 
 void Renderer::setScene(Scene scene)
 {
-	stopRender();
-
-	m_scene = scene;
-
-	startRender();
-}
-
-void Renderer::setRenderingEnabled(bool enabled)
-{
-	if (m_enabled == enabled)
-		return;
-
-	stopRender();
-
-	m_enabled = enabled;
-
-	startRender();
+	m_scene = std::move(scene);
 }
 
 void Renderer::stopRender()
@@ -59,9 +43,6 @@ void Renderer::startRender()
 	if (m_runRenderThreads)
 		return;
 
-	if (! m_enabled)
-		return;
-
 	const auto linesPerThread = (m_height + (m_renderThreads.size() - 1)) / m_renderThreads.size();
 	size_t startLine = 0;
 
@@ -77,6 +58,9 @@ void Renderer::startRender()
 
 				for (size_t y = startLine; y < endLine; y++)
 				{
+					if (! m_runRenderThreads)
+						break;
+
 					for (size_t x = 0; x < m_width; x++)
 					{
 						const auto cameraX = (float(x) / m_width) - .5f;

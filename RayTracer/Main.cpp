@@ -6,8 +6,8 @@
 
 namespace
 {
-	constexpr auto kWidth = 800;
-	constexpr auto kHeight = 600;
+	constexpr auto kWidth	= 1920;
+	constexpr auto kHeight	= 1080;
 }
 
 int main(int argc, char* argv[])
@@ -31,9 +31,9 @@ int main(int argc, char* argv[])
 		std::make_shared<Sphere>(Vector( 4, 0, 4), 1.0f, Palette::kBlue),
 	};
 
-	Renderer renderer(kWidth, kHeight, 8);
-	renderer.setRenderingEnabled(true);
+	Renderer renderer(kWidth, kHeight, std::thread::hardware_concurrency());
 	renderer.setScene(std::move(scene));
+	renderer.startRender();
 
 	while (window.isOpen())
 	{
