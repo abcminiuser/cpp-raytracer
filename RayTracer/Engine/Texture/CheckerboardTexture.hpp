@@ -16,6 +16,8 @@ public:
 
 	}
 
+			~CheckerboardTexture() override = default;
+
 // Texture i/f:
 public:
 	Color	colorAt(double u, double v) const override

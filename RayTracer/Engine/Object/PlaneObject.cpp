@@ -7,9 +7,10 @@
 #include <cmath>
 #include <numbers>
 
-PlaneObject::PlaneObject(Vector normal, double distance, Material material)
+PlaneObject::PlaneObject(Vector normal, double distance, Material material, double textureScaleFactor)
 	: Object(normal.scale(distance), std::move(material))
 	, m_normal(normal)
+	, m_textureScaleFactor(textureScaleFactor)
 {
 
 }
@@ -41,5 +42,12 @@ Color PlaneObject::colorAt(const Scene& scene, const Ray& ray) const
 	if (! m_material.texture)
 		return Palette::kBlack;
 
-	return m_material.texture->colorAt(0, 0);
+	const auto rayFromOrigin = ray.position().subtract(m_position).scale(m_textureScaleFactor);
+
+	auto u = rayFromOrigin.x();
+	auto v = rayFromOrigin.z();
+	u -= std::floor(u);
+	v -= std::floor(v);
+
+	return m_material.texture->colorAt(u, v);
 }

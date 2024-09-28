@@ -42,11 +42,11 @@ namespace
 		scene.lights.push_back(std::make_unique<Light>(Vector(5, 10, -5), Palette::kWhite));
 		scene.lights.push_back(std::make_unique<Light>(Vector(-5, 3, -5), Palette::kRed.scale(.05)));
 
-		scene.objects.push_back(std::make_unique<PlaneObject>(StandardVectors::kUnitY, -1, Material{ .texture = std::make_shared<SolidTexture>(Palette::kWhite) }));
+		scene.objects.push_back(std::make_unique<PlaneObject>(StandardVectors::kUnitY, -1, Material{ .texture = MakeImageTexture("Assets/Test.png") }, 1 / 3.0));
 		scene.objects.push_back(std::make_unique<SphereObject>(Vector(-4, 0, 4), Material{ .texture = std::make_shared<SolidTexture>(Palette::kWhite) }, 1.0));
 		scene.objects.push_back(std::make_unique<SphereObject>(Vector(-2, 0, 2), Material{ .texture = std::make_shared<CheckerboardTexture>(Palette::kMagenta, Palette::kYellow, 8) }, 1.0));
 		scene.objects.push_back(std::make_unique<SphereObject>(Vector( 0, 0, 0), Material{ .texture = std::make_shared<SolidTexture>(Palette::kRed) }, 1.0));
-		scene.objects.push_back(std::make_unique<SphereObject>(Vector( 2, 0, 2), Material{ .texture = MakeImageTexture("Assets/Test.png") }, 1.0));
+		scene.objects.push_back(std::make_unique<SphereObject>(Vector( 2, 0, 2), Material{ .texture = std::make_shared<SolidTexture>(Palette::kGreen) }, 1.0));
 		scene.objects.push_back(std::make_unique<SphereObject>(Vector( 4, 0, 4), Material{ .texture = std::make_shared<SolidTexture>(Palette::kBlue) }, 1.0));
 
 		return scene;
@@ -70,6 +70,7 @@ int main(int argc, char* argv[])
 	renderer.startRender();
 
 	const auto updateTitle = [&](bool rendering) { window.setTitle(std::string("Ray Tracer - Rendering ") + (rendering ? "In Progress" : "Done")); };
+	const auto updateTexture = [&]() { texture.update(reinterpret_cast<const sf::Uint8*>(renderer.pixels())); };
 
 	updateTitle(false);
 
@@ -86,7 +87,7 @@ int main(int argc, char* argv[])
 
 		const bool isRendering = renderer.isRendering();
 		if (isRendering || wasRendering)
-			texture.update(reinterpret_cast<const sf::Uint8*>(renderer.pixels()));
+			updateTexture();
 
 		if (isRendering != wasRendering)
 		{
@@ -98,11 +99,10 @@ int main(int argc, char* argv[])
 			if (! isRendering)
 			{
 				renderer.wait();
-				texture.update(reinterpret_cast<const sf::Uint8*>(renderer.pixels()));
-			}
+				updateTexture();
 
-			if (! isRendering)
 				texture.copyToImage().saveToFile("Output.png");
+			}
 		}
 
 		window.draw(sprite);
