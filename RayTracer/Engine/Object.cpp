@@ -40,8 +40,8 @@ Color Object::illuminate(const Scene& scene, const Vector& position, uint32_t ra
 
 	if (m_material.reflectivity > 0)
 	{
-		const Color reflectionColor = Ray(position, reflection).trace(scene, rayDepth);
-		finalColor = finalColor.add(objectColor.multiply(reflectionColor).scale(m_material.reflectivity));
+		const Color reflectionColor = objectColor.multiply(Ray(position, reflection).trace(scene, rayDepth)).scale(m_material.reflectivity);
+		finalColor = finalColor.add(reflectionColor);
 	}
 
 	for (const auto& l : scene.lights)
@@ -58,11 +58,24 @@ Color Object::illuminate(const Scene& scene, const Vector& position, uint32_t ra
 		if (shadowed)
 			continue;
 
-		const double brightness = normal.dotProduct(objectToLight.unit());
-		if (brightness > 0)
+		if (m_material.diffuse > 0)
 		{
-			const Color lightingColor = l->illuminate(objectColor, position, brightness);
-			finalColor = finalColor.add(lightingColor);
+			const double brightness = normal.dotProduct(objectToLight.unit());
+			if (brightness > 0)
+			{
+				const Color lightingColor = l->illuminate(objectColor, position, brightness * m_material.diffuse);
+				finalColor = finalColor.add(lightingColor);
+			}
+		}
+
+		if (m_material.specular > 0)
+		{
+			const double brightness = reflection.unit().dotProduct(objectToLight.unit());
+			if (brightness > 0)
+			{
+				const Color lightingColor = l->illuminate(objectColor, position, m_material.specular * std::pow(brightness, 32 * m_material.specular * m_material.specular));
+				finalColor = finalColor.add(lightingColor);
+			}
 		}
 	}
 
