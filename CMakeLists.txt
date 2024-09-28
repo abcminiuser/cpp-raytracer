@@ -12,7 +12,7 @@ if (CPPCHECK_BIN)
         "--force"
         "--inline-suppr"
         "--quiet"
-        "--std=c++17"
+        "--std=c++20"
     )
 
     message ("Using cppcheck configuration: ${CMAKE_CXX_CPPCHECK}")
