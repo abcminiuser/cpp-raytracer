@@ -15,8 +15,6 @@ public:
 
 	Color			trace(const Scene& scene, uint32_t rayDepth) const;
 
-	static Vector 	Reflect(const Vector& incident, const Vector& surfaceNormal);
-
 private:
 	Vector			m_position;
 	Vector			m_direction;

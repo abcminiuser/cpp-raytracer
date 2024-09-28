@@ -19,7 +19,7 @@ public:
 
 	}
 
-	constexpr double		squaredEuclidianDistance() const
+	constexpr double	squaredEuclidianDistance() const
 	{
 		if (! m_squaredEuclidianDistance)
 			m_squaredEuclidianDistance = m_x * m_x + m_y * m_y + m_z * m_z;
@@ -27,7 +27,7 @@ public:
 		return m_squaredEuclidianDistance;
 	}
 
-	constexpr double		length() const
+	constexpr double	length() const
 	{
 		if (! m_length)
 			m_length = std::sqrt(squaredEuclidianDistance());
@@ -59,7 +59,7 @@ public:
 		);
 	}
 
-	constexpr double		dotProduct(const Vector& other) const
+	constexpr double	dotProduct(const Vector& other) const
 	{
 		return (m_x * other.m_x) + (m_y * other.m_y) + (m_z * other.m_z);
 	}
@@ -78,6 +78,11 @@ public:
 	{
 		const double l = length();
 		return l ? scale(1 / l) : Vector();
+	}
+
+	constexpr Vector	reflect(const Vector& surfaceNormal) const
+	{
+		return add(surfaceNormal.scale(-2 * surfaceNormal.dotProduct(*this)));
 	}
 
 private:

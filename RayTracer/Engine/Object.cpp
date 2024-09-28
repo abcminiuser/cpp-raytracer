@@ -34,13 +34,14 @@ Color Object::illuminate(const Scene& scene, const Vector& position, uint32_t ra
 {
 	const Vector	normal		= normalAt(position);
 	const Color		objectColor	= colorAt(scene, Ray(position, normal));
-	const Vector	reflection 	= Ray::Reflect(position, normal);
+	const Vector	reflection 	= position.reflect(normal);
 
 	Color finalColor = objectColor.scale(m_material.ambient);
 
-	if (m_material.reflectivity)
+	if (m_material.reflectivity > 0)
 	{
-		finalColor = finalColor.add(Ray(position, reflection).trace(scene, rayDepth).scale(m_material.reflectivity));
+		const Color reflectionColor = Ray(position, reflection).trace(scene, rayDepth);
+		finalColor = finalColor.add(objectColor.multiply(reflectionColor).scale(m_material.reflectivity));
 	}
 
 	for (const auto& l : scene.lights)
@@ -59,7 +60,10 @@ Color Object::illuminate(const Scene& scene, const Vector& position, uint32_t ra
 
 		const double brightness = normal.dotProduct(objectToLight.unit());
 		if (brightness > 0)
-			finalColor = finalColor.add(l->illuminate(objectColor, position, brightness));
+		{
+			const Color lightingColor = l->illuminate(objectColor, position, brightness);
+			finalColor = finalColor.add(lightingColor);
+		}
 	}
 
 	return finalColor;
