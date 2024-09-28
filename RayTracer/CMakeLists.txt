@@ -16,6 +16,7 @@ add_executable (RayTracer
     "Engine/Light.cpp"
     "Engine/Object.cpp"
     "Engine/Ray.cpp"
+    "Engine/Object/PlaneObject.cpp"
     "Engine/Object/SphereObject.cpp"
 )
 
