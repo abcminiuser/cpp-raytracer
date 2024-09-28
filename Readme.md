@@ -10,7 +10,9 @@ Originally I wrote a ray tracer in Java back when I was a student in University
 a new implementation in modern C++.
 
 Originally written while I was sick at home, after being inspired by
-[Dylan Beattie's talk on making a Javascript ray tracer](https://www.youtube.com/watch?v=PNKlC3lk9Kg).
+[Dylan Beattie's talk](https://www.youtube.com/watch?v=PNKlC3lk9Kg) on making a
+Javascript ray tracer, which also has a great accompanying
+[online handbook](https://ursatile.github.io/jsray/) available.
 
 ![Example Scene Rendering](Output.png)
 

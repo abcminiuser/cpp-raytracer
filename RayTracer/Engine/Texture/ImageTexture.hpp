@@ -2,6 +2,7 @@
 
 #include "Engine/Texture.hpp"
 
+#include <stdexcept>
 #include <stdint.h>
 #include <vector>
 
@@ -14,7 +15,8 @@ public:
 								, m_height(height)
 								, m_pixels(&pixels[0], &pixels[width * height])
 	{
-
+		if (! m_width || ! m_height || ! pixels)
+			throw std::runtime_error("Image texture create with invalid image parameters.");
 	}
 
 							~ImageTexture() override = default;
@@ -23,9 +25,6 @@ public:
 public:
 	Color					colorAt(double u, double v) const override
 	{
-		if (! m_width || ! m_height)
-			return Palette::kWhite.scale(.5);
-
 		const size_t x = static_cast<size_t>(u * m_width);
 		const size_t y = (m_height - 1) - static_cast<size_t>(v * (m_height - 1));
 
