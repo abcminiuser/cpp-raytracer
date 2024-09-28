@@ -7,6 +7,10 @@
 
 #include <SFML/Graphics.hpp>
 
+#include <stddef.h>
+#include <stdexcept>
+#include <stdint.h>
+
 namespace
 {
 	constexpr size_t	kWidth		= 1920;
@@ -14,14 +18,16 @@ namespace
 
 	constexpr uint32_t	kUpdateFps	= 10;
 
-	std::unique_ptr<ImageTexture> MakeImageTexture(const std::string& path)
+	std::shared_ptr<ImageTexture> MakeImageTexture(const std::string& path)
 	{
 		sf::Image imageTexture;
-		imageTexture.loadFromFile(path);
+		if (! imageTexture.loadFromFile(path))
+			throw std::runtime_error("Failed to load image: " + path);
 
-		const auto dimensions = imageTexture.getSize();
+		const auto	dimensions	= imageTexture.getSize();
+		const auto* pixels		= imageTexture.getPixelsPtr();
 
-		return std::make_unique<ImageTexture>(dimensions.x, dimensions.y,reinterpret_cast<const uint32_t*>(imageTexture.getPixelsPtr()));
+		return std::make_shared<ImageTexture>(dimensions.x, dimensions.y, reinterpret_cast<const uint32_t*>(pixels));
 	}
 
 	Scene BuildScene()
@@ -34,11 +40,11 @@ namespace
 
 		scene.lights.push_back(std::make_unique<Light>(Vector(5, 10, -5), Palette::kWhite));
 
-		scene.objects.push_back(std::make_unique<SphereObject>(Vector(-4, 0, 4), Material{ .texture = std::make_unique<SolidTexture>(Palette::kWhite) }, 1.0));
-		scene.objects.push_back(std::make_unique<SphereObject>(Vector(-2, 0, 2), Material{ .texture = std::make_unique<CheckerboardTexture>(Palette::kMagenta, Palette::kYellow, 8) }, 1.0));
-		scene.objects.push_back(std::make_unique<SphereObject>(Vector( 0, 0, 0), Material{ .texture = std::make_unique<SolidTexture>(Palette::kRed) }, 1.0));
+		scene.objects.push_back(std::make_unique<SphereObject>(Vector(-4, 0, 4), Material{ .texture = std::make_shared<SolidTexture>(Palette::kWhite) }, 1.0));
+		scene.objects.push_back(std::make_unique<SphereObject>(Vector(-2, 0, 2), Material{ .texture = std::make_shared<CheckerboardTexture>(Palette::kMagenta, Palette::kYellow, 8) }, 1.0));
+		scene.objects.push_back(std::make_unique<SphereObject>(Vector( 0, 0, 0), Material{ .texture = std::make_shared<SolidTexture>(Palette::kRed) }, 1.0));
 		scene.objects.push_back(std::make_unique<SphereObject>(Vector( 2, 0, 2), Material{ .texture = MakeImageTexture("Assets/Test.png")}, 1.0));
-		scene.objects.push_back(std::make_unique<SphereObject>(Vector( 4, 0, 4), Material{ .texture = std::make_unique<SolidTexture>(Palette::kBlue) }, 1.0));
+		scene.objects.push_back(std::make_unique<SphereObject>(Vector( 4, 0, 4), Material{ .texture = std::make_shared<SolidTexture>(Palette::kBlue) }, 1.0));
 
 		return scene;
 	}

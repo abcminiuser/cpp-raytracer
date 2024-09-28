@@ -7,7 +7,7 @@
 struct Material
 {
 public:
-	std::unique_ptr<Texture>	texture;
+	std::shared_ptr<Texture>	texture;
 	double						ambient = 0.1;
 	double						diffuse = 0.4;
 	double						specular = 0.9;
