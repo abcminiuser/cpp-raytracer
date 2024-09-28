@@ -77,7 +77,13 @@ public:
 	constexpr Vector	unit() const
 	{
 		const double l = length();
-		return l ? scale(1 / l) : Vector();
+
+		if (l == 1)
+			return *this;
+		else if (l == 0)
+			return Vector();
+		else
+			return scale(1 / l);
 	}
 
 	constexpr Vector	reflect(const Vector& surfaceNormal) const
