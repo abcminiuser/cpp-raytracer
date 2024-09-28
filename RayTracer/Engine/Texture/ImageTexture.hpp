@@ -24,8 +24,8 @@ public:
 		if (! m_width || ! m_height)
 			return Palette::kWhite.scale(.5);
 
-		const auto x = static_cast<size_t>(u * m_width);
-		const auto y = static_cast<size_t>(v * (m_height - 1));
+		const size_t x = static_cast<size_t>(u * m_width);
+		const size_t y = (m_height - 1) - static_cast<size_t>(v * (m_height - 1));
 
 		return Color(m_pixels.at((y * m_width) + x));
 	}
