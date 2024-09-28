@@ -21,7 +21,7 @@ public:
 	void						clear();
 	void						stopRender();
 	void						startRender();
-	bool						isRendering() const { return m_busyThreads != 0; }
+	bool						isRendering() const { return m_lastRenderLineStart.load() < m_height; }
 
 private:
 	size_t						m_width = 0;
@@ -32,7 +32,7 @@ private:
 	std::vector<std::thread>	m_renderThreads;
 	std::atomic_bool			m_runRenderThreads = false;
 
-	std::atomic<uint64_t>		m_busyThreads = 0;
+	std::atomic<uint32_t>		m_lastRenderLineStart = 0;
 
 	std::vector<uint32_t>		m_pixels;
 };

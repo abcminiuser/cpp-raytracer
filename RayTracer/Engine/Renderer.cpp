@@ -4,6 +4,11 @@
 #include "Vector.hpp"
 #include "Camera.hpp"
 
+namespace
+{
+	constexpr size_t kMaxLinesToRenderPerChunk = 10;
+}
+
 Renderer::Renderer(size_t width, size_t height, size_t numRenderThreads)
 	: m_width(width)
 	, m_height(height)
@@ -46,39 +51,41 @@ void Renderer::startRender()
 	if (m_runRenderThreads)
 		return;
 
-	const size_t linesPerThread = (m_height + (m_renderThreads.size() - 1)) / m_renderThreads.size();
-	size_t startLine = 0;
+	m_lastRenderLineStart = 0;
 
 	m_runRenderThreads = true;
 	for (auto& t : m_renderThreads)
 	{
-		const size_t endLine = std::min(startLine + linesPerThread, m_height);
-
-		m_busyThreads++;
-
 		t = std::thread(
-			[this, startLine, endLine]()
+			[this]()
 			{
-				uint32_t* currentPixel = &m_pixels[startLine * m_width];
-
-				for (size_t y = startLine; y < endLine; y++)
+				while (m_runRenderThreads)
 				{
-					if (! m_runRenderThreads)
+					const size_t startLine = m_lastRenderLineStart.fetch_add(kMaxLinesToRenderPerChunk);
+					if (startLine >= m_height)
 						break;
 
-					const float cameraY = (float(y) / m_height) - .5f;
+					const size_t endLine = startLine + std::min(kMaxLinesToRenderPerChunk, m_height - startLine);
+					if (endLine >= m_height)
+						break;
 
-					for (size_t x = 0; x < m_width; x++)
+					uint32_t* currentPixel = &m_pixels[startLine * m_width];
+
+					for (size_t y = startLine; y < endLine; y++)
 					{
-						const float cameraX = (float(x) / m_width) - .5f;
+						if (! m_runRenderThreads)
+							break;
 
-						*(currentPixel++) = m_scene.camera.trace(m_scene, cameraX, cameraY).toRGBA();
+						const float cameraY = (float(y) / m_height) - .5f;
+
+						for (size_t x = 0; x < m_width; x++)
+						{
+							const float cameraX = (float(x) / m_width) - .5f;
+
+							*(currentPixel++) = m_scene.camera.trace(m_scene, cameraX, cameraY).toRGBA();
+						}
 					}
 				}
-
-				--m_busyThreads;
 			});
-
-		startLine += linesPerThread;
 	}
 }
