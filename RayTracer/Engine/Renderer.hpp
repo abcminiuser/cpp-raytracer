@@ -27,12 +27,12 @@ private:
 	size_t						m_width = 0;
 	size_t						m_height = 0;
 
+	std::vector<uint32_t>		m_pixels;
+
 	Scene						m_scene;
 
 	std::vector<std::thread>	m_renderThreads;
 	std::atomic_bool			m_runRenderThreads = false;
 
 	std::atomic<uint32_t>		m_lastRenderLineStart = 0;
-
-	std::vector<uint32_t>		m_pixels;
 };

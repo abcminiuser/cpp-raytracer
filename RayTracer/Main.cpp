@@ -19,7 +19,7 @@ namespace
 
 		scene.background = Palette::kWhite.scale(0.1);
 
-		scene.camera = Camera(Vector(0, 2, -8), StandardVectors::kUnitZ, 4.0f, 9.0f / 4.0f);
+		scene.camera = Camera(Vector(0, 2, -8), StandardVectors::kUnitZ, 4.0, 9.0 / 4.0);
 
 		scene.lights.push_back(std::make_unique<Light>(Vector(5, 10, -5), Palette::kWhite));
 

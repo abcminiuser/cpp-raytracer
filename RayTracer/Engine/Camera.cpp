@@ -4,12 +4,12 @@
 #include "Engine/Scene.hpp"
 
 Camera::Camera()
-	: Camera(StandardVectors::kOrigin, StandardVectors::kUnitZ, 4.0f, 9.0f/4.0f)
+	: Camera(StandardVectors::kOrigin, StandardVectors::kUnitZ, 4.0, 9.0 / 4.0)
 {
 
 }
 
-Camera::Camera(Vector position, Vector target, float lensWidth, float lensHeight)
+Camera::Camera(Vector position, Vector target, double lensWidth, double lensHeight)
 	: m_position(std::move(position))
 	, m_direction(target.subtract(position).unit())
 	, m_lensWidth(lensWidth)
@@ -20,7 +20,7 @@ Camera::Camera(Vector position, Vector target, float lensWidth, float lensHeight
 
 }
 
-Color Camera::trace(const Scene& scene, float x, float y) const
+Color Camera::trace(const Scene& scene, double x, double y) const
 {
 	const Vector rayX = m_right.scale(x);
 	const Vector rayY = m_down.scale(y);

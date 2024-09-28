@@ -9,16 +9,16 @@ class Camera
 {
 public:
 			Camera();
-			Camera(Vector position, Vector target, float lensWidth, float lensHeight);
+			Camera(Vector position, Vector target, double lensWidth, double lensHeight);
 
-	Color	trace(const Scene& scene, float x, float y) const;
+	Color	trace(const Scene& scene, double x, double y) const;
 
 private:
 	Vector	m_position;
 	Vector	m_direction;
 
-	float	m_lensWidth;
-	float	m_lensHeight;
+	double	m_lensWidth;
+	double	m_lensHeight;
 
 	Vector	m_right;
 	Vector	m_down;
