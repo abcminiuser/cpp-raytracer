@@ -19,6 +19,7 @@ public:
 	const uint32_t* 			pixels() const { return m_pixels.data(); }
 
 	void						clear();
+	void						wait();
 	void						stopRender();
 	void						startRender();
 	bool						isRendering() const { return m_lastRenderLineStart.load() < m_height; }

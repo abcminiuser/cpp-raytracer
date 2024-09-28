@@ -93,6 +93,14 @@ int main(int argc, char* argv[])
 			updateTitle(isRendering);
 			wasRendering = isRendering;
 
+			// When rendering completes, make sure we do our final texture update once all
+			// the rendering worker threads actually stop.
+			if (! isRendering)
+			{
+				renderer.wait();
+				texture.update(reinterpret_cast<const sf::Uint8*>(renderer.pixels()));
+			}
+
 			if (! isRendering)
 				texture.copyToImage().saveToFile("Output.png");
 		}

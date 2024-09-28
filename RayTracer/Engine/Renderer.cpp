@@ -33,17 +33,22 @@ void Renderer::clear()
 	std::fill(std::begin(m_pixels), std::end(m_pixels), Palette::kBlack.toRGBA());
 }
 
+void Renderer::wait()
+{
+	for (auto& t : m_renderThreads)
+	{
+		if (t.joinable())
+			t.join();
+	}
+}
+
 void Renderer::stopRender()
 {
 	if (! m_runRenderThreads)
 		return;
 
 	m_runRenderThreads = false;
-	for (auto& t : m_renderThreads)
-	{
-		if (t.joinable())
-			t.join();
-	}
+	wait();
 }
 
 void Renderer::startRender()
@@ -66,7 +71,7 @@ void Renderer::startRender()
 						break;
 
 					const size_t endLine = startLine + std::min(kMaxLinesToRenderPerChunk, m_height - startLine);
-					if (endLine >= m_height)
+					if (endLine > m_height)
 						break;
 
 					uint32_t* currentPixel = &m_pixels[startLine * m_width];
