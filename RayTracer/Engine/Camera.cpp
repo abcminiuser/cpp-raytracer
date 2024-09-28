@@ -9,13 +9,13 @@ Camera::Camera()
 
 }
 
-Camera::Camera(Vector position, Vector target, double lensWidth, double lensHeight)
+Camera::Camera(Vector position, Vector target, double viewWidth, double viewHeight)
 	: m_position(std::move(position))
 	, m_direction(target.subtract(position).unit())
-	, m_lensWidth(lensWidth)
-	, m_lensHeight(lensHeight)
-	, m_right(StandardVectors::kUnitY.crossProduct(m_direction).unit().scale(m_lensWidth / 2))
-	, m_down(m_right.crossProduct(m_direction).unit().scale(-m_lensHeight / 2).invert())
+	, m_viewWidth(viewWidth)
+	, m_viewHeight(viewHeight)
+	, m_right(StandardVectors::kUnitY.crossProduct(m_direction).unit().scale(m_viewWidth / 2))
+	, m_down(m_right.crossProduct(m_direction).unit().scale(-m_viewHeight / 2).invert())
 {
 
 }
