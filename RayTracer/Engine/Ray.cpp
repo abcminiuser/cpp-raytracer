@@ -22,12 +22,12 @@ Color Ray::trace(const Scene& scene, uint32_t rayDepth) const
 	if (rayDepth > kMaxDepth)
 		return Palette::kBlack;
 
-	float	closestIntersectionDistance = Object::kNoIntersection;
+	double	closestIntersectionDistance = Object::kNoIntersection;
 	Object*	closestObject = nullptr;
 
 	for (const auto& o : scene.objects)
 	{
-		float intersectionDistance = o->intersect(*this);
+		double intersectionDistance = o->intersect(*this);
 		if (intersectionDistance >= closestIntersectionDistance)
 			continue;
 

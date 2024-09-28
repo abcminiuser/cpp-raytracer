@@ -15,16 +15,16 @@ struct Scene;
 class Object
 {
 public:
-	static inline constexpr float kNoIntersection = std::numeric_limits<float>::max();
+	static inline constexpr double kNoIntersection = std::numeric_limits<double>::max();
 
 									Object(Vector position, Material material);
 	virtual							~Object() = default;
 
-	float							intersect(const Ray& ray) const;
+	double							intersect(const Ray& ray) const;
 	Color							illuminate(const Scene& scene, const Vector& position, uint32_t rayDepth) const;
 
 protected:
-	using IntersectionDistances = std::array<float, 2>;
+	using IntersectionDistances = std::array<double, 2>;
 
 	virtual IntersectionDistances	intersectWith(const Ray& ray) const = 0;
 	virtual Vector					normalAt(const Vector& position) const = 0;

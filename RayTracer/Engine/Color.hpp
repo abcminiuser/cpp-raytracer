@@ -38,7 +38,7 @@ public:
 		);
 	}
 
-	constexpr Color		scale(float factor) const
+	constexpr Color		scale(double factor) const
 	{
 		return Color(
 			static_cast<uint8_t>(std::min<uint32_t>(static_cast<uint32_t>(m_red * factor), 0xFF)),

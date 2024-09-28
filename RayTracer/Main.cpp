@@ -9,23 +9,23 @@ namespace
 	constexpr size_t	kWidth		= 1920;
 	constexpr size_t	kHeight		= 1080;
 
-	constexpr uint32_t	kUpdateFps	= 5;
+	constexpr uint32_t	kUpdateFps	= 10;
 
 	Scene BuildScene()
 	{
 		Scene scene;
 
-		scene.background = Color(64, 64, 64);
+		scene.background = Palette::kWhite.scale(0.1);
 
 		scene.camera = Camera(Vector(0, 2, -8), StandardVectors::kUnitZ, 4.0f, 9.0f / 4.0f);
 
 		scene.lights.push_back(std::make_unique<Light>(Vector(5, 10, -5), Palette::kWhite));
 
-		scene.objects.push_back(std::make_unique<Sphere>(Vector(-4, 0, 4), Material{.color = Palette::kYellow }, 1.0f));
-		scene.objects.push_back(std::make_unique<Sphere>(Vector(-2, 0, 2), Material{.color = Palette::kWhite }, 1.0f));
-		scene.objects.push_back(std::make_unique<Sphere>(Vector(0, 0, 0), Material{.color = Palette::kRed }, 1.0f));
-		scene.objects.push_back(std::make_unique<Sphere>(Vector(2, 0, 2), Material{.color = Palette::kGreen }, 1.0f));
-		scene.objects.push_back(std::make_unique<Sphere>(Vector(4, 0, 4), Material{.color = Palette::kBlue }, 1.0f));
+		scene.objects.push_back(std::make_unique<Sphere>(Vector(-4, 0, 4), Material{.color = Palette::kYellow }, 1.0));
+		scene.objects.push_back(std::make_unique<Sphere>(Vector(-2, 0, 2), Material{.color = Palette::kWhite }, 1.0));
+		scene.objects.push_back(std::make_unique<Sphere>(Vector(0, 0, 0), Material{.color = Palette::kRed }, 1.0));
+		scene.objects.push_back(std::make_unique<Sphere>(Vector(2, 0, 2), Material{.color = Palette::kGreen }, 1.0));
+		scene.objects.push_back(std::make_unique<Sphere>(Vector(4, 0, 4), Material{.color = Palette::kBlue }, 1.0));
 
 		return scene;
 	}

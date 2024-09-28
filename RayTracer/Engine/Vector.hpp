@@ -11,7 +11,7 @@ public:
 
 	}
 
-	constexpr			Vector(float x, float y, float z)
+	constexpr			Vector(double x, double y, double z)
 		: m_x(x)
 		, m_y(y)
 		, m_z(z)
@@ -19,7 +19,7 @@ public:
 
 	}
 
-	constexpr float		squaredEuclidianDistance() const
+	constexpr double		squaredEuclidianDistance() const
 	{
 		if (! m_squaredEuclidianDistance)
 			m_squaredEuclidianDistance = m_x * m_x + m_y * m_y + m_z * m_z;
@@ -27,10 +27,10 @@ public:
 		return m_squaredEuclidianDistance;
 	}
 
-	constexpr float		length() const
+	constexpr double		length() const
 	{
 		if (! m_length)
-			m_length = std::sqrtf(squaredEuclidianDistance());
+			m_length = std::sqrt(squaredEuclidianDistance());
 
 		return m_length;
 	}
@@ -59,12 +59,12 @@ public:
 		);
 	}
 
-	constexpr float		dotProduct(const Vector& other) const
+	constexpr double		dotProduct(const Vector& other) const
 	{
 		return (m_x * other.m_x) + (m_y * other.m_y) + (m_z * other.m_z);
 	}
 
-	constexpr Vector	scale(float factor) const
+	constexpr Vector	scale(double factor) const
 	{
 		return Vector(m_x * factor, m_y * factor, m_z * factor);
 	}
@@ -76,18 +76,18 @@ public:
 
 	constexpr Vector	unit() const
 	{
-		const float l = length();
+		const double l = length();
 		return l ? scale(1 / l) : Vector();
 	}
 
 private:
-	float				m_x = 0;
-	float				m_y = 0;
-	float				m_z = 0;
+	double				m_x = 0;
+	double				m_y = 0;
+	double				m_z = 0;
 
 private:
-	mutable float		m_squaredEuclidianDistance = 0;
-	mutable float		m_length = 0;
+	mutable double		m_squaredEuclidianDistance = 0;
+	mutable double		m_length = 0;
 };
 
 namespace StandardVectors

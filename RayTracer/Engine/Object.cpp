@@ -7,7 +7,7 @@
 
 namespace
 {
-	constexpr float kMinIntersectionDistance = 0.001f;
+	constexpr double kMinIntersectionDistance = 0.0000001;
 }
 
 Object::Object(Vector position, Material material)
@@ -17,7 +17,7 @@ Object::Object(Vector position, Material material)
 
 }
 
-float Object::intersect(const Ray& ray) const
+double Object::intersect(const Ray& ray) const
 {
 	IntersectionDistances distances = intersectWith(ray);
 
@@ -51,13 +51,13 @@ Color Object::illuminate(const Scene& scene, const Vector& position, uint32_t ra
 			scene.objects.begin(), scene.objects.end(),
 			[&](const auto& o)
 			{
-				const float intersectionDistance = o->intersect(Ray(position, objectToLight));
+				const double intersectionDistance = o->intersect(Ray(position, objectToLight));
 				return intersectionDistance <= objectToLight.length();
 			});
 		if (shadowed)
 			continue;
 
-		const float brightness = normal.dotProduct(objectToLight.unit());
+		const double brightness = normal.dotProduct(objectToLight.unit());
 		if (brightness > 0)
 			finalColor = finalColor.add(l->illuminate(objectColor, position, brightness));
 	}

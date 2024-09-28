@@ -5,7 +5,7 @@
 
 #include <cmath>
 
-Sphere::Sphere(Vector position, Material material, float radius)
+Sphere::Sphere(Vector position, Material material, double radius)
 	: Object(std::move(position), std::move(material))
 	, m_radius(radius)
 {
@@ -16,9 +16,9 @@ Object::IntersectionDistances Sphere::intersectWith(const Ray& ray) const
 {
 	const auto os = ray.position().subtract(m_position);
 
-	float b = 2 * os.dotProduct(ray.direction());
-	float c = os.squaredEuclidianDistance() - (m_radius * m_radius);
-	float d = (b * b) - 4 * c;
+	double b = 2 * os.dotProduct(ray.direction());
+	double c = os.squaredEuclidianDistance() - (m_radius * m_radius);
+	double d = (b * b) - 4 * c;
 
 	if (d < 0)
 	{
@@ -32,7 +32,7 @@ Object::IntersectionDistances Sphere::intersectWith(const Ray& ray) const
 	}
 	else
 	{
-		const float dSqrt = std::sqrtf(d);
+		const double dSqrt = std::sqrt(d);
 
 		// Two intersection solutions
 		return {

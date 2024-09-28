@@ -9,7 +9,7 @@ class Sphere
 	: public Object
 {
 public:
-							Sphere(Vector position, Material material, float radius);
+							Sphere(Vector position, Material material, double radius);
 							~Sphere() override = default;
 
 // Object i/f:
@@ -19,5 +19,5 @@ protected:
 	Color					colorAt(const Scene& scene, const Ray& ray) const override;
 
 private:
-	float					m_radius;
+	double					m_radius;
 };
