@@ -72,6 +72,9 @@ int main(int argc, char* argv[])
 		{
 			updateTitle(isRendering);
 			wasRendering = isRendering;
+
+			if (! isRendering)
+				texture.copyToImage().saveToFile("Output.png");
 		}
 
 		window.draw(sprite);
