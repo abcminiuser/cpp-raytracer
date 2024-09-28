@@ -7,13 +7,17 @@ struct Vector
 public:
 	constexpr			Vector()
 							: Vector(0, 0, 0)
-	{}
+	{
+
+	}
 
 	constexpr			Vector(float x, float y, float z)
 		: m_x(x)
 		, m_y(y)
 		, m_z(z)
-	{}
+	{
+
+	}
 
 	constexpr float		squaredEuclidianDistance() const
 	{
@@ -26,7 +30,7 @@ public:
 	constexpr float		length() const
 	{
 		if (! m_length)
-			m_length = std::sqrt(squaredEuclidianDistance());
+			m_length = std::sqrtf(squaredEuclidianDistance());
 
 		return m_length;
 	}

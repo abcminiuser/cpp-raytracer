@@ -2,13 +2,14 @@
 
 #include "Material.hpp"
 #include "Object.hpp"
-#include "Vector.hpp"
+
+struct Vector;
 
 class Sphere
 	: public Object
 {
 public:
-							Sphere(Vector position, float radius, Material material);
+							Sphere(Vector position, Material material, float radius);
 							~Sphere() override = default;
 
 // Object i/f:
@@ -18,7 +19,5 @@ protected:
 	Color					colorAt(const Scene& scene, const Ray& ray) const override;
 
 private:
-	Vector					m_position;
 	float					m_radius;
-	Material				m_material;
 };

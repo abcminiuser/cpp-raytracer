@@ -5,10 +5,9 @@
 
 #include <cmath>
 
-Sphere::Sphere(Vector position, float radius, Material material)
-	: m_position(std::move(position))
+Sphere::Sphere(Vector position, Material material, float radius)
+	: Object(std::move(position), std::move(material))
 	, m_radius(radius)
-	, m_material(std::move(material))
 {
 
 }
@@ -33,7 +32,7 @@ Object::IntersectionDistances Sphere::intersectWith(const Ray& ray) const
 	}
 	else
 	{
-		const float dSqrt = std::sqrt(d);
+		const float dSqrt = std::sqrtf(d);
 
 		// Two intersection solutions
 		return {

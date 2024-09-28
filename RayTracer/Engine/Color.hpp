@@ -8,13 +8,17 @@ struct Color
 public:
 	constexpr			Color()
 							: Color(0, 0, 0)
-	{}
+	{
+
+	}
 
 	constexpr			Color(uint8_t r, uint8_t g, uint8_t b)
 		: m_red(r)
 		, m_green(g)
 		, m_blue(b)
-	{}
+	{
+
+	}
 
 	constexpr Color		add(const Color& other) const
 	{

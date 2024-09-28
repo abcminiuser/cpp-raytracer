@@ -1,6 +1,5 @@
 #include "Object.hpp"
 
-#include "Vector.hpp"
 #include "Ray.hpp"
 #include "Scene.hpp"
 
@@ -8,7 +7,14 @@
 
 namespace
 {
-	constexpr float kMinIntersectionDistance = 0.0001f;
+	constexpr float kMinIntersectionDistance = 0.001f;
+}
+
+Object::Object(Vector position, Material material)
+	: m_position(std::move(position))
+	, m_material(std::move(material))
+{
+
 }
 
 float Object::intersect(const Ray& ray) const
@@ -24,12 +30,18 @@ float Object::intersect(const Ray& ray) const
 	return std::min(distances[0], distances[1]);
 }
 
-Color Object::illuminate(const Scene& scene, const Vector& position) const
+Color Object::illuminate(const Scene& scene, const Vector& position, uint32_t rayDepth) const
 {
 	const Vector	normal		= normalAt(position);
 	const Color		objectColor	= colorAt(scene, Ray(position, normal));
+	const Vector	reflection 	= Ray::Reflect(position, normal);
 
-	Color finalColor = Palette::kBlack;
+	Color finalColor = objectColor.scale(m_material.ambient);
+
+	if (m_material.reflectivity)
+	{
+		finalColor = finalColor.add(Ray(position, reflection).trace(scene, rayDepth).scale(m_material.reflectivity));
+	}
 
 	for (const auto& l : scene.lights)
 	{
