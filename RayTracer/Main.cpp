@@ -1,6 +1,8 @@
 ﻿#include "Engine/Renderer.hpp"
 #include "Engine/Scene.hpp"
 #include "Engine/Sphere.hpp"
+#include "Engine/SolidTexture.hpp"
+#include "Engine/CheckerboardTexture.hpp"
 
 #include <SFML/Graphics.hpp>
 
@@ -21,11 +23,11 @@ namespace
 
 		scene.lights.push_back(std::make_unique<Light>(Vector(5, 10, -5), Palette::kWhite));
 
-		scene.objects.push_back(std::make_unique<Sphere>(Vector(-4, 0, 4), Material{.color = Palette::kYellow }, 1.0));
-		scene.objects.push_back(std::make_unique<Sphere>(Vector(-2, 0, 2), Material{.color = Palette::kWhite }, 1.0));
-		scene.objects.push_back(std::make_unique<Sphere>(Vector(0, 0, 0), Material{.color = Palette::kRed }, 1.0));
-		scene.objects.push_back(std::make_unique<Sphere>(Vector(2, 0, 2), Material{.color = Palette::kGreen }, 1.0));
-		scene.objects.push_back(std::make_unique<Sphere>(Vector(4, 0, 4), Material{.color = Palette::kBlue }, 1.0));
+		scene.objects.push_back(std::make_unique<Sphere>(Vector(-4, 0, 4), Material{ .texture = std::make_unique<CheckerboardTexture>(Palette::kMagenta, Palette::kYellow, 8) }, 1.0));
+		scene.objects.push_back(std::make_unique<Sphere>(Vector(-2, 0, 2), Material{ .texture = std::make_unique<SolidTexture>(Palette::kWhite) }, 1.0));
+		scene.objects.push_back(std::make_unique<Sphere>(Vector( 0, 0, 0), Material{ .texture = std::make_unique<SolidTexture>(Palette::kRed) }, 1.0));
+		scene.objects.push_back(std::make_unique<Sphere>(Vector( 2, 0, 2), Material{ .texture = std::make_unique<SolidTexture>(Palette::kGreen) }, 1.0));
+		scene.objects.push_back(std::make_unique<Sphere>(Vector( 4, 0, 4), Material{ .texture = std::make_unique<SolidTexture>(Palette::kBlue) }, 1.0));
 
 		return scene;
 	}

@@ -91,6 +91,10 @@ public:
 		return add(surfaceNormal.scale(-2 * surfaceNormal.dotProduct(*this)));
 	}
 
+	constexpr double	x() const	{ return m_x; }
+	constexpr double	y() const	{ return m_y; }
+	constexpr double	z() const	{ return m_z; }
+
 private:
 	double				m_x = 0;
 	double				m_y = 0;

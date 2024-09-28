@@ -2,8 +2,10 @@
 
 #include "Material.hpp"
 #include "Ray.hpp"
+#include "Vector.hpp"
 
 #include <cmath>
+#include <numbers>
 
 Sphere::Sphere(Vector position, Material material, double radius)
 	: Object(std::move(position), std::move(material))
@@ -49,5 +51,15 @@ Vector Sphere::normalAt(const Vector& position) const
 
 Color Sphere::colorAt(const Scene& scene, const Ray& ray) const
 {
-	return m_material.color;
+	if (! m_material.texture)
+		return Palette::kBlack;
+
+	const auto x = ray.direction().x();
+	const auto y = ray.direction().y();
+	const auto z = ray.direction().z();
+
+	double u = .5 + std::atan2(z, x) / (2 * std::numbers::pi);
+	double v = .5 + std::asin(y) / std::numbers::pi;
+
+	return m_material.texture->colorAt(u, v);
 }
