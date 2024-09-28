@@ -34,6 +34,12 @@ else ()
     target_compile_options (RayTracer PUBLIC -Wall -Wextra -pedantic -Werror -Wno-unused-parameter -Wshadow -Wdouble-promotion)
 endif ()
 
+
+add_custom_command (TARGET RayTracer POST_BUILD
+	COMMAND ${CMAKE_COMMAND}
+	ARGS -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/Assets" "$<TARGET_FILE_DIR:RayTracer>/Assets"
+	COMMENT "Copying assets...")
+
 install (FILES
 	$<TARGET_FILE:RayTracer>
 	DESTINATION .

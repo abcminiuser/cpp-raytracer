@@ -20,6 +20,14 @@ public:
 
 	}
 
+	constexpr			Color(uint32_t argb32)
+		: m_red(static_cast<uint8_t>(argb32 >> 0))
+		, m_green(static_cast<uint8_t>(argb32 >> 8))
+		, m_blue(static_cast<uint8_t>(argb32 >> 16))
+	{
+
+	}
+
 	constexpr Color		add(const Color& other) const
 	{
 		return Color(

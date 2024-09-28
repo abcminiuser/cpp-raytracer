@@ -16,7 +16,7 @@ public:
 
 	}
 
-// Texture i.f:
+// Texture i/f:
 public:
 	Color	colorAt(double u, double v) const override
 	{
