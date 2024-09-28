@@ -2,7 +2,7 @@
 
 #include "Engine/Color.hpp"
 
-struct Texture
+class Texture
 {
 public:
 	virtual			~Texture() = default;

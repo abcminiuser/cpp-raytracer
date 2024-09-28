@@ -8,6 +8,7 @@
 namespace
 {
 	constexpr double kMinIntersectionDistance = 0.0000001;
+	constexpr double kSpecularMultiplier = 32;
 }
 
 Object::Object(Vector position, Material material)

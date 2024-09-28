@@ -39,11 +39,12 @@ namespace
 		scene.camera = Camera(Vector(0, 2, -8), StandardVectors::kUnitZ, 4.0, 9.0 / 4.0);
 
 		scene.lights.push_back(std::make_unique<Light>(Vector(5, 10, -5), Palette::kWhite));
+		scene.lights.push_back(std::make_unique<Light>(Vector(-5, 3, -5), Palette::kRed.scale(.05)));
 
 		scene.objects.push_back(std::make_unique<SphereObject>(Vector(-4, 0, 4), Material{ .texture = std::make_shared<SolidTexture>(Palette::kWhite) }, 1.0));
 		scene.objects.push_back(std::make_unique<SphereObject>(Vector(-2, 0, 2), Material{ .texture = std::make_shared<CheckerboardTexture>(Palette::kMagenta, Palette::kYellow, 8) }, 1.0));
 		scene.objects.push_back(std::make_unique<SphereObject>(Vector( 0, 0, 0), Material{ .texture = std::make_shared<SolidTexture>(Palette::kRed) }, 1.0));
-		scene.objects.push_back(std::make_unique<SphereObject>(Vector( 2, 0, 2), Material{ .texture = MakeImageTexture("Assets/Test.png")}, 1.0));
+		scene.objects.push_back(std::make_unique<SphereObject>(Vector( 2, 0, 2), Material{ .texture = MakeImageTexture("Assets/Test.png") }, 1.0));
 		scene.objects.push_back(std::make_unique<SphereObject>(Vector( 4, 0, 4), Material{ .texture = std::make_shared<SolidTexture>(Palette::kBlue) }, 1.0));
 
 		return scene;
