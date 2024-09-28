@@ -1,7 +1,7 @@
-#include "Camera.hpp"
+#include "Engine/Camera.hpp"
 
-#include "Ray.hpp"
-#include "Scene.hpp"
+#include "Engine/Ray.hpp"
+#include "Engine/Scene.hpp"
 
 Camera::Camera()
 	: Camera(StandardVectors::kOrigin, StandardVectors::kUnitZ, 4.0f, 9.0f/4.0f)

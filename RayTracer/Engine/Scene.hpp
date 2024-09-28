@@ -1,9 +1,9 @@
 #pragma once
 
-#include "Camera.hpp"
-#include "Color.hpp"
-#include "Light.hpp"
-#include "Object.hpp"
+#include "Engine/Camera.hpp"
+#include "Engine/Color.hpp"
+#include "Engine/Light.hpp"
+#include "Engine/Object.hpp"
 
 #include <memory>
 #include <vector>

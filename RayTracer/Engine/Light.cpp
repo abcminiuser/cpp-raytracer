@@ -1,4 +1,4 @@
-#include "Light.hpp"
+#include "Engine/Light.hpp"
 
 Light::Light(Vector position, Color color)
 	: m_position(std::move(position))

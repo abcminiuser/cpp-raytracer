@@ -1,16 +1,16 @@
 #pragma once
 
-#include "Material.hpp"
-#include "Object.hpp"
+#include "Engine/Material.hpp"
+#include "Engine/Object.hpp"
 
 struct Vector;
 
-class Sphere
+class SphereObject
 	: public Object
 {
 public:
-							Sphere(Vector position, Material material, double radius);
-							~Sphere() override = default;
+							SphereObject(Vector position, Material material, double radius);
+							~SphereObject() override = default;
 
 // Object i/f:
 protected:

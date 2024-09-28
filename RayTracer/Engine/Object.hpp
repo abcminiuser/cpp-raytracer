@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Color.hpp"
-#include "Material.hpp"
-#include "Vector.hpp"
+#include "Engine/Color.hpp"
+#include "Engine/Material.hpp"
+#include "Engine/Vector.hpp"
 
 #include <array>
 #include <limits>

@@ -1,20 +1,20 @@
-#include "Sphere.hpp"
+#include "SphereObject.hpp"
 
-#include "Material.hpp"
-#include "Ray.hpp"
-#include "Vector.hpp"
+#include "Engine/Material.hpp"
+#include "Engine/Ray.hpp"
+#include "Engine/Vector.hpp"
 
 #include <cmath>
 #include <numbers>
 
-Sphere::Sphere(Vector position, Material material, double radius)
+SphereObject::SphereObject(Vector position, Material material, double radius)
 	: Object(std::move(position), std::move(material))
 	, m_radius(radius)
 {
 
 }
 
-Object::IntersectionDistances Sphere::intersectWith(const Ray& ray) const
+Object::IntersectionDistances SphereObject::intersectWith(const Ray& ray) const
 {
 	const auto os = ray.position().subtract(m_position);
 
@@ -44,12 +44,12 @@ Object::IntersectionDistances Sphere::intersectWith(const Ray& ray) const
 	}
 }
 
-Vector Sphere::normalAt(const Vector& position) const
+Vector SphereObject::normalAt(const Vector& position) const
 {
 	return position.subtract(m_position).unit();
 }
 
-Color Sphere::colorAt(const Scene& scene, const Ray& ray) const
+Color SphereObject::colorAt(const Scene& scene, const Ray& ray) const
 {
 	if (! m_material.texture)
 		return Palette::kBlack;

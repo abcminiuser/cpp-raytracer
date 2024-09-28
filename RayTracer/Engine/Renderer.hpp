@@ -1,12 +1,12 @@
 #pragma once
 
+#include "Scene.hpp"
+
 #include <atomic>
 #include <stddef.h>
 #include <stdint.h>
 #include <thread>
 #include <vector>
-
-#include "Scene.hpp"
 
 class Renderer
 {

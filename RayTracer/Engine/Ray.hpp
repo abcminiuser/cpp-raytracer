@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Color.hpp"
-#include "Vector.hpp"
+#include "Engine/Color.hpp"
+#include "Engine/Vector.hpp"
 
 struct Scene;
 

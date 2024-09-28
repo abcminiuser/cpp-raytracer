@@ -1,9 +1,9 @@
 #pragma once
 
-#include <stdint.h>
+#include "Engine/Color.hpp"
+#include "Engine/Vector.hpp"
 
-#include "Color.hpp"
-#include "Vector.hpp"
+#include <stdint.h>
 
 struct Light
 {

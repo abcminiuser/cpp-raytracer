@@ -1,7 +1,7 @@
-#include "Ray.hpp"
+#include "Engine/Ray.hpp"
 
-#include "Object.hpp"
-#include "Scene.hpp"
+#include "Engine/Object.hpp"
+#include "Engine/Scene.hpp"
 
 #include <limits>
 
