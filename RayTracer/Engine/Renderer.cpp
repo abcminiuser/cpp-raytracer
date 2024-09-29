@@ -21,6 +21,12 @@ Renderer::Renderer(size_t width, size_t height, size_t numRenderThreads)
 Renderer::~Renderer()
 {
 	stopRender();
+
+	for (auto& t : m_renderThreads)
+	{
+		if (t.joinable())
+			t.join();
+	}
 }
 
 void Renderer::setScene(Scene scene)
