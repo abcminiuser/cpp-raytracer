@@ -24,18 +24,14 @@ add_executable (RayTracer
 target_include_directories (RayTracer PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries (RayTracer PRIVATE sfml-graphics)
 target_compile_features (RayTracer PUBLIC cxx_std_20)
+
 set_property(TARGET RayTracer PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
 
 if (MSVC)
     target_compile_options (RayTracer PUBLIC /W4 /WX /wd4100)
-
-    if (CMAKE_BUILD_TYPE STREQUAL "Release")
-		set_property (TARGET RayTracer APPEND_STRING PROPERTY LINK_FLAGS " /SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup")
-	endif ()
 else ()
     target_compile_options (RayTracer PUBLIC -Wall -Wextra -pedantic -Werror -Wno-unused-parameter -Wshadow -Wdouble-promotion)
 endif ()
-
 
 add_custom_command (TARGET RayTracer POST_BUILD
 	COMMAND ${CMAKE_COMMAND}
