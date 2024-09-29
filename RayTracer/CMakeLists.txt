@@ -40,7 +40,12 @@ endif ()
 add_custom_command (TARGET RayTracer POST_BUILD
 	COMMAND ${CMAKE_COMMAND}
 	ARGS -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/Assets" "$<TARGET_FILE_DIR:RayTracer>/Assets"
-	COMMENT "Copying assets...")
+	COMMENT "Copying original assets...")
+
+add_custom_command (TARGET RayTracer POST_BUILD
+	COMMAND ${CMAKE_COMMAND}
+	ARGS -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/../Vendor/PublicDomainTextures.com/Assets" "$<TARGET_FILE_DIR:RayTracer>/Assets"
+	COMMENT "Copying 'PublicDomainTextures.com' third party assets...")
 
 install (FILES
 	$<TARGET_FILE:RayTracer>
