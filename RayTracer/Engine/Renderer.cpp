@@ -35,10 +35,13 @@ void Renderer::clear()
 
 void Renderer::wait()
 {
-	for (auto& t : m_renderThreads)
+	for (;;)
 	{
-		if (t.joinable())
-			t.join();
+		auto outstandingThreads = m_runningRenderThreads.load();
+		if (! outstandingThreads)
+			break;
+
+		m_runningRenderThreads.wait(outstandingThreads);
 	}
 }
 
@@ -48,7 +51,11 @@ void Renderer::stopRender()
 		return;
 
 	m_runRenderThreads = false;
-	wait();
+	for (auto& t : m_renderThreads)
+	{
+		if (t.joinable())
+			t.join();
+	}
 }
 
 void Renderer::startRender()
@@ -64,6 +71,8 @@ void Renderer::startRender()
 		t = std::thread(
 			[this]()
 			{
+				m_runningRenderThreads++;
+
 				while (m_runRenderThreads)
 				{
 					const size_t startLine = m_lastRenderLineStart.fetch_add(kMaxLinesToRenderPerChunk);
@@ -91,6 +100,9 @@ void Renderer::startRender()
 						}
 					}
 				}
+
+				if (--m_runningRenderThreads == 0)
+					m_runningRenderThreads.notify_all();
 			});
 	}
 }

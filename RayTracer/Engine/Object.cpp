@@ -64,7 +64,7 @@ Color Object::illuminate(const Scene& scene, const Vector& position, uint32_t ra
 			double brightness = normal.dotProduct(objectToLight.unit());
 			if (brightness > 0)
 			{
-				const Color lightingColor = l->illuminate(objectColor, position, brightness * m_material.diffuse);
+				const Color lightingColor = l->illuminate(objectColor, brightness * m_material.diffuse);
 				finalColor = finalColor.add(lightingColor);
 			}
 		}
@@ -76,7 +76,7 @@ Color Object::illuminate(const Scene& scene, const Vector& position, uint32_t ra
 			{
 				brightness *= std::pow(brightness, kSpecularMultiplier * m_material.specular * m_material.specular);
 
-				const Color lightingColor = l->illuminate(objectColor, position, brightness * m_material.specular);
+				const Color lightingColor = l->illuminate(objectColor, brightness * m_material.specular);
 				finalColor = finalColor.add(lightingColor);
 			}
 		}

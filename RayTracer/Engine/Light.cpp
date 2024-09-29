@@ -7,7 +7,7 @@ Light::Light(Vector position, Color color)
 
 }
 
-Color Light::illuminate(const Color& objectColor, const Vector& position, double brightness) const
+Color Light::illuminate(const Color& objectColor, double brightness) const
 {
 	return objectColor.multiply(m_color).scale(brightness);
 }

@@ -33,6 +33,7 @@ private:
 	Scene						m_scene;
 
 	std::vector<std::thread>	m_renderThreads;
+	std::atomic<uint32_t>		m_runningRenderThreads = 0;
 	std::atomic_bool			m_runRenderThreads = false;
 
 	std::atomic<uint32_t>		m_lastRenderLineStart = 0;
