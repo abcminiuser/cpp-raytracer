@@ -116,28 +116,28 @@ Scene ExampleScene::Build()
 	);
 	scene.objects.push_back(
 		std::make_unique<SphereObject>(
-			/* Position: */					Vector(6, 0, 0),
-			/* Material: */					Material{
-				.texture = std::make_shared<SolidTexture>(Palette::kWhite),
-				.ambient = 0.1,
-				.diffuse = 0.0,
-				.specular = 1.0,
-				.reflectivity = 0.7
-			},
-			/* Radius: */					1
+		/* Position: */					Vector(6, 0, 0),
+		/* Material: */					Material{
+			.texture = std::make_shared<SolidTexture>(Palette::kWhite),
+			.ambient = 0.1,
+			.diffuse = 0.0,
+			.specular = 0.5,
+			.reflectivity = 0.7
+		},
+		/* Radius: */					1
 		)
 	);
 	scene.objects.push_back(
 		std::make_unique<SphereObject>(
-			/* Position: */					Vector(-6, 0, 0),
-			/* Material: */					Material{
-				.texture = MakeImageTexture("Assets/Marble.jpg"),
-				.ambient = 0.3,
-				.diffuse = 0.1,
-				.specular = 0.0,
-				.reflectivity = 0.0
-			},
-			/* Radius: */					1
+		/* Position: */					Vector(-6, 0, 0),
+		/* Material: */					Material{
+			.texture = MakeImageTexture("Assets/Marble.jpg"),
+			.ambient = 0.3,
+			.diffuse = 0.15,
+			.specular = 0.0,
+			.reflectivity = 0.0
+		},
+		/* Radius: */					1
 		)
 	);
 

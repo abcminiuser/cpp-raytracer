@@ -19,7 +19,7 @@ namespace
 
 int main(int argc, char* argv[])
 {
-	sf::RenderWindow window(sf::VideoMode(kWidth, kHeight), "RayTracer", sf::Style::Titlebar | sf::Style::Close);
+	sf::RenderWindow window(sf::VideoMode(kWidth, kHeight), "Ray Tracer", sf::Style::Titlebar | sf::Style::Close);
 	window.setSize(sf::Vector2u(kWidth, kHeight));
 	window.setFramerateLimit(kUpdateFps);
 
@@ -37,6 +37,7 @@ int main(int argc, char* argv[])
 	const auto updateTexture = [&]() { texture.update(reinterpret_cast<const sf::Uint8*>(renderer.pixels())); };
 
 	updateTitle(true);
+	updateTexture();
 
 	bool wasRendering = true;
 

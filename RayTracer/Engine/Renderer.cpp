@@ -4,6 +4,8 @@
 #include "Vector.hpp"
 #include "Camera.hpp"
 
+#include <algorithm>
+
 namespace
 {
 	constexpr size_t kMaxLinesToRenderPerChunk = 10;
@@ -36,7 +38,8 @@ void Renderer::setScene(Scene scene)
 
 void Renderer::clear()
 {
-	std::fill(std::begin(m_pixels), std::end(m_pixels), Palette::kBlack.toRGBA());
+	const uint32_t fillColor = Palette::kBlack.toRGBA();
+	std::fill(m_pixels.begin(), m_pixels.end(), fillColor);
 }
 
 void Renderer::stopRender()
