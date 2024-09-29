@@ -1,25 +1,18 @@
 #pragma once
 
+#include "Engine/Color.hpp"
 #include "Engine/Texture.hpp"
 
 class SolidTexture
 	: public Texture
 {
 public:
-			SolidTexture(const Color& color)
-				: m_color(color)
-	{
-
-	}
-
+			SolidTexture(const Color& color);
 			~SolidTexture() override = default;
 
 // Texture i/f:
 public:
-	Color	colorAt(double u, double v) const override
-	{
-		return m_color;
-	}
+	Color	colorAt(double u, double v) const override;
 
 private:
 	Color	m_color;
