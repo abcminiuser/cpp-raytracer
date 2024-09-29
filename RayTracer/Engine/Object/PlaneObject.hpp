@@ -23,7 +23,7 @@ protected:
 	Color						colorAt(const Scene& scene, const Ray& ray) const override;
 
 private:
-	double						m_textureScaleFactor;
 	std::shared_ptr<Texture>	m_texture;
+	double						m_textureScaleFactor;
 	Vector						m_normal;
 };

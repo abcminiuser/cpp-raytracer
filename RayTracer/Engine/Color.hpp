@@ -5,6 +5,13 @@
 
 struct Color
 {
+private:
+	template <typename T>
+	static inline constexpr uint8_t	ClampComponent(T component)
+	{
+		return (component < 0xFF) ? static_cast<uint8_t>(component) : 0xFF;
+	}
+
 public:
 	constexpr			Color()
 							: Color(0, 0, 0)
@@ -33,30 +40,30 @@ public:
 	constexpr Color		add(const Color& other) const
 	{
 		return Color(
-			static_cast<uint8_t>(std::min<uint32_t>(m_red + other.m_red, 0xFF)),
-			static_cast<uint8_t>(std::min<uint32_t>(m_green + other.m_green, 0xFF)),
-			static_cast<uint8_t>(std::min<uint32_t>(m_blue + other.m_blue, 0xFF)),
-			static_cast<uint8_t>(std::min<uint32_t>(m_alpha + other.m_alpha, 0xFF))
+			ClampComponent(m_red + other.m_red),
+			ClampComponent(m_green + other.m_green),
+			ClampComponent(m_blue + other.m_blue),
+			ClampComponent(m_alpha + other.m_alpha)
 		);
 	}
 
 	constexpr Color		multiply(const Color& other) const
 	{
 		return Color(
-			static_cast<uint8_t>(std::min<uint32_t>(m_red * other.m_red, 0xFF)),
-			static_cast<uint8_t>(std::min<uint32_t>(m_green * other.m_green, 0xFF)),
-			static_cast<uint8_t>(std::min<uint32_t>(m_blue * other.m_blue, 0xFF)),
-			static_cast<uint8_t>(std::min<uint32_t>(m_alpha * other.m_alpha, 0xFF))
+			ClampComponent(m_red * other.m_red),
+			ClampComponent(m_green * other.m_green),
+			ClampComponent(m_blue * other.m_blue),
+			ClampComponent(m_alpha * other.m_alpha)
 		);
 	}
 
 	constexpr Color		scale(double factor) const
 	{
 		return Color(
-			static_cast<uint8_t>(std::min<uint32_t>(static_cast<uint32_t>(m_red * factor), 0xFF)),
-			static_cast<uint8_t>(std::min<uint32_t>(static_cast<uint32_t>(m_green * factor), 0xFF)),
-			static_cast<uint8_t>(std::min<uint32_t>(static_cast<uint32_t>(m_blue * factor), 0xFF)),
-			static_cast<uint8_t>(std::min<uint32_t>(static_cast<uint32_t>(m_alpha * factor), 0xFF))
+			ClampComponent(m_red * factor),
+			ClampComponent(m_green * factor),
+			ClampComponent(m_blue * factor),
+			ClampComponent(m_alpha * factor)
 		);
 	}
 

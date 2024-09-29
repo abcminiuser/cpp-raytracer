@@ -27,7 +27,7 @@ target_compile_features (RayTracer PUBLIC cxx_std_20)
 set_property(TARGET RayTracer PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
 
 if (MSVC)
-    target_compile_options (RayTracer PUBLIC /W3 /WX)
+    target_compile_options (RayTracer PUBLIC /W4 /WX /wd4100)
 
     if (CMAKE_BUILD_TYPE STREQUAL "Release")
 		set_property (TARGET RayTracer APPEND_STRING PROPERTY LINK_FLAGS " /SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup")
