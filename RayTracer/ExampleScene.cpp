@@ -36,8 +36,8 @@ Scene ExampleScene::Build()
 	scene.camera = Camera(
 		/* Position: */ 					Vector(0, 2, -8),
 		/* Target: */						StandardVectors::kUnitZ,
-		/* View Width: */					4.0,
-		/* View Height: */					9.0 / 4.0
+		/* View Width: */					9.0 / 2,
+		/* View Height: */					5.0 / 2
 	);
 
 	scene.lights.push_back(
@@ -50,7 +50,7 @@ Scene ExampleScene::Build()
 	scene.lights.push_back(
 		std::make_unique<Light>(
 			/* Position: */					Vector(-5, 3, -5),
-			/* Color */   					Palette::kRed
+			/* Color */   					Color(255, 128, 0)
 		)
 	);
 

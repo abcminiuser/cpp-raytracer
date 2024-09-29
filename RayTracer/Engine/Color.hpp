@@ -50,10 +50,10 @@ public:
 	constexpr Color		multiply(const Color& other) const
 	{
 		return Color(
-			ClampComponent(m_red * other.m_red),
-			ClampComponent(m_green * other.m_green),
-			ClampComponent(m_blue * other.m_blue),
-			ClampComponent(m_alpha * other.m_alpha)
+			ClampComponent(m_red * other.m_red / 255.0),
+			ClampComponent(m_green * other.m_green / 255.0),
+			ClampComponent(m_blue * other.m_blue / 255.0),
+			ClampComponent(m_alpha * other.m_alpha / 255.0)
 		);
 	}
 
