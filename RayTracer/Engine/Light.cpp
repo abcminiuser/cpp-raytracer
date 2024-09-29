@@ -1,8 +1,8 @@
 #include "Engine/Light.hpp"
 
-Light::Light(Vector position, Color color)
-	: m_position(std::move(position))
-	, m_color(std::move(color))
+Light::Light(const Vector& position, const Color& color)
+	: m_position(position)
+	, m_color(color)
 {
 
 }

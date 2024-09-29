@@ -9,7 +9,7 @@ class SphereObject
 	: public Object
 {
 public:
-							SphereObject(Vector position, Material material, double radius);
+							SphereObject(const Vector& position, const Material& material, double radius);
 							~SphereObject() override = default;
 
 // Object i/f:

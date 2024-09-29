@@ -7,8 +7,8 @@
 #include <cmath>
 #include <numbers>
 
-SphereObject::SphereObject(Vector position, Material material, double radius)
-	: Object(std::move(position), std::move(material))
+SphereObject::SphereObject(const Vector& position, const Material& material, double radius)
+	: Object(position, material)
 	, m_radius(radius)
 {
 

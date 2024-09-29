@@ -11,9 +11,9 @@ namespace
 	constexpr double kSpecularMultiplier = 32;
 }
 
-Object::Object(Vector position, Material material)
-	: m_position(std::move(position))
-	, m_material(std::move(material))
+Object::Object(const Vector& position, const Material& material)
+	: m_position(position)
+	, m_material(material)
 {
 
 }
@@ -33,15 +33,15 @@ double Object::intersect(const Ray& ray) const
 
 Color Object::illuminate(const Scene& scene, const Vector& position, uint32_t rayDepth) const
 {
-	const Vector	normal		= normalAt(position);
-	const Color		objectColor	= colorAt(scene, Ray(position, normal));
-	const Vector	reflection 	= position.reflect(normal);
+	const Vector	normal			= normalAt(position);
+	const Color		objectColor		= colorAt(scene, Ray(position, normal));
+	const Vector	unitReflection 	= position.reflect(normal).unit();
 
 	Color finalColor = objectColor.scale(m_material.ambient);
 
 	if (m_material.reflectivity > 0)
 	{
-		const Color reflectionColor = objectColor.multiply(Ray(position, reflection).trace(scene, rayDepth)).scale(m_material.reflectivity);
+		const Color reflectionColor = objectColor.multiply(Ray(position, unitReflection).trace(scene, rayDepth)).scale(m_material.reflectivity);
 		finalColor = finalColor.add(reflectionColor);
 	}
 
@@ -71,7 +71,7 @@ Color Object::illuminate(const Scene& scene, const Vector& position, uint32_t ra
 
 		if (m_material.specular > 0)
 		{
-			double brightness = reflection.unit().dotProduct(objectToLight.unit());
+			double brightness = unitReflection.dotProduct(objectToLight.unit());
 			if (brightness > 0)
 			{
 				brightness *= std::pow(brightness, kSpecularMultiplier * m_material.specular * m_material.specular);

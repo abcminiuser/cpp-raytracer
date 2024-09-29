@@ -6,7 +6,7 @@ class SolidTexture
 	: public Texture
 {
 public:
-			SolidTexture(Color color)
+			SolidTexture(const Color& color)
 				: m_color(color)
 	{
 

@@ -8,7 +8,7 @@
 struct Light
 {
 public:
-					Light(Vector position, Color color);
+					Light(const Vector& position, const Color& color);
 
 	const Vector&	position() const { return m_position; }
 

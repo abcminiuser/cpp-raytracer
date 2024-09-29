@@ -17,7 +17,7 @@ class Object
 public:
 	static inline constexpr double kNoIntersection = std::numeric_limits<double>::max();
 
-									Object(Vector position, Material material);
+									Object(const Vector& position, const Material& material);
 	virtual							~Object() = default;
 
 	double							intersect(const Ray& ray) const;

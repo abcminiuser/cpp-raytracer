@@ -8,7 +8,7 @@ struct Scene;
 class Ray
 {
 public:
-					Ray(Vector pos, Vector dir);
+					Ray(const Vector& pos, const Vector& dir);
 
 	const Vector&	position() const	{ return m_position; }
 	const Vector&	direction() const	{ return m_direction; }

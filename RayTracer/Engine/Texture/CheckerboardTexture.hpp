@@ -8,7 +8,7 @@ class CheckerboardTexture
 	: public Texture
 {
 public:
-			CheckerboardTexture(Color color1, Color color2, uint8_t rowsCols)
+			CheckerboardTexture(const Color& color1, const Color& color2, uint8_t rowsCols)
 				: m_color1(color1)
 				, m_color2(color2)
 				, m_rowsCols(rowsCols)

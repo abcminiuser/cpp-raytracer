@@ -7,8 +7,8 @@
 #include <cmath>
 #include <numbers>
 
-PlaneObject::PlaneObject(Vector normal, double distance, Material material, double textureScaleFactor)
-	: Object(normal.scale(distance), std::move(material))
+PlaneObject::PlaneObject(const Vector& normal, double distance, const Material& material, double textureScaleFactor)
+	: Object(normal.scale(distance), material)
 	, m_normal(normal)
 	, m_textureScaleFactor(textureScaleFactor)
 {

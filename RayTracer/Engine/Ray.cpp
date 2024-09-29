@@ -10,8 +10,8 @@ namespace
 	constexpr uint32_t kMaxDepth = 16;
 }
 
-Ray::Ray(Vector pos, Vector dir)
-	: m_position(std::move(pos))
+Ray::Ray(const Vector& pos, const Vector& dir)
+	: m_position(pos)
 	, m_direction(dir.unit())
 {
 

@@ -9,8 +9,8 @@ Camera::Camera()
 
 }
 
-Camera::Camera(Vector position, Vector target, double viewWidth, double viewHeight)
-	: m_position(std::move(position))
+Camera::Camera(const Vector& position, const Vector& target, double viewWidth, double viewHeight)
+	: m_position(position)
 	, m_direction(target.subtract(position).unit())
 	, m_viewWidth(viewWidth)
 	, m_viewHeight(viewHeight)
