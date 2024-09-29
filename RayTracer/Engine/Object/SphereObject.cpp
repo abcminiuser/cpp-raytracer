@@ -10,6 +10,7 @@
 SphereObject::SphereObject(const Vector& position, const Material& material, double radius)
 	: Object(position, material)
 	, m_radius(radius)
+	, m_diameter(m_radius * m_radius)
 {
 
 }
@@ -19,7 +20,7 @@ Object::IntersectionDistances SphereObject::intersectWith(const Ray& ray) const
 	const auto os = ray.position().subtract(m_position);
 
 	double b = 2 * os.dotProduct(ray.direction());
-	double c = os.squaredEuclidianDistance() - (m_radius * m_radius);
+	double c = os.squaredEuclidianDistance() - m_diameter;
 	double d = (b * b) - 4 * c;
 
 	if (d < 0)

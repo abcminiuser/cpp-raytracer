@@ -20,4 +20,5 @@ protected:
 
 private:
 	double					m_radius;
+	double					m_diameter;
 };
