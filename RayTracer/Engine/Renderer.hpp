@@ -19,10 +19,9 @@ public:
 	const uint32_t* 			pixels() const { return m_pixels.data(); }
 
 	void						clear();
-	void						wait();
 	void						stopRender();
 	void						startRender();
-	bool						isRendering() const { return m_lastRenderLineStart.load() < m_height; }
+	bool						isRendering() const { return m_runningRenderThreads.load() != 0; }
 
 private:
 	size_t						m_width = 0;

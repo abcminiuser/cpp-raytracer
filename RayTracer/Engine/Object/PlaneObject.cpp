@@ -15,20 +15,25 @@ PlaneObject::PlaneObject(const Vector& normal, double distance, const Material& 
 
 }
 
-Object::IntersectionDistances PlaneObject::intersectWith(const Ray& ray) const
+double PlaneObject::intersectWith(const Ray& ray) const
 {
 	const auto angle = ray.direction().dotProduct(m_normal);
 
 	if (angle == 0)
 	{
 		// No intersection
-		return { kNoIntersection, kNoIntersection };
+		return kNoIntersection;
 	}
 	else
 	{
 		// Intersection at a single point (as we're infinitely thin)
 		const auto b = m_normal.dotProduct(ray.position().subtract(m_position));
-        return { -b / angle, kNoIntersection };
+
+		auto solution = -b / angle;
+		if (solution < kMinIntersectionDistance)
+			solution = kNoIntersection;
+
+        return solution;
 	}
 }
 

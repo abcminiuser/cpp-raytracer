@@ -9,7 +9,6 @@
 
 namespace
 {
-	constexpr double kMinIntersectionDistance = 0.0000001;
 	constexpr double kSpecularMultiplier = 32;
 }
 
@@ -22,15 +21,10 @@ Object::Object(const Vector& position, const Material& material)
 
 double Object::intersect(const Ray& ray) const
 {
-	IntersectionDistances distances = intersectWith(ray);
+	const auto closestIntersectionDistance = intersectWith(ray);
+	assert(closestIntersectionDistance > kMinIntersectionDistance);
 
-	if (distances[0] < kMinIntersectionDistance)
-		distances[0] = kNoIntersection;
-
-	if (distances[1] < kMinIntersectionDistance)
-		distances[1] = kNoIntersection;
-
-	return std::min(distances[0], distances[1]);
+	return closestIntersectionDistance;
 }
 
 Color Object::illuminate(const Scene& scene, const Vector& position, const Ray& ray, uint32_t rayDepth) const

@@ -5,9 +5,9 @@ This is a very basic toy ray tracer, written in C++. There's nothing special
 about this; it's the same as every other toy tracer written by every CS student
 at some point.
 
-Originally I wrote a ray tracer in Java back when I was a student in University
-(see above), which was appallingly slow if instructive to figure out. This is
-a new implementation in modern C++.
+Many years ago I wrote a ray tracer in Java back when I was a student in
+University (see above), which was appallingly slow if instructive to figure out.
+This is a new implementation in modern C++.
 
 Originally written while I was sick at home, after being inspired by
 [Dylan Beattie's talk](https://www.youtube.com/watch?v=PNKlC3lk9Kg) on making a

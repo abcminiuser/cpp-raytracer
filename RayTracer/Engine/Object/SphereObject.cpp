@@ -4,6 +4,7 @@
 #include "Engine/Ray.hpp"
 #include "Engine/Vector.hpp"
 
+#include <algorithm>
 #include <cmath>
 #include <numbers>
 
@@ -15,7 +16,7 @@ SphereObject::SphereObject(const Vector& position, const Material& material, dou
 
 }
 
-Object::IntersectionDistances SphereObject::intersectWith(const Ray& ray) const
+double SphereObject::intersectWith(const Ray& ray) const
 {
 	const auto os = ray.position().subtract(m_position);
 
@@ -26,22 +27,33 @@ Object::IntersectionDistances SphereObject::intersectWith(const Ray& ray) const
 	if (d < 0)
 	{
 		// No intersection
-		return { kNoIntersection, kNoIntersection };
+		return kNoIntersection;
 	}
 	else if (d == 0)
 	{
 		// Single intersection (we hit along the edge)
-		return { -b / 2, kNoIntersection };
+
+		auto solution = -b / 2;
+		if (solution < kMinIntersectionDistance)
+			solution = kNoIntersection;
+
+		return solution;
 	}
 	else
 	{
+		// Two intersection solutions (both sides of the sphere)
+
 		const double dSqrt = std::sqrt(d);
 
-		// Two intersection solutions
-		return {
-			(-b - dSqrt) / 2,
-			(-b + dSqrt) / 2
-		};
+		auto solution1 = (-b - dSqrt) / 2;
+		if (solution1 < kMinIntersectionDistance)
+			solution1 = kNoIntersection;
+
+		auto solution2 = (-b + dSqrt) / 2;
+		if (solution2 < kMinIntersectionDistance)
+			solution2 = kNoIntersection;
+
+		return std::min(solution1, solution2);
 	}
 }
 

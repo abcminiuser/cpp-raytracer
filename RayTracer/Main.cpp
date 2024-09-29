@@ -36,7 +36,7 @@ int main(int argc, char* argv[])
 	const auto updateTitle = [&](bool rendering) { window.setTitle(std::string("Ray Tracer - Rendering ") + (rendering ? "In Progress" : "Done")); };
 	const auto updateTexture = [&]() { texture.update(reinterpret_cast<const sf::Uint8*>(renderer.pixels())); };
 
-	updateTitle(false);
+	updateTitle(true);
 
 	bool wasRendering = true;
 
@@ -58,15 +58,8 @@ int main(int argc, char* argv[])
 			updateTitle(isRendering);
 			wasRendering = isRendering;
 
-			// When rendering completes, make sure we do our final texture update once all
-			// the rendering worker threads actually stop.
 			if (! isRendering)
-			{
-				renderer.wait();
-				updateTexture();
-
 				texture.copyToImage().saveToFile("Output.png");
-			}
 		}
 
 		window.draw(sprite);

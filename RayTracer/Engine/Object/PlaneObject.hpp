@@ -14,7 +14,7 @@ public:
 
 // Object i/f:
 protected:
-	IntersectionDistances	intersectWith(const Ray& ray) const override;
+	double					intersectWith(const Ray& ray) const override;
 	Vector					normalAt(const Vector& position) const override;
 	Color					colorAt(const Scene& scene, const Ray& ray) const override;
 

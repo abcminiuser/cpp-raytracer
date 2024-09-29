@@ -39,18 +39,6 @@ void Renderer::clear()
 	std::fill(std::begin(m_pixels), std::end(m_pixels), Palette::kBlack.toRGBA());
 }
 
-void Renderer::wait()
-{
-	for (;;)
-	{
-		auto outstandingThreads = m_runningRenderThreads.load();
-		if (outstandingThreads == 0)
-			break;
-
-		m_runningRenderThreads.wait(outstandingThreads);
-	}
-}
-
 void Renderer::stopRender()
 {
 	if (! m_runRenderThreads)
@@ -74,11 +62,11 @@ void Renderer::startRender()
 	m_runRenderThreads = true;
 	for (auto& t : m_renderThreads)
 	{
+		m_runningRenderThreads++;
+
 		t = std::thread(
 			[this]()
 			{
-				m_runningRenderThreads++;
-
 				while (m_runRenderThreads)
 				{
 					const size_t startLine = m_lastRenderLineStart.fetch_add(kMaxLinesToRenderPerChunk);
@@ -108,9 +96,6 @@ void Renderer::startRender()
 				}
 
 				--m_runningRenderThreads;
-
-				if (m_runningRenderThreads.load() == 0)
-					m_runningRenderThreads.notify_all();
 			});
 	}
 }

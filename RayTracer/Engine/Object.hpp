@@ -4,7 +4,6 @@
 #include "Engine/Material.hpp"
 #include "Engine/Vector.hpp"
 
-#include <array>
 #include <limits>
 #include <stdint.h>
 
@@ -15,22 +14,21 @@ struct Scene;
 class Object
 {
 public:
-	static inline constexpr double kNoIntersection = std::numeric_limits<double>::max();
+	static inline constexpr double kNoIntersection			= std::numeric_limits<double>::max();
+	static inline constexpr double kMinIntersectionDistance	= 0.0000001;
 
-									Object(const Vector& position, const Material& material);
-	virtual							~Object() = default;
+					Object(const Vector& position, const Material& material);
+	virtual			~Object() = default;
 
-	double							intersect(const Ray& ray) const;
-	Color							illuminate(const Scene& scene, const Vector& position, const Ray& ray, uint32_t rayDepth) const;
-
-protected:
-	using IntersectionDistances = std::array<double, 2>;
-
-	virtual IntersectionDistances	intersectWith(const Ray& ray) const = 0;
-	virtual Vector					normalAt(const Vector& position) const = 0;
-	virtual Color					colorAt(const Scene& scene, const Ray& ray) const = 0;
+	double			intersect(const Ray& ray) const;
+	Color			illuminate(const Scene& scene, const Vector& position, const Ray& ray, uint32_t rayDepth) const;
 
 protected:
-	Vector							m_position;
-	Material						m_material;
+	virtual double	intersectWith(const Ray& ray) const = 0;
+	virtual Vector	normalAt(const Vector& position) const = 0;
+	virtual Color	colorAt(const Scene& scene, const Ray& ray) const = 0;
+
+protected:
+	Vector			m_position;
+	Material		m_material;
 };
