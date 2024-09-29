@@ -2,13 +2,15 @@
 
 #include "Engine/Material.hpp"
 #include "Engine/Ray.hpp"
+#include "Engine/Texture.hpp"
 #include "Engine/Vector.hpp"
 
 #include <cmath>
 #include <numbers>
 
-PlaneObject::PlaneObject(const Vector& normal, double distance, double textureScaleFactor, const Material& material)
+PlaneObject::PlaneObject(const Vector& normal, double distance, std::shared_ptr<Texture> texture, double textureScaleFactor, const Material& material)
 	: Object(normal.scale(distance), material)
+	, m_texture(std::move(texture))
 	, m_textureScaleFactor(textureScaleFactor)
 	, m_normal(normal)
 {
@@ -44,7 +46,7 @@ Vector PlaneObject::normalAt(const Vector& position) const
 
 Color PlaneObject::colorAt(const Scene& scene, const Ray& ray) const
 {
-	if (! m_material.texture)
+	if (! m_texture)
 		return Palette::kBlack;
 
 	const auto rayFromOrigin = ray.position().subtract(m_position).scale(m_textureScaleFactor);
@@ -54,5 +56,5 @@ Color PlaneObject::colorAt(const Scene& scene, const Ray& ray) const
 	u -= std::floor(u);
 	v -= std::floor(v);
 
-	return m_material.texture->colorAt(u, v);
+	return m_texture->colorAt(u, v);
 }

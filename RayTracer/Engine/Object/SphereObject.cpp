@@ -2,14 +2,16 @@
 
 #include "Engine/Material.hpp"
 #include "Engine/Ray.hpp"
+#include "Engine/Texture.hpp"
 #include "Engine/Vector.hpp"
 
 #include <algorithm>
 #include <cmath>
 #include <numbers>
 
-SphereObject::SphereObject(const Vector& position, double radius, const Material& material)
+SphereObject::SphereObject(const Vector& position, double radius, std::shared_ptr<Texture> texture, const Material& material)
 	: Object(position, material)
+	, m_texture(std::move(texture))
 	, m_radius(radius)
 	, m_diameter(m_radius * m_radius)
 {
@@ -64,7 +66,7 @@ Vector SphereObject::normalAt(const Vector& position) const
 
 Color SphereObject::colorAt(const Scene& scene, const Ray& ray) const
 {
-	if (! m_material.texture)
+	if (! m_texture)
 		return Palette::kBlack;
 
 	const auto x = ray.direction().x();
@@ -74,5 +76,5 @@ Color SphereObject::colorAt(const Scene& scene, const Ray& ray) const
 	double u = .5 + std::atan2(z, x) / (2 * std::numbers::pi);
 	double v = .5 + std::asin(y) / std::numbers::pi;
 
-	return m_material.texture->colorAt(u, v);
+	return m_texture->colorAt(u, v);
 }

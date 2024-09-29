@@ -1,15 +1,12 @@
 #pragma once
 
-#include "Engine/Texture.hpp"
-
 #include <memory>
 
 struct Material
 {
 public:
-	std::shared_ptr<Texture>	texture;
-	double						ambient = 0.1;
-	double						diffuse = 0.4;
-	double						specular = 0.9;
-	double						reflectivity = 0.1;
+	double	ambient = 0.1;
+	double	diffuse = 0.4;
+	double	specular = 0.9;
+	double	reflectivity = 0.1;
 };

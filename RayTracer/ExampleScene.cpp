@@ -42,25 +42,25 @@ Scene ExampleScene::Build()
 
 	scene.lights.push_back(
 		std::make_unique<Light>(
-		/* Position: */					Vector(5, 10, -5),
-		/* Color */   					Palette::kWhite
+			/* Position: */					Vector(5, 10, -5),
+			/* Color */   					Palette::kWhite
 		)
 	);
 
 	scene.lights.push_back(
 		std::make_unique<Light>(
-		/* Position: */					Vector(-5, 3, -5),
-		/* Color */   					Palette::kRed
+			/* Position: */					Vector(-5, 3, -5),
+			/* Color */   					Palette::kRed
 		)
 	);
 
 	scene.objects.push_back(
 		std::make_unique<PlaneObject>(
-		/* Normal: */					StandardVectors::kUnitY,
-		/* Distance to Normal */		-1,
-		/* Texture Scaling: */			1 / 3.0,
-		/* Material: */					Material{
-				.texture = MakeImageTexture("Assets/Brick.jpg"),
+			/* Normal: */					StandardVectors::kUnitY,
+			/* Distance to Normal: */		-1,
+			/* Texture: */					MakeImageTexture("Assets/Brick.jpg"),
+			/* Texture Scaling: */			1 / 3.0,
+			/* Material: */					Material{
 				.ambient = 0.2,
 				.diffuse = 0.1,
 				.specular = 0.0,
@@ -71,55 +71,50 @@ Scene ExampleScene::Build()
 
 	scene.objects.push_back(
 		std::make_unique<SphereObject>(
-		/* Position: */					Vector(-4, 0, 4),
-		/* Radius: */					1,
-		/* Material: */					Material{
-				.texture = std::make_shared<SolidTexture>(Palette::kWhite)
-			}
+			/* Position: */					Vector(-4, 0, 4),
+			/* Radius: */					1,
+			/* Texture: */					std::make_shared<SolidTexture>(Palette::kWhite),
+			/* Material: */					Material{}
 		)
 	);
 	scene.objects.push_back(
 		std::make_unique<SphereObject>(
-		/* Position: */					Vector(-2, 0, 2),
-		/* Radius: */					1,
-		/* Material: */					Material{
-				.texture = std::make_shared<CheckerboardTexture>(Palette::kMagenta, Palette::kYellow, 8)
-			}
+			/* Position: */					Vector(-2, 0, 2),
+			/* Radius: */					1,
+			/* Texture */					std::make_shared<CheckerboardTexture>(Palette::kMagenta, Palette::kYellow, 8),
+			/* Material: */					Material{}
 		)
 	);
 	scene.objects.push_back(
 		std::make_unique<SphereObject>(
-		/* Position: */					Vector( 0, 0, 0),
-		/* Radius: */					1,
-		/* Material: */					Material{
-				.texture = std::make_shared<SolidTexture>(Palette::kRed)
-			}
+			/* Position: */					Vector( 0, 0, 0),
+			/* Radius: */					1,
+			/* Texture: */					std::make_shared<SolidTexture>(Palette::kRed),
+			/* Material: */					Material{}
 		)
 	);
 	scene.objects.push_back(
 		std::make_unique<SphereObject>(
-		/* Position: */					Vector( 2, 0, 2),
-		/* Radius: */					1,
-		/* Material: */					Material{
-				.texture = std::make_shared<SolidTexture>(Palette::kGreen)
-			}
+			/* Position: */					Vector( 2, 0, 2),
+			/* Radius: */					1,
+			/* Texture: */					std::make_shared<SolidTexture>(Palette::kGreen),
+			/* Material: */					Material{}
 		)
 	);
 	scene.objects.push_back(
 		std::make_unique<SphereObject>(
-		/* Position: */					Vector( 4, 0, 4),
-		/* Radius: */					1,
-		/* Material: */					Material{
-				.texture = std::make_shared<SolidTexture>(Palette::kBlue)
-			}
+			/* Position: */					Vector( 4, 0, 4),
+			/* Radius: */					1,
+			/* Texture: */					std::make_shared<SolidTexture>(Palette::kBlue),
+			/* Material: */					Material{}
 		)
 	);
 	scene.objects.push_back(
 		std::make_unique<SphereObject>(
-		/* Position: */					Vector(6, 0, 0),
-		/* Radius: */					1,
-		/* Material: */					Material{
-				.texture = std::make_shared<SolidTexture>(Palette::kWhite),
+			/* Position: */					Vector(6, 0, 0),
+			/* Radius: */					1,
+			/* Texture: */					std::make_shared<SolidTexture>(Palette::kWhite),
+			/* Material: */					Material{
 				.ambient = 0.1,
 				.diffuse = 0.0,
 				.specular = 0.5,
@@ -129,10 +124,10 @@ Scene ExampleScene::Build()
 	);
 	scene.objects.push_back(
 		std::make_unique<SphereObject>(
-		/* Position: */					Vector(-6, 0, 0),
-		/* Radius: */					1,
-		/* Material: */					Material{
-				.texture = MakeImageTexture("Assets/Marble.jpg"),
+			/* Position: */					Vector(-6, 0, 0),
+			/* Radius: */					1,
+			/* Texture: */					MakeImageTexture("Assets/Marble.jpg"),
+			/* Material: */					Material{
 				.ambient = 0.3,
 				.diffuse = 0.15,
 				.specular = 0.0,
