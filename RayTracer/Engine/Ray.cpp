@@ -19,7 +19,7 @@ Ray::Ray(const Vector& pos, const Vector& dir)
 
 Color Ray::trace(const Scene& scene, uint32_t rayDepth) const
 {
-	if (rayDepth > kMaxDepth)
+	if (rayDepth >= kMaxDepth)
 		return Palette::kBlack;
 
 	double	closestIntersectionDistance = Object::kNoIntersection;
