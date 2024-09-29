@@ -41,8 +41,9 @@ Color Object::illuminate(const Scene& scene, const Vector& position, uint32_t ra
 
 	if (m_material.reflectivity > 0)
 	{
-		const Color reflectionColor = objectColor.multiply(Ray(position, unitReflection).trace(scene, rayDepth)).scale(m_material.reflectivity);
-		finalColor = finalColor.add(reflectionColor);
+		const auto reflectionColor = Ray(position, unitReflection).trace(scene, rayDepth);
+		const Color lightingColor = reflectionColor.scale(m_material.reflectivity);
+		finalColor = finalColor.add(lightingColor);
 	}
 
 	for (const auto& l : scene.lights)
