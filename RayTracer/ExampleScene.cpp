@@ -127,6 +127,19 @@ Scene ExampleScene::Build()
 			/* Radius: */					1
 		)
 	);
+	scene.objects.push_back(
+		std::make_unique<SphereObject>(
+			/* Position: */					Vector(-6, 0, 0),
+			/* Material: */					Material{
+				.texture = MakeImageTexture("Assets/Marble.jpg"),
+				.ambient = 0.3,
+				.diffuse = 0.1,
+				.specular = 0.0,
+				.reflectivity = 0.0
+			},
+			/* Radius: */					1
+		)
+	);
 
 	return scene;
 }
