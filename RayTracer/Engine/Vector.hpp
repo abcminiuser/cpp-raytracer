@@ -22,7 +22,7 @@ public:
 	constexpr double	squaredEuclidianDistance() const
 	{
 		if (! m_squaredEuclidianDistance)
-			m_squaredEuclidianDistance = m_x * m_x + m_y * m_y + m_z * m_z;
+			m_squaredEuclidianDistance = (m_x * m_x) + (m_y * m_y) + (m_z * m_z);
 
 		return m_squaredEuclidianDistance;
 	}
@@ -77,11 +77,6 @@ public:
 	constexpr Vector	unit() const
 	{
 		return scale(1 / length());
-	}
-
-	constexpr Vector	reflect(const Vector& surfaceNormal) const
-	{
-		return add(surfaceNormal.scale(-2 * surfaceNormal.dotProduct(*this)));
 	}
 
 	constexpr double	x() const	{ return m_x; }

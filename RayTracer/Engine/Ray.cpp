@@ -3,6 +3,7 @@
 #include "Engine/Object.hpp"
 #include "Engine/Scene.hpp"
 
+#include <cassert>
 #include <limits>
 
 namespace
@@ -10,11 +11,11 @@ namespace
 	constexpr uint32_t kMaxDepth = 16;
 }
 
-Ray::Ray(const Vector& pos, const Vector& dir)
-	: m_position(pos)
-	, m_direction(dir.unit())
+Ray::Ray(const Vector& position, const Vector& direction)
+	: m_position(position)
+	, m_direction(direction)
 {
-
+	assert(direction.length() - 1 <= std::numeric_limits<double>::epsilon());
 }
 
 Color Ray::trace(const Scene& scene, uint32_t rayDepth) const
@@ -35,9 +36,9 @@ Color Ray::trace(const Scene& scene, uint32_t rayDepth) const
 		closestObject = o.get();
 	}
 
-	if (! closestObject)
+	if (closestIntersectionDistance == Object::kNoIntersection)
 		return scene.background;
 
 	const Vector closestCollisionPoint = m_position.add(m_direction.scale(closestIntersectionDistance));
-	return closestObject->illuminate(scene, closestCollisionPoint, rayDepth + 1);
+	return closestObject->illuminate(scene, closestCollisionPoint, *this, rayDepth + 1);
 }

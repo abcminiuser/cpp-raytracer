@@ -21,7 +21,7 @@ public:
 	virtual							~Object() = default;
 
 	double							intersect(const Ray& ray) const;
-	Color							illuminate(const Scene& scene, const Vector& position, uint32_t rayDepth) const;
+	Color							illuminate(const Scene& scene, const Vector& position, const Ray& ray, uint32_t rayDepth) const;
 
 protected:
 	using IntersectionDistances = std::array<double, 2>;

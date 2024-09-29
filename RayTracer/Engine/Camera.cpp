@@ -25,5 +25,5 @@ Color Camera::trace(const Scene& scene, double x, double y) const
 	const Vector rayX = m_right.scale(x);
 	const Vector rayY = m_down.scale(y);
 
-	return Ray(m_position, m_direction.add(rayX).add(rayY)).trace(scene, 0);
+	return Ray(m_position, m_direction.add(rayX).add(rayY).unit()).trace(scene, 0);
 }

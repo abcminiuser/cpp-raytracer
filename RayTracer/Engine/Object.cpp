@@ -4,6 +4,8 @@
 #include "Scene.hpp"
 
 #include <algorithm>
+#include <cassert>
+#include <limits>
 
 namespace
 {
@@ -31,19 +33,20 @@ double Object::intersect(const Ray& ray) const
 	return std::min(distances[0], distances[1]);
 }
 
-Color Object::illuminate(const Scene& scene, const Vector& position, uint32_t rayDepth) const
+Color Object::illuminate(const Scene& scene, const Vector& position, const Ray& ray, uint32_t rayDepth) const
 {
 	const Vector	normal			= normalAt(position);
 	const Color		objectColor		= colorAt(scene, Ray(position, normal));
-	const Vector	unitReflection 	= position.reflect(normal).unit();
+	const Vector	reflection		= ray.direction().subtract(normal.scale(2 * ray.direction().dotProduct(normal)));
+
+	assert(normal.length() - 1 <= std::numeric_limits<double>::epsilon());
 
 	Color finalColor = objectColor.scale(m_material.ambient);
 
 	if (m_material.reflectivity > 0)
 	{
-		const auto reflectionColor = Ray(position, unitReflection).trace(scene, rayDepth);
-		const Color lightingColor = reflectionColor.scale(m_material.reflectivity);
-		finalColor = finalColor.add(lightingColor);
+		const auto reflectionColor = Ray(position, reflection.unit()).trace(scene, rayDepth);
+		finalColor = finalColor.add(reflectionColor.scale(m_material.reflectivity));
 	}
 
 	for (const auto& l : scene.lights)
@@ -54,7 +57,7 @@ Color Object::illuminate(const Scene& scene, const Vector& position, uint32_t ra
 			scene.objects.begin(), scene.objects.end(),
 			[&](const auto& o)
 			{
-				const double intersectionDistance = o->intersect(Ray(position, objectToLight));
+				const double intersectionDistance = o->intersect(Ray(position, objectToLight.unit()));
 				return intersectionDistance <= objectToLight.length();
 			});
 		if (shadowed)
@@ -72,7 +75,7 @@ Color Object::illuminate(const Scene& scene, const Vector& position, uint32_t ra
 
 		if (m_material.specular > 0)
 		{
-			double brightness = unitReflection.dotProduct(objectToLight.unit());
+			double brightness = reflection.unit().dotProduct(objectToLight.unit());
 			if (brightness > 0)
 			{
 				brightness *= std::pow(brightness, kSpecularMultiplier * m_material.specular * m_material.specular);
