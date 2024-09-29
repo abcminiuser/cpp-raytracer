@@ -14,7 +14,7 @@ Originally written while I was sick at home, after being inspired by
 Javascript ray tracer, which also has a great accompanying
 [online handbook](https://ursatile.github.io/jsray/) available.
 
-![Example Scene Rendering](Output.png)
+![Example Scene Rendering](Output.jpg)
 
 ## Building
 

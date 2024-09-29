@@ -3,20 +3,24 @@
 #include "Engine/Color.hpp"
 #include "Engine/Vector.hpp"
 
+#include <optional>
+
 struct Scene;
 
 class Ray
 {
 public:
-					Ray(const Vector& position, const Vector& direction);
+						Ray(const Vector& position, const Vector& direction);
 
-	const Vector&	position() const	{ return m_position; }
-	const Vector&	direction() const	{ return m_direction; }
+	const Vector&		position() const	{ return m_position; }
+	const Vector&		direction() const	{ return m_direction; }
 
-	Color			trace(const Scene& scene, uint32_t rayDepth) const;
-	Ray				reflect(const Vector& position, const Vector& normal) const;
+	Color				trace(const Scene& scene, uint32_t rayDepth) const;
+
+	Ray					reflect(const Vector& position, const Vector& normal) const;
+	std::optional<Ray>	refract(const Vector& position, const Vector& normal, double n1, double n2) const;
 
 private:
-	Vector			m_position;
-	Vector			m_direction;
+	Vector				m_position;
+	Vector				m_direction;
 };

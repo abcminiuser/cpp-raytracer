@@ -43,6 +43,16 @@ Color Object::illuminate(const Scene& scene, const Vector& position, const Ray& 
 		finalColor = finalColor.add(reflectionColor.scale(m_material.reflectivity));
 	}
 
+	if (m_material.refractivity > 0)
+	{
+		const auto refractionRay = ray.refract(position, normal, scene.airRefractionIndex, m_material.refractionIndex);
+		if (refractionRay)
+		{
+			const auto refractionColor = refractionRay->trace(scene, rayDepth);
+			finalColor = finalColor.add(refractionColor.scale(m_material.refractivity));
+		}
+	}
+
 	for (const auto& l : scene.lights)
 	{
 		const Vector	objectToLight = l->position().subtract(position);

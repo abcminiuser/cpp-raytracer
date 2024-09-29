@@ -15,4 +15,5 @@ public:
 	Color									background;
 	std::vector<std::unique_ptr<Light>>		lights;
 	std::vector<std::unique_ptr<Object>>	objects;
+	double									airRefractionIndex = 1.0;
 };

@@ -34,10 +34,10 @@ Scene ExampleScene::Build()
 	scene.background = Palette::kWhite.scale(0.1);
 
 	scene.camera = Camera(
-		/* Position: */ 				Vector(0, 2, -8),
-		/* Target: */					StandardVectors::kUnitZ,
-		/* View Width: */				4.0,
-		/* View Height: */				9.0 / 4.0
+		/* Position: */ 					Vector(0, 2, -8),
+		/* Target: */						StandardVectors::kUnitZ,
+		/* View Width: */					4.0,
+		/* View Height: */					9.0 / 4.0
 	);
 
 	scene.lights.push_back(
@@ -132,6 +132,21 @@ Scene ExampleScene::Build()
 				.diffuse = 0.15,
 				.specular = 0.0,
 				.reflectivity = 0.0
+			}
+		)
+	);
+	scene.objects.push_back(
+		std::make_unique<SphereObject>(
+			/* Position: */					Vector(-3, 0, -3),
+			/* Radius: */					1,
+			/* Texture: */					std::make_shared<SolidTexture>(Palette::kTransparent),
+			/* Material: */					Material{
+				.ambient = 0.0,
+				.diffuse = 0.0,
+				.specular = 0.1,
+				.reflectivity = 0.0,
+				.refractivity = 0.9,
+				.refractionIndex = 1.5,
 			}
 		)
 	);
