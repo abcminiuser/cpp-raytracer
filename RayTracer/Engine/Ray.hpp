@@ -14,6 +14,7 @@ public:
 	const Vector&	direction() const	{ return m_direction; }
 
 	Color			trace(const Scene& scene, uint32_t rayDepth) const;
+	Ray				reflect(const Vector& position, const Vector& normal) const;
 
 private:
 	Vector			m_position;

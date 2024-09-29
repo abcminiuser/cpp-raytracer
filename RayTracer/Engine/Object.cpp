@@ -37,7 +37,7 @@ Color Object::illuminate(const Scene& scene, const Vector& position, const Ray& 
 {
 	const Vector	normal			= normalAt(position);
 	const Color		objectColor		= colorAt(scene, Ray(position, normal));
-	const Vector	reflection		= ray.direction().subtract(normal.scale(2 * ray.direction().dotProduct(normal)));
+	const Ray		reflectionRay	= ray.reflect(position, normal);
 
 	assert(normal.length() - 1 <= std::numeric_limits<double>::epsilon());
 
@@ -45,19 +45,20 @@ Color Object::illuminate(const Scene& scene, const Vector& position, const Ray& 
 
 	if (m_material.reflectivity > 0)
 	{
-		const auto reflectionColor = Ray(position, reflection.unit()).trace(scene, rayDepth);
+		const auto reflectionColor = reflectionRay.trace(scene, rayDepth);
 		finalColor = finalColor.add(reflectionColor.scale(m_material.reflectivity));
 	}
 
 	for (const auto& l : scene.lights)
 	{
-		const Vector objectToLight = l->position().subtract(position);
+		const Vector	objectToLight = l->position().subtract(position);
+		const Ray		objectToLightRay = Ray(position, objectToLight.unit());
 
 		bool shadowed = std::any_of(
 			scene.objects.begin(), scene.objects.end(),
 			[&](const auto& o)
 			{
-				const double intersectionDistance = o->intersect(Ray(position, objectToLight.unit()));
+				const double intersectionDistance = o->intersect(objectToLightRay);
 				return intersectionDistance <= objectToLight.length();
 			});
 		if (shadowed)
@@ -65,7 +66,7 @@ Color Object::illuminate(const Scene& scene, const Vector& position, const Ray& 
 
 		if (m_material.diffuse > 0)
 		{
-			double brightness = normal.dotProduct(objectToLight.unit());
+			double brightness = normal.dotProduct(objectToLightRay.direction());
 			if (brightness > 0)
 			{
 				const Color lightingColor = l->illuminate(objectColor, brightness * m_material.diffuse);
@@ -75,7 +76,7 @@ Color Object::illuminate(const Scene& scene, const Vector& position, const Ray& 
 
 		if (m_material.specular > 0)
 		{
-			double brightness = reflection.unit().dotProduct(objectToLight.unit());
+			double brightness = reflectionRay.direction().dotProduct(objectToLightRay.direction());
 			if (brightness > 0)
 			{
 				brightness *= std::pow(brightness, kSpecularMultiplier * m_material.specular * m_material.specular);

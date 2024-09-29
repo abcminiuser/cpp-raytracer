@@ -42,3 +42,8 @@ Color Ray::trace(const Scene& scene, uint32_t rayDepth) const
 	const Vector closestCollisionPoint = m_position.add(m_direction.scale(closestIntersectionDistance));
 	return closestObject->illuminate(scene, closestCollisionPoint, *this, rayDepth + 1);
 }
+
+Ray Ray::reflect(const Vector& position, const Vector& normal) const
+{
+	return Ray(position, m_direction.subtract(normal.scale(2 * m_direction.dotProduct(normal))).unit());
+}

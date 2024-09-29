@@ -44,7 +44,7 @@ void Renderer::wait()
 	for (;;)
 	{
 		auto outstandingThreads = m_runningRenderThreads.load();
-		if (! outstandingThreads)
+		if (outstandingThreads == 0)
 			break;
 
 		m_runningRenderThreads.wait(outstandingThreads);
@@ -107,7 +107,9 @@ void Renderer::startRender()
 					}
 				}
 
-				if (--m_runningRenderThreads == 0)
+				--m_runningRenderThreads;
+
+				if (m_runningRenderThreads.load() == 0)
 					m_runningRenderThreads.notify_all();
 			});
 	}
