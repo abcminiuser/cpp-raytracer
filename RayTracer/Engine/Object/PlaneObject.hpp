@@ -9,7 +9,7 @@ class PlaneObject
 	: public Object
 {
 public:
-							PlaneObject(const Vector& normal, double distance, const Material& material, double textureScaleFactor);
+							PlaneObject(const Vector& normal, double distance, double textureScaleFactor, const Material& material);
 							~PlaneObject() override = default;
 
 // Object i/f:
@@ -19,6 +19,6 @@ protected:
 	Color					colorAt(const Scene& scene, const Ray& ray) const override;
 
 private:
-	Vector					m_normal;
 	double					m_textureScaleFactor;
+	Vector					m_normal;
 };

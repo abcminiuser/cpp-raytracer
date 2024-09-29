@@ -7,10 +7,10 @@
 #include <cmath>
 #include <numbers>
 
-PlaneObject::PlaneObject(const Vector& normal, double distance, const Material& material, double textureScaleFactor)
+PlaneObject::PlaneObject(const Vector& normal, double distance, double textureScaleFactor, const Material& material)
 	: Object(normal.scale(distance), material)
-	, m_normal(normal)
 	, m_textureScaleFactor(textureScaleFactor)
+	, m_normal(normal)
 {
 
 }

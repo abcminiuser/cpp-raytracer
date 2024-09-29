@@ -8,7 +8,7 @@
 #include <cmath>
 #include <numbers>
 
-SphereObject::SphereObject(const Vector& position, const Material& material, double radius)
+SphereObject::SphereObject(const Vector& position, double radius, const Material& material)
 	: Object(position, material)
 	, m_radius(radius)
 	, m_diameter(m_radius * m_radius)
