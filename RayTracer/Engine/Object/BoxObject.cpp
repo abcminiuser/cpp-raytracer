@@ -38,8 +38,9 @@ double BoxObject::intersectWith(const Ray& ray) const
 	double tMin = kNoIntersection;
 	double tMax = kNoIntersection;
 
-	if (std::abs(ray.direction().x()) < kComparisonThreshold)
+	if (ray.direction().x() == 0)
 	{
+		// Perpendicular to X axis and won't ever intersect there (so ignore it).
 		tMin =
 			std::max(
 				std::min(t1.y(), t2.y()),
@@ -53,6 +54,7 @@ double BoxObject::intersectWith(const Ray& ray) const
 	}
 	else if (ray.direction().y() == 0)
 	{
+		// Perpendicular to Y axis and won't ever intersect there (so ignore it).
 		tMin =
 			std::max(
 				std::min(t1.x(), t2.x()),
@@ -66,6 +68,7 @@ double BoxObject::intersectWith(const Ray& ray) const
 	}
 	else if (ray.direction().z() == 0)
 	{
+		// Perpendicular to Z axis and won't ever intersect there (so ignore it).
 		tMin =
 			std::max(
 				std::min(t1.x(), t2.x()),
