@@ -14,6 +14,7 @@ add_executable (RayTracer
     "Engine/Camera.cpp"
     "Engine/Light.cpp"
     "Engine/Object.cpp"
+    "Engine/Object/BoxObject.cpp"
     "Engine/Object/PlaneObject.cpp"
     "Engine/Object/SphereObject.cpp"
     "Engine/Texture/CheckerboardTexture.cpp"

@@ -12,6 +12,11 @@ private:
 		return (component < 0xFF) ? static_cast<uint8_t>(component) : 0xFF;
 	}
 
+	constexpr auto		tied() const
+	{
+		return std::tie(m_red, m_green, m_blue, m_alpha);
+	}
+
 public:
 	constexpr			Color()
 							: Color(0, 0, 0)
@@ -79,6 +84,11 @@ public:
 			m_blue << 16 |
 			m_green << 8 |
 			m_red << 0;
+	}
+
+	constexpr bool		operator==(const Color& other) const
+	{
+		return tied() == other.tied();
 	}
 
 private:

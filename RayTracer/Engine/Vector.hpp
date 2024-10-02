@@ -4,6 +4,12 @@
 
 struct Vector
 {
+private:
+	constexpr auto		tied() const
+	{
+		return std::tie(m_x, m_y, m_z);
+	}
+
 public:
 	constexpr			Vector()
 							: Vector(0, 0, 0)
@@ -50,6 +56,11 @@ public:
 		return Vector(m_x * other.m_x, m_y * other.m_y, m_z * other.m_z);
 	}
 
+	constexpr Vector	divide(const Vector& other) const
+	{
+		return Vector(m_x / other.m_x, m_y / other.m_y, m_z / other.m_z);
+	}
+
 	constexpr Vector	crossProduct(const Vector& other) const
 	{
 		return Vector(
@@ -82,6 +93,11 @@ public:
 	constexpr double	x() const	{ return m_x; }
 	constexpr double	y() const	{ return m_y; }
 	constexpr double	z() const	{ return m_z; }
+
+	constexpr bool		operator==(const Vector& other) const
+	{
+		return tied() == other.tied();
+	}
 
 private:
 	double				m_x = 0;

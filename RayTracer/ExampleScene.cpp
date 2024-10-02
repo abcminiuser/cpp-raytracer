@@ -1,6 +1,7 @@
 ﻿#include "ExampleScene.hpp"
 
 #include "Engine/Scene.hpp"
+#include "Engine/Object/BoxObject.hpp"
 #include "Engine/Object/PlaneObject.hpp"
 #include "Engine/Object/SphereObject.hpp"
 #include "Engine/Texture/SolidTexture.hpp"
@@ -34,8 +35,8 @@ Scene ExampleScene::Build()
 	scene.background = Palette::kWhite.scale(0.1);
 
 	scene.camera = Camera(
-		/* Position: */ 					Vector(0, 2, -8),
-		/* Target: */						StandardVectors::kUnitZ,
+		/* Position: */ 					Vector(0, 4, -8),
+		/* Target: */						Vector(0, 0, 0),
 		/* View Width: */					9.0 / 2,
 		/* View Height: */					5.0 / 2
 	);
@@ -68,7 +69,6 @@ Scene ExampleScene::Build()
 			}
 		)
 	);
-
 	scene.objects.push_back(
 		std::make_unique<SphereObject>(
 			/* Position: */					Vector(-4, 0, 4),
@@ -147,6 +147,21 @@ Scene ExampleScene::Build()
 				.reflectivity = 0.0,
 				.refractivity = 0.9,
 				.refractionIndex = 1.5,
+			}
+		)
+	);
+	scene.objects.push_back(
+		std::make_unique<BoxObject>(
+			/* Position: */					Vector(6, 0, 6),
+			/* Size: */						Vector(2, 2, 2),
+			/* Texture: */					std::make_shared<SolidTexture>(Palette::kTransparent),
+			/* Material: */					Material{
+				.ambient = 0.3,
+				.diffuse = 0.4,
+				.specular = 0.3,
+				.reflectivity = 1.0,
+				.refractivity = 0.0,
+				.refractionIndex = 0,
 			}
 		)
 	);

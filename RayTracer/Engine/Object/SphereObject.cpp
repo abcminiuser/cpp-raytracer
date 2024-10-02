@@ -11,9 +11,8 @@
 
 SphereObject::SphereObject(const Vector& position, double radius, std::shared_ptr<Texture> texture, const Material& material)
 	: Object(position, material)
+	, m_diameter(radius * radius)
 	, m_texture(std::move(texture))
-	, m_radius(radius)
-	, m_diameter(m_radius * m_radius)
 {
 
 }
@@ -36,7 +35,7 @@ double SphereObject::intersectWith(const Ray& ray) const
 		// Single intersection (we hit along the edge)
 
 		auto solution = -b / 2;
-		if (solution < kMinIntersectionDistance)
+		if (solution < kComparisonThreshold)
 			solution = kNoIntersection;
 
 		return solution;
@@ -48,11 +47,11 @@ double SphereObject::intersectWith(const Ray& ray) const
 		const double dSqrt = std::sqrt(d);
 
 		auto solution1 = (-b - dSqrt) / 2;
-		if (solution1 < kMinIntersectionDistance)
+		if (solution1 < kComparisonThreshold)
 			solution1 = kNoIntersection;
 
 		auto solution2 = (-b + dSqrt) / 2;
-		if (solution2 < kMinIntersectionDistance)
+		if (solution2 < kComparisonThreshold)
 			solution2 = kNoIntersection;
 
 		return std::min(solution1, solution2);

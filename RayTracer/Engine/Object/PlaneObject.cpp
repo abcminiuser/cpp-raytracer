@@ -6,7 +6,6 @@
 #include "Engine/Vector.hpp"
 
 #include <cmath>
-#include <numbers>
 
 PlaneObject::PlaneObject(const Vector& normal, double distance, std::shared_ptr<Texture> texture, double textureScaleFactor, const Material& material)
 	: Object(normal.scale(distance), material)
@@ -32,7 +31,7 @@ double PlaneObject::intersectWith(const Ray& ray) const
 		const auto b = m_normal.dotProduct(ray.position().subtract(m_position));
 
 		auto solution = -b / angle;
-		if (solution < kMinIntersectionDistance)
+		if (solution < kComparisonThreshold)
 			solution = kNoIntersection;
 
         return solution;
@@ -53,8 +52,6 @@ Color PlaneObject::colorAt(const Scene& scene, const Ray& ray) const
 
 	auto u = rayFromOrigin.x();
 	auto v = rayFromOrigin.z();
-	u -= std::floor(u);
-	v -= std::floor(v);
 
 	return m_texture->colorAt(u, v);
 }

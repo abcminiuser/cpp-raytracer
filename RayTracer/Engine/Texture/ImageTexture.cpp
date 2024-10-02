@@ -2,6 +2,7 @@
 
 #include "Engine/Texture.hpp"
 
+#include <cmath>
 #include <stdexcept>
 
 ImageTexture::ImageTexture(size_t width, size_t height, const uint32_t* pixels)
@@ -15,6 +16,9 @@ ImageTexture::ImageTexture(size_t width, size_t height, const uint32_t* pixels)
 
 Color ImageTexture::colorAt(double u, double v) const
 {
+	u -= std::floor(u);
+	v -= std::floor(v);
+
 	const size_t x = static_cast<size_t>(u * m_width);
 	const size_t y = (m_height - 1) - static_cast<size_t>(v * (m_height - 1));
 

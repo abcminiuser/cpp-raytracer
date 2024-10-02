@@ -9,12 +9,12 @@ class Texture;
 
 struct Vector;
 
-class SphereObject
+class BoxObject
 	: public Object
 {
 public:
-								SphereObject(const Vector& position, double radius, std::shared_ptr<Texture> texture, const Material& material);
-								~SphereObject() override = default;
+								BoxObject(const Vector& position, const Vector& size, std::shared_ptr<Texture> texture, const Material& material);
+								~BoxObject() override = default;
 
 // Object i/f:
 protected:
@@ -23,6 +23,8 @@ protected:
 	Color						colorAt(const Scene& scene, const Ray& ray) const override;
 
 private:
-	double						m_diameter;
+	Vector						m_size;
+	Vector						m_lowerCorner;
+	Vector						m_upperCorner;
 	std::shared_ptr<Texture>	m_texture;
 };
