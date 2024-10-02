@@ -33,11 +33,7 @@ int main(int argc, char* argv[])
 	renderer.setScene(ExampleScene::Build());
 	renderer.startRender();
 
-	const auto updateTitle = [&](bool rendering) { window.setTitle(std::string("Ray Tracer - Rendering ") + (rendering ? "In Progress" : "Done")); };
-	const auto updateTexture = [&]() { texture.update(reinterpret_cast<const sf::Uint8*>(renderer.pixels())); };
-
-	updateTitle(true);
-	updateTexture();
+	window.setTitle("Ray Tracer - Rendering In Progress");
 
 	bool wasRendering = true;
 
@@ -52,18 +48,15 @@ int main(int argc, char* argv[])
 
 		const bool isRendering = renderer.isRendering();
 		if (isRendering || wasRendering)
-			updateTexture();
+			texture.update(reinterpret_cast<const sf::Uint8*>(renderer.pixels()));
 
-		if (isRendering != wasRendering)
+		if (! isRendering && wasRendering)
 		{
-			updateTitle(isRendering);
-			wasRendering = isRendering;
-
-			printf("Render time: %llu ms\n", renderer.renderTime().count());
-
-			if (! isRendering)
-				texture.copyToImage().saveToFile("Output.jpg");
+			window.setTitle(std::string("Ray Tracer - Rendering Completed (") + std::to_string(renderer.renderTime().count()) + " ms)");
+			texture.copyToImage().saveToFile("Output.jpg");
 		}
+
+		wasRendering = isRendering;
 
 		window.draw(sprite);
 		window.display();
