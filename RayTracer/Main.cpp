@@ -14,7 +14,7 @@ namespace
 	constexpr size_t	kWidth		= 1920;
 	constexpr size_t	kHeight		= 1080;
 
-	constexpr uint32_t	kUpdateFps	= 10;
+	constexpr uint32_t	kUpdateFps	= 60;
 }
 
 int main(int argc, char* argv[])
@@ -58,6 +58,8 @@ int main(int argc, char* argv[])
 		{
 			updateTitle(isRendering);
 			wasRendering = isRendering;
+
+			printf("Render time: %llu ms\n", renderer.renderTime().count());
 
 			if (! isRendering)
 				texture.copyToImage().saveToFile("Output.jpg");

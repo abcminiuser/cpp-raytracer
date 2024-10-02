@@ -62,6 +62,8 @@ void Renderer::startRender()
 
 	m_lastRenderLineStart = 0;
 
+	m_renderStartTime = std::chrono::steady_clock::now();
+
 	m_runRenderThreads = true;
 	for (auto& t : m_renderThreads)
 	{
@@ -98,7 +100,14 @@ void Renderer::startRender()
 					}
 				}
 
-				--m_runningRenderThreads;
+				if (--m_runningRenderThreads == 0)
+					m_renderEndTime = std::chrono::steady_clock::now();
 			});
 	}
+}
+
+std::chrono::milliseconds Renderer::renderTime() const
+{
+	const auto renderTime = (isRendering() ? std::chrono::steady_clock::now() : m_renderEndTime) - m_renderStartTime;
+	return std::chrono::duration_cast<std::chrono::milliseconds>(renderTime);
 }
