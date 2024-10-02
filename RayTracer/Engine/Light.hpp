@@ -3,16 +3,17 @@
 #include "Engine/Color.hpp"
 #include "Engine/Vector.hpp"
 
-#include <stdint.h>
+struct Material;
+struct Scene;
+
+class Ray;
 
 struct Light
 {
 public:
 					Light(const Vector& position, const Color& color);
 
-	const Vector&	position() const { return m_position; }
-
-	Color			illuminate(const Color& objectColor, double brightness) const;
+	Color			illuminate(const Scene& scene, const Vector& normal, const Color& color, const Ray& reflectionRay, const Material& material) const;
 
 private:
 	Vector			m_position;

@@ -6,11 +6,6 @@
 #include <cassert>
 #include <limits>
 
-namespace
-{
-	constexpr double kSpecularMultiplier = 32;
-}
-
 Object::Object(const Vector& position, const Material& material)
 	: m_position(position)
 	, m_material(material)
@@ -45,6 +40,7 @@ Color Object::illuminate(const Scene& scene, const Vector& position, const Ray& 
 	if (m_material.refractivity > 0)
 	{
 		const auto refractionRay = ray.refract(position, normal, scene.airRefractionIndex, m_material.refractionIndex);
+
 		if (refractionRay)
 		{
 			const auto refractionColor = refractionRay->trace(scene, rayDepth);
@@ -53,47 +49,7 @@ Color Object::illuminate(const Scene& scene, const Vector& position, const Ray& 
 	}
 
 	for (const auto& l : scene.lights)
-	{
-		const Vector	objectToLight = l->position().subtract(position);
-		const Ray		objectToLightRay = Ray(position, objectToLight.unit());
-
-		bool shadowed = false;
-
-		for (const auto& o : scene.objects)
-		{
-			const double intersectionDistance = o->intersect(objectToLightRay);
-			if (intersectionDistance <= objectToLight.length())
-			{
-				shadowed = true;
-				break;
-			}
-		}
-
-		if (shadowed)
-			continue;
-
-		if (m_material.diffuse > 0)
-		{
-			double brightness = normal.dotProduct(objectToLightRay.direction());
-			if (brightness > 0)
-			{
-				const Color lightingColor = l->illuminate(objectColor, brightness * m_material.diffuse);
-				finalColor = finalColor.add(lightingColor);
-			}
-		}
-
-		if (m_material.specular > 0)
-		{
-			double brightness = reflectionRay.direction().dotProduct(objectToLightRay.direction());
-			if (brightness > 0)
-			{
-				brightness *= std::pow(brightness, kSpecularMultiplier * m_material.specular * m_material.specular);
-
-				const Color lightingColor = l->illuminate(objectColor, brightness * m_material.specular);
-				finalColor = finalColor.add(lightingColor);
-			}
-		}
-	}
+		finalColor = finalColor.add(l->illuminate(scene, normal, objectColor, reflectionRay, m_material));
 
 	return finalColor;
 }
