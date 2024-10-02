@@ -132,18 +132,51 @@ Color BoxObject::colorAt(const Scene& scene, const Ray& ray) const
 	if (! m_texture)
 		return Palette::kBlack;
 
-	if (ray.direction() == StandardVectors::kUnitX)
-		return Palette::kRed;
-	else if (ray.direction() == StandardVectors::kUnitX.invert())
-		return Palette::kBlue;
-	else if (ray.direction() == StandardVectors::kUnitY)
-		return Palette::kGreen;
-	else if (ray.direction() == StandardVectors::kUnitY.invert())
-		return Palette::kCyan;
-	else if (ray.direction() == StandardVectors::kUnitZ)
-		return Palette::kYellow;
-	else if (ray.direction() == StandardVectors::kUnitZ.invert())
-		return Palette::kMagenta;
+	double u = 0;
+	double v = 0;
 
-	return m_texture->colorAt(0, 0);
+	const double uStep = (1.0 / 4);
+	const double vStep = (1.0 / 3);
+
+	const auto dLower = ray.position().subtract(m_lowerCorner).divide(m_size);
+	const auto dUpper = m_upperCorner.subtract(ray.position()).divide(m_size);
+
+	if (ray.direction() == StandardVectors::kUnitZ.invert())
+	{
+		// Front face
+		u = uStep * (1 + dLower.x());
+		v = vStep * (1 + dLower.y());
+	}
+	else if (ray.direction() == StandardVectors::kUnitX.invert())
+	{
+		// Left face
+		u = uStep * (0 + dUpper.z());
+		v = vStep * (1 + dLower.y());
+	}
+	else if (ray.direction() == StandardVectors::kUnitY)
+	{
+		// Bottom face
+		u = uStep * (1 + dLower.x());
+		v = vStep * (2 + dLower.z());
+	}
+	else if (ray.direction() == StandardVectors::kUnitY.invert())
+	{
+		// Top face
+		u = uStep * (1 + dUpper.z());
+		v = vStep * (0 + dLower.x());
+	}
+	else if (ray.direction() == StandardVectors::kUnitX)
+	{
+		// Right face
+		u = uStep * (2 + dLower.z());
+		v = vStep * (1 + dLower.y());
+	}
+	else if (ray.direction() == StandardVectors::kUnitZ)
+	{
+		// Rear face
+		u = uStep * (3 + dUpper.x());
+		v = vStep * (1 + dLower.y());
+	}
+
+	return m_texture->colorAt(u, v);
 }

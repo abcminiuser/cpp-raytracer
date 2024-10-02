@@ -126,7 +126,7 @@ Scene ExampleScene::Build()
 		std::make_unique<SphereObject>(
 			/* Position: */					Vector(-6, 0, 0),
 			/* Radius: */					1,
-			/* Texture: */					MakeImageTexture("Assets/Marble.jpg"),
+			/* Texture: */					MakeImageTexture("Assets/Asphalt.jpg"),
 			/* Material: */					Material{
 				.ambient = 0.3,
 				.diffuse = 0.15,
@@ -154,12 +154,12 @@ Scene ExampleScene::Build()
 		std::make_unique<BoxObject>(
 			/* Position: */					Vector(6, 0, 6),
 			/* Size: */						Vector(2, 2, 2),
-			/* Texture: */					std::make_shared<SolidTexture>(Palette::kTransparent),
+			/* Texture: */					MakeImageTexture("Assets/Cube.png"),
 			/* Material: */					Material{
 				.ambient = 0.3,
 				.diffuse = 0.4,
-				.specular = 0.3,
-				.reflectivity = 1.0,
+				.specular = 0.8,
+				.reflectivity = 0.2,
 				.refractivity = 0.0,
 				.refractionIndex = 0,
 			}
