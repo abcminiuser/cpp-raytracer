@@ -35,66 +35,12 @@ double BoxObject::intersectWith(const Ray& ray) const
 	const auto t1 = m_lowerCorner.subtract(ray.position()).multiply(ray.directionInverse());
 	const auto t2 = m_upperCorner.subtract(ray.position()).multiply(ray.directionInverse());
 
-	double tMin = kNoIntersection;
-	double tMax = kNoIntersection;
-
-	if (ray.direction().x() == 0)
-	{
-		// Perpendicular to X axis and won't ever intersect there (so ignore it).
-		tMin =
-			std::max(
-				std::min(t1.y(), t2.y()),
-				std::min(t1.z(), t2.z())
-			);
-		tMax =
-			std::min(
-				std::max(t1.y(), t2.y()),
-				std::min(t1.z(), t2.z())
-			);
-	}
-	else if (ray.direction().y() == 0)
-	{
-		// Perpendicular to Y axis and won't ever intersect there (so ignore it).
-		tMin =
-			std::max(
-				std::min(t1.x(), t2.x()),
-				std::min(t1.z(), t2.z())
-			);
-		tMax =
-			std::min(
-				std::max(t1.x(), t2.x()),
-				std::min(t1.z(), t2.z())
-			);
-	}
-	else if (ray.direction().z() == 0)
-	{
-		// Perpendicular to Z axis and won't ever intersect there (so ignore it).
-		tMin =
-			std::max(
-				std::min(t1.x(), t2.x()),
-				std::min(t1.y(), t2.y())
-			);
-		tMax =
-			std::min(
-				std::max(t1.x(), t2.x()),
-				std::min(t1.y(), t2.y())
-			);
-	}
-	else
-	{
-		tMin =
-			std::max({
-				std::min(t1.x(), t2.x()),
-				std::min(t1.y(), t2.y()),
-				std::min(t1.z(), t2.z())
-			});
-		tMax =
-			std::min({
-				std::max(t1.x(), t2.x()),
-				std::max(t1.y(), t2.y()),
-				std::max(t1.z(), t2.z())
-			});
-	}
+	double tMax =
+		std::min({
+			std::max(t1.x(), t2.x()),
+			std::max(t1.y(), t2.y()),
+			std::max(t1.z(), t2.z())
+		});
 
 	if (tMax < 0)
 	{
@@ -102,16 +48,27 @@ double BoxObject::intersectWith(const Ray& ray) const
 		return kNoIntersection;
 	}
 
+	double tMin =
+		std::max({
+			std::min(t1.x(), t2.x()),
+			std::min(t1.y(), t2.y()),
+			std::min(t1.z(), t2.z())
+		});
+
 	if (tMin >= tMax)
 	{
 		// No intersection
 		return kNoIntersection;
 	}
+	else
+	{
+		// Intersection with a face
 
-	if (tMin < kComparisonThreshold)
-		tMin = kNoIntersection;
+		if (tMin < kComparisonThreshold)
+			tMin = kNoIntersection;
 
-	return tMin;
+		return tMin;
+	}
 }
 
 Vector BoxObject::normalAt(const Vector& position) const
