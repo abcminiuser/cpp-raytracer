@@ -3,7 +3,6 @@
 #include "Ray.hpp"
 #include "Scene.hpp"
 
-#include <algorithm>
 #include <cassert>
 #include <limits>
 
@@ -58,13 +57,18 @@ Color Object::illuminate(const Scene& scene, const Vector& position, const Ray& 
 		const Vector	objectToLight = l->position().subtract(position);
 		const Ray		objectToLightRay = Ray(position, objectToLight.unit());
 
-		bool shadowed = std::any_of(
-			scene.objects.begin(), scene.objects.end(),
-			[&](const auto& o)
+		bool shadowed = false;
+
+		for (const auto& o : scene.objects)
+		{
+			const double intersectionDistance = o->intersect(objectToLightRay);
+			if (intersectionDistance <= objectToLight.length())
 			{
-				const double intersectionDistance = o->intersect(objectToLightRay);
-				return intersectionDistance <= objectToLight.length();
-			});
+				shadowed = true;
+				break;
+			}
+		}
+
 		if (shadowed)
 			continue;
 
