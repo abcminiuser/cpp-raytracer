@@ -135,14 +135,14 @@ Color BoxObject::colorAt(const Scene& scene, const Ray& ray) const
 	if (! m_texture)
 		return Palette::kBlack;
 
-	double u = 0;
-	double v = 0;
-
-	const double uStep = (1.0 / 4);
-	const double vStep = (1.0 / 3);
+	constexpr double uStep = (1.0 / 4);
+	constexpr double vStep = (1.0 / 3);
 
 	const auto dLower = ray.position().subtract(m_lowerCorner).divide(m_size);
 	const auto dUpper = m_upperCorner.subtract(ray.position()).divide(m_size);
+
+	double u = 0;
+	double v = 0;
 
 	if (ray.direction() == StandardVectors::kUnitZ.invert())
 	{
