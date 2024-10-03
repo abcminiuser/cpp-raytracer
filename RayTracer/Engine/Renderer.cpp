@@ -6,9 +6,16 @@
 
 #include <algorithm>
 
+#if defined(NDEBUG)
+constexpr bool kIsDebug = false;
+#else
+constexpr bool kIsDebug = true;
+#endif
+
 namespace
 {
-	constexpr size_t kMaxLinesToRenderPerChunk = 10;
+	constexpr size_t	kMaxLinesToRenderPerChunk	= 10;
+	constexpr bool		kEnableSuperSampling		= ! kIsDebug;
 }
 
 Renderer::Renderer(size_t width, size_t height, size_t numRenderThreads)
@@ -72,6 +79,9 @@ void Renderer::startRender()
 		t = std::thread(
 			[this]()
 			{
+				const double xSampleOffset = 1.0 / m_width;
+				const double ySampleOffset = 1.0 / m_height;
+
 				while (m_runRenderThreads)
 				{
 					const size_t startLine = m_lastRenderLineStart.fetch_add(kMaxLinesToRenderPerChunk);
@@ -86,16 +96,41 @@ void Renderer::startRender()
 
 					for (size_t y = startLine; y < endLine; y++)
 					{
-						if (! m_runRenderThreads)
-							break;
-
-						const double cameraY = (double(y) / m_height) - .5;
-
 						for (size_t x = 0; x < m_width; x++)
 						{
-							const double cameraX = (double(x) / m_width) - .5;
+							double r = 0, g = 0, b = 0;
 
-							*(currentPixel++) = m_scene.camera.trace(m_scene, cameraX, cameraY).toRGBA();
+							// Super-sample across a 3x3 grid, then average the results to anti-alias.
+							if constexpr(kEnableSuperSampling)
+							{
+								for (int ssY = -1; ssY <= 1; ssY++)
+								{
+									for (int ssX = -1; ssX <= 1; ssX++)
+									{
+										const double cameraY = ((y + ssY) * ySampleOffset) - .5;
+										const double cameraX = ((x + ssX) * xSampleOffset) - .5;
+
+										const Color sampleColor = m_scene.camera.trace(m_scene, cameraX, cameraY);
+
+										r += sampleColor.red();
+										g += sampleColor.green();
+										b += sampleColor.blue();
+									}
+								}
+
+								r /= 9;
+								g /= 9;
+								b /= 9;
+
+								*(currentPixel++) = Color(uint8_t(r), uint8_t(g), uint8_t(b)).toRGBA();
+							}
+							else
+							{
+								const double cameraY = (y * ySampleOffset) - .5;
+								const double cameraX = (x * xSampleOffset) - .5;
+
+								*(currentPixel++) = m_scene.camera.trace(m_scene, cameraX, cameraY).toRGBA();
+							}
 						}
 					}
 				}
