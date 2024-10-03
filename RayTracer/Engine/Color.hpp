@@ -9,7 +9,7 @@ private:
 	template <typename T>
 	static inline constexpr uint8_t	ClampComponent(T component)
 	{
-		return (component < 0xFF) ? static_cast<uint8_t>(component) : 0xFF;
+		return static_cast<uint8_t>(std::min<T>(component, 0xFF));
 	}
 
 	constexpr auto		tied() const
@@ -55,10 +55,10 @@ public:
 	constexpr Color		multiply(const Color& other) const
 	{
 		return Color(
-			ClampComponent(m_red * other.m_red / 255.0),
-			ClampComponent(m_green * other.m_green / 255.0),
-			ClampComponent(m_blue * other.m_blue / 255.0),
-			ClampComponent(m_alpha * other.m_alpha / 255.0)
+			ClampComponent(m_red * other.m_red / 255),
+			ClampComponent(m_green * other.m_green / 255),
+			ClampComponent(m_blue * other.m_blue / 255),
+			ClampComponent(m_alpha * other.m_alpha / 255)
 		);
 	}
 
