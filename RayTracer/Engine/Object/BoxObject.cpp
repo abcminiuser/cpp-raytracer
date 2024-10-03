@@ -8,24 +8,42 @@
 #include <algorithm>
 #include <cmath>
 
+namespace
+{
+	constexpr Vector MinPoint(const Vector& v1, const Vector& v2)
+	{
+		return Vector(
+			std::min(v1.x(), v2.x()),
+			std::min(v1.y(), v2.y()),
+			std::min(v1.z(), v2.z())
+		);
+	}
+
+	constexpr Vector MaxPoint(const Vector& v1, const Vector& v2)
+	{
+		return Vector(
+			std::max(v1.x(), v2.x()),
+			std::max(v1.y(), v2.y()),
+			std::max(v1.z(), v2.z())
+		);
+	}
+
+	constexpr auto kFrontNormal = StandardVectors::kUnitZ.invert();
+	constexpr auto kLeftNormal = StandardVectors::kUnitX.invert();
+	constexpr auto kTopNormal = StandardVectors::kUnitY.invert();
+	constexpr auto kBottomNormal = StandardVectors::kUnitY;
+	constexpr auto kRightNormal = StandardVectors::kUnitX;
+	constexpr auto kBackNormal = StandardVectors::kUnitZ;
+}
+
 BoxObject::BoxObject(const Vector& position, const Vector& size, std::shared_ptr<Texture> texture, const Material& material)
 	: Object(position, material)
 	, m_size(size)
 	, m_texture(std::move(texture))
+	, m_lowerCorner(MinPoint(position, position.add(size)))
+	, m_upperCorner(MaxPoint(position, position.add(size)))
 {
-	const auto position2 = position.add(size);
 
-	m_lowerCorner = Vector(
-		std::min(position.x(), position2.x()),
-		std::min(position.y(), position2.y()),
-		std::min(position.z(), position2.z())
-	);
-
-	m_upperCorner = Vector(
-		std::max(position.x(), position2.x()),
-		std::max(position.y(), position2.y()),
-		std::max(position.z(), position2.z())
-	);
 }
 
 double BoxObject::intersectWith(const Ray& ray) const
@@ -35,12 +53,8 @@ double BoxObject::intersectWith(const Ray& ray) const
 	const auto t1 = m_lowerCorner.subtract(ray.position()).multiply(ray.directionInverse());
 	const auto t2 = m_upperCorner.subtract(ray.position()).multiply(ray.directionInverse());
 
-	double tMax =
-		std::min({
-			std::max(t1.x(), t2.x()),
-			std::max(t1.y(), t2.y()),
-			std::max(t1.z(), t2.z())
-		});
+	const Vector maxPoint = MaxPoint(t1, t2);
+	const double tMax = std::min({ maxPoint.x(), maxPoint.y(), maxPoint.z() });
 
 	if (tMax < 0)
 	{
@@ -48,12 +62,8 @@ double BoxObject::intersectWith(const Ray& ray) const
 		return kNoIntersection;
 	}
 
-	double tMin =
-		std::max({
-			std::min(t1.x(), t2.x()),
-			std::min(t1.y(), t2.y()),
-			std::min(t1.z(), t2.z())
-		});
+	const Vector minPoint = MinPoint(t1, t2);
+	const double tMin = std::max({ minPoint.x(), minPoint.y(), minPoint.z() });
 
 	if (tMin >= tMax)
 	{
@@ -68,17 +78,17 @@ double BoxObject::intersectWith(const Ray& ray) const
 Vector BoxObject::normalAt(const Vector& position) const
 {
 	if (std::abs(position.z() - m_lowerCorner.z()) < kComparisonThreshold)
-		return StandardVectors::kUnitZ.invert(); // Front face
+		return kFrontNormal; // Front face
 	else if (std::abs(position.x() - m_lowerCorner.x()) < kComparisonThreshold)
-		return StandardVectors::kUnitX.invert(); // Left face
+		return kLeftNormal; // Left face
 	else if (std::abs(position.y() - m_lowerCorner.y()) < kComparisonThreshold)
-		return StandardVectors::kUnitY.invert(); // Bottom face
+		return kTopNormal; // Top face
 	else if (std::abs(position.y() - m_upperCorner.y()) < kComparisonThreshold)
-		return StandardVectors::kUnitY; // Top face
+		return kBottomNormal; // Bottom face
 	else if (std::abs(position.x() - m_upperCorner.x()) < kComparisonThreshold)
-		return StandardVectors::kUnitX; // Right face
+		return kRightNormal; // Right face
 	else
-		return StandardVectors::kUnitZ; // Rear face
+		return kBackNormal; // Back face
 }
 
 Color BoxObject::colorAt(const Scene& scene, const Ray& ray) const
@@ -95,39 +105,39 @@ Color BoxObject::colorAt(const Scene& scene, const Ray& ray) const
 	double u = 0;
 	double v = 0;
 
-	if (ray.direction() == StandardVectors::kUnitZ.invert())
+	if (ray.direction() == kFrontNormal)
 	{
 		// Front face
 		u = uStep * (1 + dLower.x());
 		v = vStep * (1 + dLower.y());
 	}
-	else if (ray.direction() == StandardVectors::kUnitX.invert())
+	else if (ray.direction() == kLeftNormal)
 	{
 		// Left face
 		u = uStep * (0 + dUpper.z());
 		v = vStep * (1 + dLower.y());
 	}
-	else if (ray.direction() == StandardVectors::kUnitY)
-	{
-		// Bottom face
-		u = uStep * (1 + dLower.x());
-		v = vStep * (2 + dLower.z());
-	}
-	else if (ray.direction() == StandardVectors::kUnitY.invert())
+	else if (ray.direction() == kTopNormal)
 	{
 		// Top face
 		u = uStep * (1 + dUpper.z());
 		v = vStep * (0 + dLower.x());
 	}
-	else if (ray.direction() == StandardVectors::kUnitX)
+	else if (ray.direction() == kBottomNormal)
+	{
+		// Bottom face
+		u = uStep * (1 + dLower.x());
+		v = vStep * (2 + dLower.z());
+	}
+	else if (ray.direction() == kRightNormal)
 	{
 		// Right face
 		u = uStep * (2 + dLower.z());
 		v = vStep * (1 + dLower.y());
 	}
-	else if (ray.direction() == StandardVectors::kUnitZ)
+	else if (ray.direction() == kBackNormal)
 	{
-		// Rear face
+		// Back face
 		u = uStep * (3 + dUpper.x());
 		v = vStep * (1 + dLower.y());
 	}
