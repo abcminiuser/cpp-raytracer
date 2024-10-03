@@ -25,17 +25,10 @@ double PlaneObject::intersectWith(const Ray& ray) const
 		// No intersection
 		return kNoIntersection;
 	}
-	else
-	{
-		// Intersection at a single point (as we're infinitely thin)
-		const auto b = m_normal.dotProduct(ray.position().subtract(m_position));
 
-		auto solution = -b / angle;
-		if (solution < kComparisonThreshold)
-			solution = kNoIntersection;
-
-        return solution;
-	}
+	// Intersection at a single point (as we're infinitely thin)
+	const auto b = m_normal.dotProduct(ray.position().subtract(m_position));
+	return -b / angle;
 }
 
 Vector PlaneObject::normalAt(const Vector& position) const

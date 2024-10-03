@@ -33,12 +33,7 @@ double SphereObject::intersectWith(const Ray& ray) const
 	else if (d == 0)
 	{
 		// Single intersection (we hit along the edge)
-
-		auto solution = -b / 2;
-		if (solution < kComparisonThreshold)
-			solution = kNoIntersection;
-
-		return solution;
+		return -b / 2;
 	}
 	else
 	{
@@ -46,13 +41,8 @@ double SphereObject::intersectWith(const Ray& ray) const
 
 		const double dSqrt = std::sqrt(d);
 
-		auto solution1 = (-b - dSqrt) / 2;
-		if (solution1 < kComparisonThreshold)
-			solution1 = kNoIntersection;
-
-		auto solution2 = (-b + dSqrt) / 2;
-		if (solution2 < kComparisonThreshold)
-			solution2 = kNoIntersection;
+		const auto solution1 = (-b - dSqrt) / 2;
+		const auto solution2 = (-b + dSqrt) / 2;
 
 		return std::min(solution1, solution2);
 	}

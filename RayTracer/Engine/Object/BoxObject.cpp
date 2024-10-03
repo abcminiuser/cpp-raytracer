@@ -60,15 +60,9 @@ double BoxObject::intersectWith(const Ray& ray) const
 		// No intersection
 		return kNoIntersection;
 	}
-	else
-	{
-		// Intersection with a face
 
-		if (tMin < kComparisonThreshold)
-			tMin = kNoIntersection;
-
-		return tMin;
-	}
+	// Intersection with a face
+	return tMin;
 }
 
 Vector BoxObject::normalAt(const Vector& position) const
