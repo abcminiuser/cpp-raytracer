@@ -8,7 +8,7 @@
 
 namespace
 {
-	constexpr uint32_t kMaxDepth = 16;
+	constexpr uint32_t kMaxDepth = 10;
 }
 
 Ray::Ray(const Vector& position, const Vector& direction)
