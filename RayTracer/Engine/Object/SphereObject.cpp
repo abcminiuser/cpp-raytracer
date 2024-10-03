@@ -21,9 +21,9 @@ double SphereObject::intersectWith(const Ray& ray) const
 {
 	const auto os = ray.position().subtract(m_position);
 
-	double b = 2 * os.dotProduct(ray.direction());
-	double c = os.squaredEuclidianDistance() - m_diameter;
-	double d = (b * b) - 4 * c;
+	const double b = 2 * os.dotProduct(ray.direction());
+	const double c = os.squaredEuclidianDistance() - m_diameter;
+	const double d = (b * b) - 4 * c;
 
 	if (d < 0)
 	{
@@ -41,8 +41,8 @@ double SphereObject::intersectWith(const Ray& ray) const
 
 		const double dSqrt = std::sqrt(d);
 
-		const auto solution1 = (-b - dSqrt) / 2;
-		const auto solution2 = (-b + dSqrt) / 2;
+		const double solution1 = (-b - dSqrt) / 2;
+		const double solution2 = (-b + dSqrt) / 2;
 
 		return std::min(solution1, solution2);
 	}

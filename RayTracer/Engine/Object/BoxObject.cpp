@@ -58,7 +58,7 @@ double BoxObject::intersectWith(const Ray& ray) const
 
 	if (tMax < 0)
 	{
-		// Intersection is behind us, no intersection
+		// Intersection is behind us
 		return kNoIntersection;
 	}
 

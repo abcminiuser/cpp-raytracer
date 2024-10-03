@@ -15,9 +15,9 @@ Object::Object(const Vector& position, const Material& material)
 
 double Object::intersect(const Ray& ray) const
 {
-	auto closestIntersectionDistance = intersectWith(ray);
+	const auto closestIntersectionDistance = intersectWith(ray);
 	if (closestIntersectionDistance < kComparisonThreshold)
-		closestIntersectionDistance = kNoIntersection;
+		return kNoIntersection;
 
 	return closestIntersectionDistance;
 }
