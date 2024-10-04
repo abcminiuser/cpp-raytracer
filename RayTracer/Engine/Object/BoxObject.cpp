@@ -39,9 +39,9 @@ namespace
 BoxObject::BoxObject(const Vector& position, const Vector& size, std::shared_ptr<Texture> texture, const Material& material)
 	: Object(position, material)
 	, m_size(size)
-	, m_texture(std::move(texture))
 	, m_lowerCorner(MinPoint(position, position.add(size)))
 	, m_upperCorner(MaxPoint(position, position.add(size)))
+	, m_texture(std::move(texture))
 {
 
 }

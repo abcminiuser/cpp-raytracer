@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cmath>
+#include <utility>
 
 struct Vector
 {
@@ -111,8 +112,8 @@ private:
 
 namespace StandardVectors
 {
-	static inline constexpr auto kOrigin = Vector(0, 0, 0);
-	static inline constexpr auto kUnitX = Vector(1, 0, 0);
-	static inline constexpr auto kUnitY = Vector(0, 1, 0);
-	static inline constexpr auto kUnitZ = Vector(0, 0, 1);
+	static constexpr auto kOrigin = Vector(0, 0, 0);
+	static constexpr auto kUnitX = Vector(1, 0, 0);
+	static constexpr auto kUnitY = Vector(0, 1, 0);
+	static constexpr auto kUnitZ = Vector(0, 0, 1);
 }

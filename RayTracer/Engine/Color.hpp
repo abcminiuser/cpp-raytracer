@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <stdint.h>
+#include <utility>
 
 struct Color
 {
@@ -72,10 +73,10 @@ public:
 		);
 	}
 
-	constexpr uint32_t	red() const 	{ return m_red; }
-	constexpr uint32_t	green() const 	{ return m_green; }
-	constexpr uint32_t	blue() const	{ return m_blue; }
-	constexpr uint32_t	alpha() const	{ return m_alpha; }
+	constexpr uint8_t	red() const 	{ return static_cast<uint8_t>(m_red); }
+	constexpr uint8_t	green() const 	{ return static_cast<uint8_t>(m_green); }
+	constexpr uint8_t	blue() const	{ return static_cast<uint8_t>(m_blue); }
+	constexpr uint8_t	alpha() const	{ return static_cast<uint8_t>(m_alpha); }
 
 	constexpr uint32_t	toRGBA() const
 	{
@@ -100,13 +101,13 @@ private:
 
 namespace Palette
 {
-	static inline constexpr auto kTransparent = Color(0, 0, 0, 0);
-	static inline constexpr auto kRed = Color(255, 0, 0);
-	static inline constexpr auto kGreen = Color(0, 255, 0);
-	static inline constexpr auto kBlue = Color(0, 0, 255);
-	static inline constexpr auto kBlack = Color(0, 0, 0);
-	static inline constexpr auto kWhite = Color(255, 255, 255);
-	static inline constexpr auto kCyan = Color(0, 255, 255);
-	static inline constexpr auto kYellow = Color(255, 255, 0);
-	static inline constexpr auto kMagenta = Color(255, 0, 255);
+	static constexpr auto kTransparent = Color(0, 0, 0, 0);
+	static constexpr auto kRed = Color(255, 0, 0);
+	static constexpr auto kGreen = Color(0, 255, 0);
+	static constexpr auto kBlue = Color(0, 0, 255);
+	static constexpr auto kBlack = Color(0, 0, 0);
+	static constexpr auto kWhite = Color(255, 255, 255);
+	static constexpr auto kCyan = Color(0, 255, 255);
+	static constexpr auto kYellow = Color(255, 255, 0);
+	static constexpr auto kMagenta = Color(255, 0, 255);
 }
