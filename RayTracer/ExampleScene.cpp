@@ -32,28 +32,35 @@ namespace
 		return std::make_shared<ImageTexture>(dimensions.x, dimensions.y, reinterpret_cast<const uint32_t*>(pixels));
 	}
 
-	std::shared_ptr<Mesh> MakeObjectMesh(const std::string& path)
+	std::shared_ptr<Mesh> MakeObjectMesh(const std::string& path, float scale = 1.0)
 	{
-		objl::Loader l;
-		l.LoadFile(path);
+		objl::Loader objLoader;
+		objLoader.LoadFile(path);
 
 		std::vector<Vertex>		vertices;
 		std::vector<Triangle>	triangles;
 
-		for (const auto& v : l.LoadedVertices)
+		for (const auto& mesh : objLoader.LoadedMeshes)
 		{
-			vertices.push_back(
-				Vertex
-				{
-					.position = Vector(v.Position.X, v.Position.Y, v.Position.Z),
-					.normal = Vector(v.Normal.X, v.Normal.Y, v.Normal.Z).unit(),
-					.texture = Vector(v.TextureCoordinate.X, v.TextureCoordinate.Y, 0)
-				}
-			);
-		}
+			printf("Adding sub-mesh %s\n", mesh.MeshName.c_str());
 
-		for (size_t i = 0; i < l.LoadedIndices.size(); i += 3)
-			triangles.push_back(Triangle{ l.LoadedIndices[i + 0], l.LoadedIndices[i + 1], l.LoadedIndices[i + 2]});
+			const uint32_t meshStartPos = static_cast<uint32_t>(vertices.size());
+
+			for (const auto& v : mesh.Vertices)
+			{
+				vertices.push_back(
+					Vertex
+					{
+						.position = Vector(v.Position.X, v.Position.Y, v.Position.Z).scale(scale),
+						.normal = Vector(v.Normal.X, v.Normal.Y, v.Normal.Z).unit(),
+						.texture = Vector(v.TextureCoordinate.X, v.TextureCoordinate.Y, 0)
+					}
+				);
+			}
+
+			for (size_t i = 0; i < mesh.Indices.size(); i += 3)
+				triangles.push_back(Triangle{ meshStartPos + mesh.Indices[i + 0], meshStartPos + mesh.Indices[i + 1], meshStartPos + mesh.Indices[i + 2] });
+		}
 
 		return BuildMesh(vertices, triangles);
 	}
