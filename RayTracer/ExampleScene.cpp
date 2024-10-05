@@ -1,8 +1,10 @@
 ﻿#include "ExampleScene.hpp"
 
+#include "Engine/Mesh.hpp"
 #include "Engine/Scene.hpp"
 #include "Engine/Object/BoxObject.hpp"
 #include "Engine/Object/PlaneObject.hpp"
+#include "Engine/Object/MeshObject.hpp"
 #include "Engine/Object/SphereObject.hpp"
 #include "Engine/Texture/SolidTexture.hpp"
 #include "Engine/Texture/CheckerboardTexture.hpp"
@@ -10,8 +12,11 @@
 
 #include <SFML/Graphics.hpp>
 
+#include <OBJ_Loader.h>
+
 #include <stdexcept>
 #include <stdint.h>
+#include <vector>
 
 namespace
 {
@@ -25,6 +30,32 @@ namespace
 		const auto* pixels		= imageTexture.getPixelsPtr();
 
 		return std::make_shared<ImageTexture>(dimensions.x, dimensions.y, reinterpret_cast<const uint32_t*>(pixels));
+	}
+
+	std::shared_ptr<Mesh> MakeObjectMesh(const std::string& path)
+	{
+		objl::Loader l;
+		l.LoadFile(path);
+
+		std::vector<Vertex>		vertices;
+		std::vector<Triangle>	triangles;
+
+		for (const auto& v : l.LoadedVertices)
+		{
+			vertices.push_back(
+				Vertex
+				{
+					.position = Vector(v.Position.X, v.Position.Y, v.Position.Z),
+					.normal = Vector(v.Normal.X, v.Normal.Y, v.Normal.Z).unit(),
+					.texture = Vector(v.TextureCoordinate.X, v.TextureCoordinate.Y, 0)
+				}
+			);
+		}
+
+		for (size_t i = 0; i < l.LoadedIndices.size(); i += 3)
+			triangles.push_back(Triangle{ l.LoadedIndices[i + 0], l.LoadedIndices[i + 1], l.LoadedIndices[i + 2]});
+
+		return BuildMesh(vertices, triangles);
 	}
 }
 
@@ -172,6 +203,19 @@ Scene ExampleScene::Build()
 				.ambient = 0.25,
 				.diffuse = 0.0,
 				.specular = 0.5,
+				.reflectivity = 0.0
+			}
+		)
+	);
+	scene.objects.push_back(
+		std::make_unique<MeshObject>(
+			/* Position: */					Vector(8, 0, 8),
+			/* Mesh: */						MakeObjectMesh("Assets/Teapot.obj"),
+			/* Texture: */					std::make_shared<SolidTexture>(Palette::kWhite),
+			/* Material: */					Material{
+				.ambient = 0.2,
+				.diffuse = 0.2,
+				.specular = 0.3,
 				.reflectivity = 0.0
 			}
 		)

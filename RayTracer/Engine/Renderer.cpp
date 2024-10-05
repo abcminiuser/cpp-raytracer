@@ -14,8 +14,8 @@ constexpr bool kIsDebug = true;
 
 namespace
 {
-	constexpr size_t	kMaxLinesToRenderPerChunk	= 10;
-	constexpr bool		kEnableSuperSampling		= ! kIsDebug;
+	constexpr size_t	kMaxLinesToRenderPerChunk	= 2;
+	constexpr bool		kEnableSuperSampling		= false;
 }
 
 Renderer::Renderer(size_t width, size_t height, size_t numRenderThreads)

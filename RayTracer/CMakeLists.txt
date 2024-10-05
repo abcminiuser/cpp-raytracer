@@ -13,8 +13,10 @@ add_executable (RayTracer
 	"Engine/Renderer.cpp"
     "Engine/Camera.cpp"
     "Engine/Light.cpp"
+    "Engine/Mesh.cpp"
     "Engine/Object.cpp"
     "Engine/Object/BoxObject.cpp"
+    "Engine/Object/MeshObject.cpp"
     "Engine/Object/PlaneObject.cpp"
     "Engine/Object/SphereObject.cpp"
     "Engine/Texture/CheckerboardTexture.cpp"
@@ -25,7 +27,7 @@ add_executable (RayTracer
     "Main.cpp"
 )
 
-target_include_directories (RayTracer PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories (RayTracer PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/../Vendor/OBJ-Loader/Source)
 target_link_libraries (RayTracer PRIVATE sfml-graphics)
 target_compile_features (RayTracer PUBLIC cxx_std_20)
 
@@ -46,6 +48,11 @@ add_custom_command (TARGET RayTracer POST_BUILD
 	COMMAND ${CMAKE_COMMAND}
 	ARGS -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/../Vendor/PublicDomainTextures.com/Assets" "$<TARGET_FILE_DIR:RayTracer>/Assets"
 	COMMENT "Copying 'PublicDomainTextures.com' third party assets...")
+
+add_custom_command (TARGET RayTracer POST_BUILD
+	COMMAND ${CMAKE_COMMAND}
+	ARGS -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/../Vendor/cs.utah.edu/Assets" "$<TARGET_FILE_DIR:RayTracer>/Assets"
+	COMMENT "Copying 'cs.utah.edu' third party assets...")
 
 install (FILES
 	$<TARGET_FILE:RayTracer>
