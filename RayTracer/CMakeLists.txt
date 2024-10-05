@@ -54,6 +54,11 @@ add_custom_command (TARGET RayTracer POST_BUILD
 	ARGS -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/../Vendor/cs.utah.edu/Assets" "$<TARGET_FILE_DIR:RayTracer>/Assets"
 	COMMENT "Copying 'cs.utah.edu' third party assets...")
 
+add_custom_command (TARGET RayTracer POST_BUILD
+	COMMAND ${CMAKE_COMMAND}
+	ARGS -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/../Vendor/thebasemesh.com/Assets" "$<TARGET_FILE_DIR:RayTracer>/Assets"
+	COMMENT "Copying 'thebasemesh.com' third party assets...")
+
 install (FILES
 	$<TARGET_FILE:RayTracer>
 	DESTINATION .
