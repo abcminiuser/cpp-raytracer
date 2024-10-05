@@ -18,44 +18,34 @@ MeshObject::MeshObject(const Vector& position, std::shared_ptr<Mesh> mesh, std::
 
 double MeshObject::intersectWith(const Ray& ray) const
 {
-	double distance = kNoIntersection;
-
 	// Cheaper to adjust the ray by our position here once and re-use it for the bounding box
 	// and triangle intersection tests, than to offset it for every point.
 	const auto rayAdjusted = Ray(ray.position().subtract(m_position), ray.direction());
 
-	m_mesh->octree.walk(
-		[&](const Vector& boundingBoxPosition, const Vector& boundingBoxSize, const std::vector<Triangle>& triangles) -> bool
-		{
-			const auto lowerCorner = Vector::MinPoint(boundingBoxPosition, boundingBoxPosition.add(boundingBoxSize));
-			const auto upperCorner = Vector::MaxPoint(boundingBoxPosition, boundingBoxPosition.add(boundingBoxSize));
+	const auto t1 = m_mesh->lowerCorner.subtract(rayAdjusted.position()).multiply(rayAdjusted.directionInverse());
+	const auto t2 = m_mesh->upperCorner.subtract(rayAdjusted.position()).multiply(rayAdjusted.directionInverse());
 
-			const auto t1 = lowerCorner.subtract(rayAdjusted.position()).multiply(rayAdjusted.directionInverse());
-			const auto t2 = upperCorner.subtract(rayAdjusted.position()).multiply(rayAdjusted.directionInverse());
+	const Vector maxPoint = Vector::MaxPoint(t1, t2);
+	const double tMax = std::min({ maxPoint.x(), maxPoint.y(), maxPoint.z() });
 
-			const Vector maxPoint = Vector::MaxPoint(t1, t2);
-			const double tMax = std::min({ maxPoint.x(), maxPoint.y(), maxPoint.z() });
+	if (tMax < 0)
+	{
+		// Intersection is behind us
+		return kNoIntersection;
+	}
 
-			if (tMax < 0)
-			{
-				// Intersection is behind us
-				return false;
-			}
+	const Vector minPoint = Vector::MinPoint(t1, t2);
+	const double tMin = std::max({ minPoint.x(), minPoint.y(), minPoint.z() });
 
-			const Vector minPoint = Vector::MinPoint(t1, t2);
-			const double tMin = std::max({ minPoint.x(), minPoint.y(), minPoint.z() });
+	if (tMin >= tMax)
+	{
+		// No intersection
+		return kNoIntersection;
+	}
 
-			if (tMin >= tMax)
-			{
-				// No intersection
-				return false;
-			}
-
-			for (const auto& t : triangles)
-				distance = std::min(distance, intersectWith(rayAdjusted, t));
-
-			return true;
-		});
+	double distance = kNoIntersection;
+	for (const auto& t : m_mesh->triangles)
+		distance = std::min(distance, intersectWith(rayAdjusted, t));
 
 	return distance;
 }
@@ -64,28 +54,18 @@ Vector MeshObject::normalAt(const Vector& position) const
 {
 	const Vector comparePos = position.subtract(m_position);
 
-	Vector normal = StandardVectors::kUnitZ;
+	for (const auto& t : m_mesh->triangles)
+	{
+		if (! pointOn(comparePos, t))
+			continue;
 
-	m_mesh->octree.walk(
-		[&](const Vector& boundingBoxPosition, const Vector& boundingBoxSize, const std::vector<Triangle>& triangles) -> bool
-		{
-			for (const auto& t : triangles)
-			{
-				if (! pointOn(comparePos, t))
-					continue;
+		const auto& [t0, t1, t2] = t;
 
-				const auto& [t0, t1, t2] = t;
+		// Use the normal of the first vertex for now.
+		return m_mesh->vertices[t0].normal;
+	}
 
-				// Use the normal of the first vertex for now.
-				normal = m_mesh->vertices[t0].normal;
-
-				return false;
-			}
-
-			return true;
-		});
-
-	return normal;
+	return StandardVectors::kUnitZ;
 }
 
 Color MeshObject::colorAt(const Scene& scene, const Ray& ray) const
@@ -95,28 +75,18 @@ Color MeshObject::colorAt(const Scene& scene, const Ray& ray) const
 
 	const Vector comparePos = ray.position().subtract(m_position);
 
-	Color color = Palette::kBlack;
+	for (const auto& t : m_mesh->triangles)
+	{
+		if (! pointOn(comparePos, t))
+			continue;
 
-	m_mesh->octree.walk(
-		[&](const Vector& boundingBoxPosition, const Vector& boundingBoxSize, const std::vector<Triangle>& triangles) -> bool
-		{
-			for (const auto& t : triangles)
-			{
-				if (! pointOn(comparePos, t))
-					continue;
+		const auto& [t0, t1, t2] = t;
 
-				const auto& [t0, t1, t2] = t;
+		// Use the texture coordinates of the first vertex for now.
+		return m_texture->colorAt(m_mesh->vertices[t0].texture.x(), m_mesh->vertices[t0].texture.y());
+	}
 
-				// Use the texture coordinates of the first vertex for now.
-				color = m_texture->colorAt(m_mesh->vertices[t0].texture.x(), m_mesh->vertices[t0].texture.y());
-
-				return false;
-			}
-
-			return true;
-		});
-
-	return color;
+	return Palette::kBlack;
 }
 
 double MeshObject::intersectWith(const Ray& ray, const Triangle& triangle) const
