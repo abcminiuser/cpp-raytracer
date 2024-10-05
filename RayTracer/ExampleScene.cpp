@@ -32,7 +32,7 @@ namespace
 		return std::make_shared<ImageTexture>(dimensions.x, dimensions.y, reinterpret_cast<const uint32_t*>(pixels));
 	}
 
-	std::shared_ptr<Mesh> MakeObjectMesh(const std::string& path, float scale = 1.0)
+	std::shared_ptr<Mesh> MakeObjectMesh(const std::string& path, double scale = 1.0)
 	{
 		objl::Loader objLoader;
 		objLoader.LoadFile(path);
