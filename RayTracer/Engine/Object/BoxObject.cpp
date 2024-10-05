@@ -10,24 +10,6 @@
 
 namespace
 {
-	constexpr Vector MinPoint(const Vector& v1, const Vector& v2)
-	{
-		return Vector(
-			std::min(v1.x(), v2.x()),
-			std::min(v1.y(), v2.y()),
-			std::min(v1.z(), v2.z())
-		);
-	}
-
-	constexpr Vector MaxPoint(const Vector& v1, const Vector& v2)
-	{
-		return Vector(
-			std::max(v1.x(), v2.x()),
-			std::max(v1.y(), v2.y()),
-			std::max(v1.z(), v2.z())
-		);
-	}
-
 	constexpr auto kFrontNormal = StandardVectors::kUnitZ.invert();
 	constexpr auto kLeftNormal = StandardVectors::kUnitX.invert();
 	constexpr auto kTopNormal = StandardVectors::kUnitY.invert();
@@ -39,8 +21,8 @@ namespace
 BoxObject::BoxObject(const Vector& position, const Vector& size, std::shared_ptr<Texture> texture, const Material& material)
 	: Object(position, material)
 	, m_size(size)
-	, m_lowerCorner(MinPoint(position, position.add(size)))
-	, m_upperCorner(MaxPoint(position, position.add(size)))
+	, m_lowerCorner(Vector::MinPoint(position, position.add(size)))
+	, m_upperCorner(Vector::MaxPoint(position, position.add(size)))
 	, m_texture(std::move(texture))
 {
 
@@ -53,7 +35,7 @@ double BoxObject::intersectWith(const Ray& ray) const
 	const auto t1 = m_lowerCorner.subtract(ray.position()).multiply(ray.directionInverse());
 	const auto t2 = m_upperCorner.subtract(ray.position()).multiply(ray.directionInverse());
 
-	const Vector maxPoint = MaxPoint(t1, t2);
+	const Vector maxPoint = Vector::MaxPoint(t1, t2);
 	const double tMax = std::min({ maxPoint.x(), maxPoint.y(), maxPoint.z() });
 
 	if (tMax < 0)
@@ -62,7 +44,7 @@ double BoxObject::intersectWith(const Ray& ray) const
 		return kNoIntersection;
 	}
 
-	const Vector minPoint = MinPoint(t1, t2);
+	const Vector minPoint = Vector::MinPoint(t1, t2);
 	const double tMin = std::max({ minPoint.x(), minPoint.y(), minPoint.z() });
 
 	if (tMin >= tMax)

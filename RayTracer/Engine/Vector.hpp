@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 #include <cmath>
 #include <utility>
 
@@ -100,6 +101,24 @@ public:
 		return tied() == other.tied();
 	}
 
+	static constexpr Vector MinPoint(const Vector& v1, const Vector& v2)
+	{
+		return Vector(
+			std::min(v1.x(), v2.x()),
+			std::min(v1.y(), v2.y()),
+			std::min(v1.z(), v2.z())
+		);
+	}
+
+	static constexpr Vector MaxPoint(const Vector& v1, const Vector& v2)
+	{
+		return Vector(
+			std::max(v1.x(), v2.x()),
+			std::max(v1.y(), v2.y()),
+			std::max(v1.z(), v2.z())
+		);
+	}
+
 private:
 	double				m_x = 0;
 	double				m_y = 0;
@@ -116,4 +135,7 @@ namespace StandardVectors
 	static constexpr auto kUnitX = Vector(1, 0, 0);
 	static constexpr auto kUnitY = Vector(0, 1, 0);
 	static constexpr auto kUnitZ = Vector(0, 0, 1);
+
+	static constexpr auto kMin = Vector(std::numeric_limits<double>::min(), std::numeric_limits<double>::min(), std::numeric_limits<double>::min());
+	static constexpr auto kMax = Vector(std::numeric_limits<double>::max(), std::numeric_limits<double>::max(), std::numeric_limits<double>::max());
 }
