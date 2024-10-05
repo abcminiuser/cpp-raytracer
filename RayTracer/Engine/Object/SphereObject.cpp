@@ -1,4 +1,4 @@
-#include "SphereObject.hpp"
+#include "Engine/Object/SphereObject.hpp"
 
 #include "Engine/Material.hpp"
 #include "Engine/Ray.hpp"

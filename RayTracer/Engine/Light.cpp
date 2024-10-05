@@ -1,8 +1,8 @@
 #include "Engine/Light.hpp"
 
-#include "Material.hpp"
-#include "Ray.hpp"
-#include "Scene.hpp"
+#include "Engine/Material.hpp"
+#include "Engine/Ray.hpp"
+#include "Engine/Scene.hpp"
 
 #include <cmath>
 

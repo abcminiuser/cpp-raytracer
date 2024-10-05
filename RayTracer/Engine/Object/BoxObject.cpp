@@ -1,4 +1,4 @@
-#include "BoxObject.hpp"
+#include "Engine/Object/BoxObject.hpp"
 
 #include "Engine/Material.hpp"
 #include "Engine/Ray.hpp"

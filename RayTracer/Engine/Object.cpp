@@ -1,7 +1,7 @@
-#include "Object.hpp"
+#include "Engine/Object.hpp"
 
-#include "Ray.hpp"
-#include "Scene.hpp"
+#include "Engine/Ray.hpp"
+#include "Engine/Scene.hpp"
 
 #include <cassert>
 #include <limits>

@@ -1,11 +1,9 @@
-#include "PlaneObject.hpp"
+#include "Engine/Object/PlaneObject.hpp"
 
 #include "Engine/Material.hpp"
 #include "Engine/Ray.hpp"
 #include "Engine/Texture.hpp"
 #include "Engine/Vector.hpp"
-
-#include <cmath>
 
 PlaneObject::PlaneObject(const Vector& normal, double distance, std::shared_ptr<Texture> texture, double textureScaleFactor, const Material& material)
 	: Object(normal.scale(distance), material)

@@ -1,8 +1,8 @@
-#include "Renderer.hpp"
+#include "Engine/Renderer.hpp"
 
-#include "Color.hpp"
-#include "Vector.hpp"
-#include "Camera.hpp"
+#include "Engine/Color.hpp"
+#include "Engine/Vector.hpp"
+#include "Engine/Camera.hpp"
 
 #include <algorithm>
 
