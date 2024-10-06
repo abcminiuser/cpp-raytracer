@@ -142,7 +142,7 @@ bool MeshObject::pointOn(const Vector& point, const Triangle& triangle) const
 		{
 			Vector cp1 = b.subtract(a).crossProduct(p1.subtract(a));
 			Vector cp2 = b.subtract(a).crossProduct(p2.subtract(a));
-			return cp1.dotProduct(cp2) >= 0;
+			return cp1.dotProduct(cp2) >= kComparisonThreshold;
 		};
 
 	return SameSide(point, v0, v1, v2) && SameSide(point, v1, v0, v2) && SameSide(point, v2, v0, v1);
