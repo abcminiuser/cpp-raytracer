@@ -29,12 +29,13 @@ double PlaneObject::intersectWith(const Ray& ray) const
 	return -b / angle;
 }
 
-Vector PlaneObject::normalAt(const Vector& position) const
+void PlaneObject::getIntersectionProperties(const Vector& position, Vector& normal, Color& color) const
 {
-	return m_normal;
+	normal	= m_normal;
+	color	= colorAt(position, normal);
 }
 
-Color PlaneObject::colorAt(const Scene& scene, const Vector& position, const Vector& normal) const
+Color PlaneObject::colorAt(const Vector& position, const Vector& normal) const
 {
 	if (! m_texture)
 		return Palette::kBlack;

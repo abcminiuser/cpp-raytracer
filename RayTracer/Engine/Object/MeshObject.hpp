@@ -22,13 +22,14 @@ public:
 // Object i/f:
 protected:
 	double						intersectWith(const Ray& ray) const override;
-	Vector						normalAt(const Vector& position) const override;
-	Color						colorAt(const Scene& scene, const Vector& position, const Vector& normal) const override;
+	void						getIntersectionProperties(const Vector& position, Vector& normal, Color& color) const override;
 
 private:
+	Vector						normalAt(const Triangle& triangle, const Vector& mix) const;
+	Color						colorAt(const Triangle& triangle, const Vector& mix) const;
+
 	double						intersectWith(const Ray& ray, const Triangle& triangle) const;
 	bool						pointOn(const Vector& point, const Triangle& triangle) const;
-	Vector						interpolate(const Vector& point, const Triangle& triangle, const Vector& a, const Vector& b, const Vector& c) const;
 	Vector						interpolate(const Vector& point, const Triangle& triangle) const;
 
 private:

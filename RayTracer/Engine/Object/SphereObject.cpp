@@ -48,12 +48,13 @@ double SphereObject::intersectWith(const Ray& ray) const
 	}
 }
 
-Vector SphereObject::normalAt(const Vector& position) const
+void SphereObject::getIntersectionProperties(const Vector& position, Vector& normal, Color& color) const
 {
-	return position.subtract(m_position).unit();
+	normal	= position.subtract(m_position).unit();
+	color	= colorAt(position, normal);
 }
 
-Color SphereObject::colorAt(const Scene& scene, const Vector& position, const Vector& normal) const
+Color SphereObject::colorAt(const Vector& position, const Vector& normal) const
 {
 	if (! m_texture)
 		return Palette::kBlack;

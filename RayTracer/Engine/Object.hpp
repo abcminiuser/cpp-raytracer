@@ -25,8 +25,7 @@ public:
 
 protected:
 	virtual double	intersectWith(const Ray& ray) const = 0;
-	virtual Vector	normalAt(const Vector& position) const = 0;
-	virtual Color	colorAt(const Scene& scene, const Vector& position, const Vector& normal) const = 0;
+	virtual void	getIntersectionProperties(const Vector& position, Vector& normal, Color& color) const = 0;
 
 protected:
 	Vector			m_position;

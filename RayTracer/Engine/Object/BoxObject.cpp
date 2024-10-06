@@ -57,6 +57,12 @@ double BoxObject::intersectWith(const Ray& ray) const
 	return tMin;
 }
 
+void BoxObject::getIntersectionProperties(const Vector& position, Vector& normal, Color& color) const
+{
+	normal	= normalAt(position);
+	color	= colorAt(position, normal);
+}
+
 Vector BoxObject::normalAt(const Vector& position) const
 {
 	if (std::abs(position.z() - m_lowerCorner.z()) < kComparisonThreshold)
@@ -73,7 +79,7 @@ Vector BoxObject::normalAt(const Vector& position) const
 		return kBackNormal; // Back face
 }
 
-Color BoxObject::colorAt(const Scene& scene, const Vector& position, const Vector& normal) const
+Color BoxObject::colorAt(const Vector& position, const Vector& normal) const
 {
 	if (! m_texture)
 		return Palette::kBlack;

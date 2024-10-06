@@ -19,8 +19,10 @@ public:
 // Object i/f:
 protected:
 	double						intersectWith(const Ray& ray) const override;
-	Vector						normalAt(const Vector& position) const override;
-	Color						colorAt(const Scene& scene, const Vector& position, const Vector& normal) const override;
+	void						getIntersectionProperties(const Vector& position, Vector& normal, Color& color) const override;
+
+private:
+	Color						colorAt(const Vector& position, const Vector& normal) const;
 
 private:
 	std::shared_ptr<Texture>	m_texture;

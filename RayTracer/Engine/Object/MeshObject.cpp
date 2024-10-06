@@ -50,7 +50,7 @@ double MeshObject::intersectWith(const Ray& ray) const
 	return distance;
 }
 
-Vector MeshObject::normalAt(const Vector& position) const
+void MeshObject::getIntersectionProperties(const Vector& position, Vector& normal, Color& color) const
 {
 	const Vector comparePos = position.subtract(m_position);
 
@@ -59,41 +59,41 @@ Vector MeshObject::normalAt(const Vector& position) const
 		if (! pointOn(comparePos, triangle))
 			continue;
 
-		const auto& [p0, p1, p2] = triangle;
+		const Vector mix = interpolate(comparePos, triangle);
 
-		const auto& n0 = m_mesh->vertices[p0].normal;
-		const auto& n1 = m_mesh->vertices[p1].normal;
-		const auto& n2 = m_mesh->vertices[p2].normal;
-
-		return interpolate(comparePos, triangle, n0, n1, n2).unit();
+		normal	= normalAt(triangle, mix);
+		color	= colorAt(triangle, mix);
+		return;
 	}
 
-	return StandardVectors::kUnitZ;
+	normal	= StandardVectors::kUnitZ;
+	color	= Palette::kBlack;
 }
 
-Color MeshObject::colorAt(const Scene& scene, const Vector& position, const Vector& normal) const
+Vector MeshObject::normalAt(const Triangle& triangle, const Vector& mix) const
+{
+	const auto& [p0, p1, p2] = triangle;
+
+	const auto& n0 = m_mesh->vertices[p0].normal;
+	const auto& n1 = m_mesh->vertices[p1].normal;
+	const auto& n2 = m_mesh->vertices[p2].normal;
+
+	return n0.scale(mix.x()).add(n1.scale(mix.y())).add(n2.scale(mix.z())).unit();
+}
+
+Color MeshObject::colorAt(const Triangle& triangle, const Vector& mix) const
 {
 	if (! m_texture)
 		return Palette::kBlack;
 
-	const Vector comparePos = position.subtract(m_position);
+	const auto& [p0, p1, p2] = triangle;
 
-	for (const auto& triangle : m_mesh->triangles)
-	{
-		if (! pointOn(comparePos, triangle))
-			continue;
+	const auto& t0 = m_mesh->vertices[p0].texture;
+	const auto& t1 = m_mesh->vertices[p1].texture;
+	const auto& t2 = m_mesh->vertices[p2].texture;
 
-		const auto& [p0, p1, p2] = triangle;
-
-		const auto& t0 = m_mesh->vertices[p0].texture;
-		const auto& t1 = m_mesh->vertices[p1].texture;
-		const auto& t2 = m_mesh->vertices[p2].texture;
-
-		const auto uv = interpolate(comparePos, triangle, t0, t1, t2).unit();
-		return m_texture->colorAt(uv.x(), uv.y());
-	}
-
-	return Palette::kBlack;
+	const auto uv = t0.scale(mix.x()).add(t1.scale(mix.y())).add(t2.scale(mix.z())).unit();
+	return m_texture->colorAt(uv.x(), uv.y());
 }
 
 double MeshObject::intersectWith(const Ray& ray, const Triangle& triangle) const
@@ -159,12 +159,6 @@ bool MeshObject::pointOn(const Vector& point, const Triangle& triangle) const
 		return false;
 
 	return true;
-}
-
-Vector MeshObject::interpolate(const Vector& point, const Triangle& triangle, const Vector& a, const Vector& b, const Vector& c) const
-{
-	const Vector mix = interpolate(point, triangle);
-	return a.scale(mix.x()).add(b.scale(mix.y())).add(c.scale(mix.z()));
 }
 
 Vector MeshObject::interpolate(const Vector& point, const Triangle& triangle) const

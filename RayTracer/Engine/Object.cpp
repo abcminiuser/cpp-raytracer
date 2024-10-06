@@ -24,11 +24,12 @@ double Object::intersect(const Ray& ray) const
 
 Color Object::illuminate(const Scene& scene, const Vector& position, const Ray& ray, uint32_t rayDepth) const
 {
-	const Vector	normal			= normalAt(position);
-	const Color		objectColor		= colorAt(scene, position, normal);
-	const Ray		reflectionRay	= ray.reflect(position, normal);
-
+	Vector	normal;
+	Color	objectColor;
+	getIntersectionProperties(position, normal, objectColor);
 	assert(normal.length() - 1 <= std::numeric_limits<double>::epsilon());
+
+	const Ray reflectionRay	= ray.reflect(position, normal);
 
 	Color finalColor = objectColor.scale(m_material.ambient);
 

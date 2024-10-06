@@ -19,8 +19,11 @@ public:
 // Object i/f:
 protected:
 	double						intersectWith(const Ray& ray) const override;
-	Vector						normalAt(const Vector& position) const override;
-	Color						colorAt(const Scene& scene, const Vector& position, const Vector& normal) const override;
+	void						getIntersectionProperties(const Vector& position, Vector& normal, Color& color) const override;
+
+private:
+	Vector						normalAt(const Vector& position) const;
+	Color						colorAt(const Vector& position, const Vector& normal) const;
 
 private:
 	Vector						m_size;
