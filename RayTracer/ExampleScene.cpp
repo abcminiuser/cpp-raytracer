@@ -51,9 +51,9 @@ namespace
 				vertices.push_back(
 					Vertex
 					{
-						.position = Vector(v.Position.X, v.Position.Y, v.Position.Z).scale(scale),
-						.normal = Vector(v.Normal.X, v.Normal.Y, v.Normal.Z).unit(),
-						.texture = Vector(v.TextureCoordinate.X, v.TextureCoordinate.Y, 0)
+						.position = Vector(double(v.Position.X), double(v.Position.Y), double(v.Position.Z)).scale(scale),
+						.normal = Vector(double(v.Normal.X), double(v.Normal.Y), double(v.Normal.Z)).unit(),
+						.texture = Vector(double(v.TextureCoordinate.X), double(v.TextureCoordinate.Y), 0.0)
 					}
 				);
 			}
