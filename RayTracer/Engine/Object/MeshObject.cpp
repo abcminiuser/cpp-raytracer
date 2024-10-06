@@ -52,17 +52,18 @@ double MeshObject::intersectWith(const Ray& ray) const
 
 void MeshObject::getIntersectionProperties(const Vector& position, Vector& normal, Color& color) const
 {
-	const Vector comparePos = position.subtract(m_position);
+	const Vector positionAdjusted = position.subtract(m_position);
 
 	for (const auto& triangle : m_mesh->triangles)
 	{
-		if (! pointOn(comparePos, triangle))
+		if (! pointOn(positionAdjusted, triangle))
 			continue;
 
-		const Vector mix = interpolate(comparePos, triangle);
+		const Vector mix = interpolate(positionAdjusted, triangle);
 
 		normal	= normalAt(triangle, mix);
 		color	= colorAt(triangle, mix);
+
 		return;
 	}
 

@@ -10,12 +10,12 @@
 
 namespace
 {
-	constexpr auto kFrontNormal = StandardVectors::kUnitZ.invert();
-	constexpr auto kLeftNormal = StandardVectors::kUnitX.invert();
-	constexpr auto kTopNormal = StandardVectors::kUnitY.invert();
-	constexpr auto kBottomNormal = StandardVectors::kUnitY;
-	constexpr auto kRightNormal = StandardVectors::kUnitX;
-	constexpr auto kBackNormal = StandardVectors::kUnitZ;
+	constexpr auto kFrontNormal		= StandardVectors::kUnitZ.invert();
+	constexpr auto kLeftNormal		= StandardVectors::kUnitX.invert();
+	constexpr auto kTopNormal		= StandardVectors::kUnitY.invert();
+	constexpr auto kBottomNormal	= StandardVectors::kUnitY;
+	constexpr auto kRightNormal		= StandardVectors::kUnitX;
+	constexpr auto kBackNormal		= StandardVectors::kUnitZ;
 }
 
 BoxObject::BoxObject(const Vector& position, const Vector& size, std::shared_ptr<Texture> texture, const Material& material)
