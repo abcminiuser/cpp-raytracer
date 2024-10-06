@@ -44,8 +44,8 @@ double MeshObject::intersectWith(const Ray& ray) const
 	}
 
 	double distance = kNoIntersection;
-	for (const auto& t : m_mesh->triangles)
-		distance = std::min(distance, intersectWith(rayAdjusted, t));
+	for (const auto& triangle : m_mesh->triangles)
+		distance = std::min(distance, intersectWith(rayAdjusted, triangle));
 
 	return distance;
 }
@@ -54,15 +54,15 @@ Vector MeshObject::normalAt(const Vector& position) const
 {
 	const Vector comparePos = position.subtract(m_position);
 
-	for (const auto& t : m_mesh->triangles)
+	for (const auto& triangle : m_mesh->triangles)
 	{
-		if (! pointOn(comparePos, t))
+		if (! pointOn(comparePos, triangle))
 			continue;
 
-		const auto& [t0, t1, t2] = t;
+		const auto& [p0, p1, p2] = triangle;
 
 		// Use the normal of the first vertex for now.
-		return m_mesh->vertices[t0].normal;
+		return m_mesh->vertices[p0].normal;
 	}
 
 	return StandardVectors::kUnitZ;
@@ -75,15 +75,15 @@ Color MeshObject::colorAt(const Scene& scene, const Vector& position, const Vect
 
 	const Vector comparePos = position.subtract(m_position);
 
-	for (const auto& t : m_mesh->triangles)
+	for (const auto& triangle : m_mesh->triangles)
 	{
-		if (! pointOn(comparePos, t))
+		if (!pointOn(comparePos, triangle))
 			continue;
 
-		const auto& [t0, t1, t2] = t;
+		const auto& [p0, p1, p2] = triangle;
 
 		// Use the texture coordinates of the first vertex for now.
-		return m_texture->colorAt(m_mesh->vertices[t0].texture.x(), m_mesh->vertices[t0].texture.y());
+		return m_texture->colorAt(m_mesh->vertices[p0].texture.x(), m_mesh->vertices[p0].texture.y());
 	}
 
 	return Palette::kBlack;
@@ -131,11 +131,11 @@ bool MeshObject::pointOn(const Vector& point, const Triangle& triangle) const
 {
 	// https://blackpawn.com/texts/pointinpoly/
 
-	const auto& [t0, t1, t2] = triangle;
+	const auto& [p0, p1, p2] = triangle;
 
-	const auto& v0 = m_mesh->vertices[t0].position;
-	const auto& v1 = m_mesh->vertices[t1].position;
-	const auto& v2 = m_mesh->vertices[t2].position;
+	const auto& v0 = m_mesh->vertices[p0].position;
+	const auto& v1 = m_mesh->vertices[p1].position;
+	const auto& v2 = m_mesh->vertices[p2].position;
 
 	constexpr auto SameSide =
 		[](const Vector& p1, const Vector& p2, const Vector& a, const Vector& b)

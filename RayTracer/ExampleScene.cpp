@@ -42,7 +42,7 @@ namespace
 
 		for (const auto& mesh : objLoader.LoadedMeshes)
 		{
-			printf("Adding sub-mesh %s\n", mesh.MeshName.c_str());
+			printf("Adding sub-mesh '%s'\n", mesh.MeshName.empty() ? "(Unnamed)" : mesh.MeshName.c_str());
 
 			const uint32_t meshStartPos = static_cast<uint32_t>(vertices.size());
 

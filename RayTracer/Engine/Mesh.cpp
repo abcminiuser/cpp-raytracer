@@ -9,12 +9,14 @@ std::shared_ptr<Mesh> BuildMesh(std::vector<Vertex> vertices, std::vector<Triang
 	mesh->lowerCorner = StandardVectors::kMax;
 	mesh->upperCorner = StandardVectors::kMin;
 
-	for (const auto& t : mesh->triangles)
+	for (const auto& triangle : mesh->triangles)
 	{
-		for (const auto& p : t)
+		for (const auto& point : triangle)
 		{
-			mesh->lowerCorner = Vector::MinPoint(mesh->lowerCorner, mesh->vertices[p].position);
-			mesh->upperCorner = Vector::MaxPoint(mesh->upperCorner, mesh->vertices[p].position);
+			const auto& vertex = mesh->vertices[point];
+
+			mesh->lowerCorner = Vector::MinPoint(mesh->lowerCorner, vertex.position);
+			mesh->upperCorner = Vector::MaxPoint(mesh->upperCorner, vertex.position);
 		}
 	}
 
