@@ -65,10 +65,7 @@ Vector MeshObject::normalAt(const Vector& position) const
 		const auto& n1 = m_mesh->vertices[p1].normal;
 		const auto& n2 = m_mesh->vertices[p2].normal;
 
-		const Vector mix = interpolate(comparePos, triangle).unit();
-
-		const Vector normal = n0.scale(mix.x()).add(n1.scale(mix.y())).add(n2.scale(mix.z())).unit();
-		return normal;
+		return interpolate(comparePos, triangle, n0, n1, n2).unit();
 	}
 
 	return StandardVectors::kUnitZ;
@@ -88,13 +85,11 @@ Color MeshObject::colorAt(const Scene& scene, const Vector& position, const Vect
 
 		const auto& [p0, p1, p2] = triangle;
 
-		const auto& uv0 = m_mesh->vertices[p0].texture;
-		const auto& uv1 = m_mesh->vertices[p1].texture;
-		const auto& uv2 = m_mesh->vertices[p2].texture;
+		const auto& t0 = m_mesh->vertices[p0].texture;
+		const auto& t1 = m_mesh->vertices[p1].texture;
+		const auto& t2 = m_mesh->vertices[p2].texture;
 
-		const Vector mix = interpolate(comparePos, triangle).unit();
-
-		const Vector uv = uv0.scale(mix.x()).add(uv1.scale(mix.y())).add(uv2.scale(mix.z())).unit();
+		const auto uv = interpolate(comparePos, triangle, t0, t1, t2).unit();
 		return m_texture->colorAt(uv.x(), uv.y());
 	}
 
@@ -164,6 +159,12 @@ bool MeshObject::pointOn(const Vector& point, const Triangle& triangle) const
 		return false;
 
 	return true;
+}
+
+Vector MeshObject::interpolate(const Vector& point, const Triangle& triangle, const Vector& a, const Vector& b, const Vector& c) const
+{
+	const Vector mix = interpolate(point, triangle);
+	return a.scale(mix.x()).add(b.scale(mix.y())).add(c.scale(mix.z()));
 }
 
 Vector MeshObject::interpolate(const Vector& point, const Triangle& triangle) const

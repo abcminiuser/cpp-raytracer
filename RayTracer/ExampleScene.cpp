@@ -222,8 +222,8 @@ Scene ExampleScene::Build()
 			/* Texture: */					std::make_shared<SolidTexture>(Palette::kWhite),
 			/* Material: */					Material{
 				.ambient = 0.2,
-				.diffuse = 0.15,
-				.specular = 0.2,
+				.diffuse = 0.1,
+				.specular = 0.3,
 				.reflectivity = 0.5
 			}
 		)

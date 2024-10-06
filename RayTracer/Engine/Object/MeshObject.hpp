@@ -28,6 +28,7 @@ protected:
 private:
 	double						intersectWith(const Ray& ray, const Triangle& triangle) const;
 	bool						pointOn(const Vector& point, const Triangle& triangle) const;
+	Vector						interpolate(const Vector& point, const Triangle& triangle, const Vector& a, const Vector& b, const Vector& c) const;
 	Vector						interpolate(const Vector& point, const Triangle& triangle) const;
 
 private:
