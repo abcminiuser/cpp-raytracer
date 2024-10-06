@@ -184,7 +184,7 @@ Vector MeshObject::interpolate(const Vector& point, const Triangle& triangle) co
 
 	double v = (d11 * d20 - d01 * d21) / denom;
 	double w = (d00 * d21 - d01 * d20) / denom;
-	double u = 1.0f - v - w;
+	double u = 1.0 - v - w;
 
 	return Vector(u, v, w);
 }
