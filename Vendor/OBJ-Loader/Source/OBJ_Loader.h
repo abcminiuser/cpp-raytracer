@@ -946,7 +946,7 @@ namespace objl
 					}
 
 					// If Vertex is not an interior vertex
-					double angle = math::AngleBetweenV3(pPrev.Position - pCur.Position, pNext.Position - pCur.Position) * (180 / 3.14159265359);
+					double angle = double(math::AngleBetweenV3(pPrev.Position - pCur.Position, pNext.Position - pCur.Position)) * (180 / 3.14159265359);
 					if (angle <= 0 || angle >= 180)
 						continue;
 
