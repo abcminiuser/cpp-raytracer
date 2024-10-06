@@ -78,8 +78,8 @@ Color BoxObject::colorAt(const Scene& scene, const Vector& position, const Vecto
 	if (! m_texture)
 		return Palette::kBlack;
 
-	constexpr double uStep = (1.0 / 4);
-	constexpr double vStep = (1.0 / 3);
+	constexpr double kStepU = (1.0 / 4);
+	constexpr double kStepV = (1.0 / 3);
 
 	const auto dLower = position.subtract(m_lowerCorner).divide(m_size);
 	const auto dUpper = m_upperCorner.subtract(position).divide(m_size);
@@ -90,38 +90,38 @@ Color BoxObject::colorAt(const Scene& scene, const Vector& position, const Vecto
 	if (normal == kFrontNormal)
 	{
 		// Front face
-		u = uStep * (1 + dLower.x());
-		v = vStep * (1 + dLower.y());
+		u = kStepU * (1 + dLower.x());
+		v = kStepV * (1 + dLower.y());
 	}
 	else if (normal == kLeftNormal)
 	{
 		// Left face
-		u = uStep * (0 + dUpper.z());
-		v = vStep * (1 + dLower.y());
+		u = kStepU * (0 + dUpper.z());
+		v = kStepV * (1 + dLower.y());
 	}
 	else if (normal == kTopNormal)
 	{
 		// Top face
-		u = uStep * (1 + dUpper.z());
-		v = vStep * (0 + dLower.x());
+		u = kStepU * (1 + dUpper.z());
+		v = kStepV * (0 + dLower.x());
 	}
 	else if (normal == kBottomNormal)
 	{
 		// Bottom face
-		u = uStep * (1 + dLower.x());
-		v = vStep * (2 + dLower.z());
+		u = kStepU * (1 + dLower.x());
+		v = kStepV * (2 + dLower.z());
 	}
 	else if (normal == kRightNormal)
 	{
 		// Right face
-		u = uStep * (2 + dLower.z());
-		v = vStep * (1 + dLower.y());
+		u = kStepU * (2 + dLower.z());
+		v = kStepV * (1 + dLower.y());
 	}
 	else if (normal == kBackNormal)
 	{
 		// Back face
-		u = uStep * (3 + dUpper.x());
-		v = vStep * (1 + dLower.y());
+		u = kStepU * (3 + dUpper.x());
+		v = kStepV * (1 + dLower.y());
 	}
 
 	return m_texture->colorAt(u, v);
