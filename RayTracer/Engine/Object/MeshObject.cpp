@@ -12,7 +12,7 @@ MeshObject::MeshObject(const Vector& position, std::shared_ptr<Mesh> mesh, std::
 	, m_mesh(std::move(mesh))
 	, m_texture(std::move(texture))
 {
-	if (!m_mesh)
+	if (! m_mesh)
 		throw std::runtime_error("Mesh object create with no associated mesh.");
 }
 
@@ -138,11 +138,14 @@ bool MeshObject::pointOn(const Vector& point, const Triangle& triangle) const
 	const auto& v2 = m_mesh->vertices[t2].position;
 
 	constexpr auto SameSide =
-		[](Vector p1, Vector p2, Vector a, Vector b)
+		[](const Vector& p1, const Vector& p2, const Vector& a, const Vector& b)
 		{
-			Vector cp1 = b.subtract(a).crossProduct(p1.subtract(a));
-			Vector cp2 = b.subtract(a).crossProduct(p2.subtract(a));
-			return cp1.dotProduct(cp2) >= kComparisonThreshold;
+			const Vector bFromA = b.subtract(a);
+
+			const Vector cp1 = bFromA.crossProduct(p1.subtract(a));
+			const Vector cp2 = bFromA.crossProduct(p2.subtract(a));
+
+			return cp1.dotProduct(cp2) >= -kComparisonThreshold;
 		};
 
 	return SameSide(point, v0, v1, v2) && SameSide(point, v1, v0, v2) && SameSide(point, v2, v0, v1);
