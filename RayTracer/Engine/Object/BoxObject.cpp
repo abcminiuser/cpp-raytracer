@@ -73,7 +73,7 @@ Vector BoxObject::normalAt(const Vector& position) const
 		return kBackNormal; // Back face
 }
 
-Color BoxObject::colorAt(const Scene& scene, const Ray& ray) const
+Color BoxObject::colorAt(const Scene& scene, const Vector& position, const Vector& normal) const
 {
 	if (! m_texture)
 		return Palette::kBlack;
@@ -81,43 +81,43 @@ Color BoxObject::colorAt(const Scene& scene, const Ray& ray) const
 	constexpr double uStep = (1.0 / 4);
 	constexpr double vStep = (1.0 / 3);
 
-	const auto dLower = ray.position().subtract(m_lowerCorner).divide(m_size);
-	const auto dUpper = m_upperCorner.subtract(ray.position()).divide(m_size);
+	const auto dLower = position.subtract(m_lowerCorner).divide(m_size);
+	const auto dUpper = m_upperCorner.subtract(position).divide(m_size);
 
 	double u = 0;
 	double v = 0;
 
-	if (ray.direction() == kFrontNormal)
+	if (normal == kFrontNormal)
 	{
 		// Front face
 		u = uStep * (1 + dLower.x());
 		v = vStep * (1 + dLower.y());
 	}
-	else if (ray.direction() == kLeftNormal)
+	else if (normal == kLeftNormal)
 	{
 		// Left face
 		u = uStep * (0 + dUpper.z());
 		v = vStep * (1 + dLower.y());
 	}
-	else if (ray.direction() == kTopNormal)
+	else if (normal == kTopNormal)
 	{
 		// Top face
 		u = uStep * (1 + dUpper.z());
 		v = vStep * (0 + dLower.x());
 	}
-	else if (ray.direction() == kBottomNormal)
+	else if (normal == kBottomNormal)
 	{
 		// Bottom face
 		u = uStep * (1 + dLower.x());
 		v = vStep * (2 + dLower.z());
 	}
-	else if (ray.direction() == kRightNormal)
+	else if (normal == kRightNormal)
 	{
 		// Right face
 		u = uStep * (2 + dLower.z());
 		v = vStep * (1 + dLower.y());
 	}
-	else if (ray.direction() == kBackNormal)
+	else if (normal == kBackNormal)
 	{
 		// Back face
 		u = uStep * (3 + dUpper.x());

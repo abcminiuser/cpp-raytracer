@@ -34,15 +34,15 @@ Vector PlaneObject::normalAt(const Vector& position) const
 	return m_normal;
 }
 
-Color PlaneObject::colorAt(const Scene& scene, const Ray& ray) const
+Color PlaneObject::colorAt(const Scene& scene, const Vector& position, const Vector& normal) const
 {
 	if (! m_texture)
 		return Palette::kBlack;
 
-	const auto rayFromOrigin = ray.position().subtract(m_position).scale(m_textureScaleFactor);
+	const auto positionFromOrigin = position.subtract(m_position).scale(m_textureScaleFactor);
 
-	auto u = rayFromOrigin.x();
-	auto v = rayFromOrigin.z();
+	auto u = positionFromOrigin.x();
+	auto v = positionFromOrigin.z();
 
 	return m_texture->colorAt(u, v);
 }

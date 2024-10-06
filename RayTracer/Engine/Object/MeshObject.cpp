@@ -68,12 +68,12 @@ Vector MeshObject::normalAt(const Vector& position) const
 	return StandardVectors::kUnitZ;
 }
 
-Color MeshObject::colorAt(const Scene& scene, const Ray& ray) const
+Color MeshObject::colorAt(const Scene& scene, const Vector& position, const Vector& normal) const
 {
 	if (! m_texture)
 		return Palette::kBlack;
 
-	const Vector comparePos = ray.position().subtract(m_position);
+	const Vector comparePos = position.subtract(m_position);
 
 	for (const auto& t : m_mesh->triangles)
 	{

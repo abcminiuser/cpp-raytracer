@@ -53,14 +53,14 @@ Vector SphereObject::normalAt(const Vector& position) const
 	return position.subtract(m_position).unit();
 }
 
-Color SphereObject::colorAt(const Scene& scene, const Ray& ray) const
+Color SphereObject::colorAt(const Scene& scene, const Vector& position, const Vector& normal) const
 {
 	if (! m_texture)
 		return Palette::kBlack;
 
-	const auto x = ray.direction().x();
-	const auto y = ray.direction().y();
-	const auto z = ray.direction().z();
+	const auto x = normal.x();
+	const auto y = normal.y();
+	const auto z = normal.z();
 
 	double u = .5 + std::atan2(z, x) / (2 * std::numbers::pi);
 	double v = .5 + std::asin(y) / std::numbers::pi;

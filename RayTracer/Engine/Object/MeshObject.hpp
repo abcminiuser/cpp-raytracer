@@ -23,7 +23,7 @@ public:
 protected:
 	double						intersectWith(const Ray& ray) const override;
 	Vector						normalAt(const Vector& position) const override;
-	Color						colorAt(const Scene& scene, const Ray& ray) const override;
+	Color						colorAt(const Scene& scene, const Vector& position, const Vector& normal) const override;
 
 private:
 	double						intersectWith(const Ray& ray, const Triangle& triangle) const;

@@ -25,7 +25,7 @@ double Object::intersect(const Ray& ray) const
 Color Object::illuminate(const Scene& scene, const Vector& position, const Ray& ray, uint32_t rayDepth) const
 {
 	const Vector	normal			= normalAt(position);
-	const Color		objectColor		= colorAt(scene, Ray(position, normal));
+	const Color		objectColor		= colorAt(scene, position, normal);
 	const Ray		reflectionRay	= ray.reflect(position, normal);
 
 	assert(normal.length() - 1 <= std::numeric_limits<double>::epsilon());
