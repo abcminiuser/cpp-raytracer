@@ -61,8 +61,14 @@ Vector MeshObject::normalAt(const Vector& position) const
 
 		const auto& [p0, p1, p2] = triangle;
 
-		// Use the normal of the first vertex for now.
-		return m_mesh->vertices[p0].normal;
+		const auto& n0 = m_mesh->vertices[p0].normal;
+		const auto& n1 = m_mesh->vertices[p1].normal;
+		const auto& n2 = m_mesh->vertices[p2].normal;
+
+		const Vector mix = interpolate(comparePos, triangle).unit();
+
+		const Vector normal = n0.scale(mix.x()).add(n1.scale(mix.y())).add(n2.scale(mix.z())).unit();
+		return normal;
 	}
 
 	return StandardVectors::kUnitZ;
@@ -82,8 +88,14 @@ Color MeshObject::colorAt(const Scene& scene, const Vector& position, const Vect
 
 		const auto& [p0, p1, p2] = triangle;
 
-		// Use the texture coordinates of the first vertex for now.
-		return m_texture->colorAt(m_mesh->vertices[p0].texture.x(), m_mesh->vertices[p0].texture.y());
+		const auto& uv0 = m_mesh->vertices[p0].texture;
+		const auto& uv1 = m_mesh->vertices[p1].texture;
+		const auto& uv2 = m_mesh->vertices[p2].texture;
+
+		const Vector mix = interpolate(comparePos, triangle).unit();
+
+		const Vector uv = uv0.scale(mix.x()).add(uv1.scale(mix.y())).add(uv2.scale(mix.z())).unit();
+		return m_texture->colorAt(uv.x(), uv.y());
 	}
 
 	return Palette::kBlack;
@@ -152,4 +164,32 @@ bool MeshObject::pointOn(const Vector& point, const Triangle& triangle) const
 		return false;
 
 	return true;
+}
+
+Vector MeshObject::interpolate(const Vector& point, const Triangle& triangle) const
+{
+	// https://gamedev.stackexchange.com/questions/23743/whats-the-most-efficient-way-to-find-barycentric-coordinates
+
+	const auto& [p0, p1, p2] = triangle;
+
+	const auto& v0 = m_mesh->vertices[p0].position;
+	const auto& v1 = m_mesh->vertices[p1].position;
+	const auto& v2 = m_mesh->vertices[p2].position;
+
+	const Vector e0 = v1.subtract(v0);
+	const Vector e1 = v2.subtract(v0);
+	const Vector e2 = point.subtract(v0);
+
+	double d00 = e0.dotProduct(e0);
+	double d01 = e0.dotProduct(e1);
+	double d11 = e1.dotProduct(e1);
+	double d20 = e2.dotProduct(e0);
+	double d21 = e2.dotProduct(e1);
+	double denom = d00 * d11 - d01 * d01;
+
+	double v = (d11 * d20 - d01 * d21) / denom;
+	double w = (d00 * d21 - d01 * d20) / denom;
+	double u = 1.0f - v - w;
+
+	return Vector(u, v, w);
 }

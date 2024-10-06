@@ -35,7 +35,8 @@ namespace
 	std::shared_ptr<Mesh> MakeObjectMesh(const std::string& path, double scale = 1.0)
 	{
 		objl::Loader objLoader;
-		objLoader.LoadFile(path);
+		if (! objLoader.LoadFile(path))
+			throw std::runtime_error("Failed to load object filee: " + path);
 
 		std::vector<Vertex>		vertices;
 		std::vector<Triangle>	triangles;
@@ -52,7 +53,7 @@ namespace
 					Vertex
 					{
 						.position = Vector(double(v.Position.X), double(v.Position.Y), double(v.Position.Z)).scale(scale),
-						.normal = Vector(double(v.Normal.X), double(v.Normal.Y), double(v.Normal.Z)).unit(),
+						.normal = Vector(double(v.Normal.X), double(v.Normal.Y), double(v.Normal.Z)),
 						.texture = Vector(double(v.TextureCoordinate.X), double(v.TextureCoordinate.Y), 0.0)
 					}
 				);
@@ -217,13 +218,13 @@ Scene ExampleScene::Build()
 	scene.objects.push_back(
 		std::make_unique<MeshObject>(
 			/* Position: */					Vector(8, 0, 8),
-			/* Mesh: */						MakeObjectMesh("Assets/Teapot.obj"),
+			/* Mesh: */						MakeObjectMesh("Assets/Teapot.obj", 1.0),
 			/* Texture: */					std::make_shared<SolidTexture>(Palette::kWhite),
 			/* Material: */					Material{
 				.ambient = 0.2,
-				.diffuse = 0.2,
-				.specular = 0.3,
-				.reflectivity = 0.0
+				.diffuse = 0.15,
+				.specular = 0.2,
+				.reflectivity = 0.5
 			}
 		)
 	);
