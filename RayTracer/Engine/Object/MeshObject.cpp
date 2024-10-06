@@ -77,7 +77,7 @@ Color MeshObject::colorAt(const Scene& scene, const Vector& position, const Vect
 
 	for (const auto& triangle : m_mesh->triangles)
 	{
-		if (!pointOn(comparePos, triangle))
+		if (! pointOn(comparePos, triangle))
 			continue;
 
 		const auto& [p0, p1, p2] = triangle;
@@ -129,7 +129,7 @@ double MeshObject::intersectWith(const Ray& ray, const Triangle& triangle) const
 
 bool MeshObject::pointOn(const Vector& point, const Triangle& triangle) const
 {
-	// https://blackpawn.com/texts/pointinpoly/
+	// https://gdbooks.gitbooks.io/3dcollisions/content/Chapter4/point_in_triangle.html
 
 	const auto& [p0, p1, p2] = triangle;
 
@@ -137,16 +137,19 @@ bool MeshObject::pointOn(const Vector& point, const Triangle& triangle) const
 	const auto& v1 = m_mesh->vertices[p1].position;
 	const auto& v2 = m_mesh->vertices[p2].position;
 
-	constexpr auto SameSide =
-		[](const Vector& p1, const Vector& p2, const Vector& a, const Vector& b)
-		{
-			const Vector bFromA = b.subtract(a);
+	const Vector a = v0.subtract(point);
+	const Vector b = v1.subtract(point);
+	const Vector c = v2.subtract(point);
 
-			const Vector cp1 = bFromA.crossProduct(p1.subtract(a));
-			const Vector cp2 = bFromA.crossProduct(p2.subtract(a));
+	const Vector u = b.crossProduct(c);
+	const Vector v = c.crossProduct(a);
+	const Vector w = a.crossProduct(b);
 
-			return cp1.dotProduct(cp2) >= -kComparisonThreshold;
-		};
+	if (u.dotProduct(v) < kComparisonThreshold)
+		return false;
 
-	return SameSide(point, v0, v1, v2) && SameSide(point, v1, v0, v2) && SameSide(point, v2, v0, v1);
+	if (u.dotProduct(w) < kComparisonThreshold)
+		return false;
+
+	return true;
 }
