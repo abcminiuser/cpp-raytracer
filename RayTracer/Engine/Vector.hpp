@@ -2,7 +2,7 @@
 
 #include <algorithm>
 #include <cmath>
-#include <utility>
+#include <tuple>
 
 struct Vector
 {
@@ -26,6 +26,16 @@ public:
 	{
 
 	}
+
+	constexpr			Vector(const Vector& other)
+		: m_x(other.m_x)
+		, m_y(other.m_y)
+		, m_z(other.m_z)
+	{
+
+	}
+
+	constexpr Vector&	operator=(const Vector& other) = default;
 
 	constexpr double	squaredEuclidianDistance() const
 	{
@@ -131,11 +141,11 @@ private:
 
 namespace StandardVectors
 {
-	static constexpr auto kOrigin = Vector(0, 0, 0);
-	static constexpr auto kUnitX = Vector(1, 0, 0);
-	static constexpr auto kUnitY = Vector(0, 1, 0);
-	static constexpr auto kUnitZ = Vector(0, 0, 1);
+	static inline constexpr auto kOrigin = Vector(0, 0, 0);
+	static inline constexpr auto kUnitX = Vector(1, 0, 0);
+	static inline constexpr auto kUnitY = Vector(0, 1, 0);
+	static inline constexpr auto kUnitZ = Vector(0, 0, 1);
 
-	static constexpr auto kMin = Vector(std::numeric_limits<double>::min(), std::numeric_limits<double>::min(), std::numeric_limits<double>::min());
-	static constexpr auto kMax = Vector(std::numeric_limits<double>::max(), std::numeric_limits<double>::max(), std::numeric_limits<double>::max());
+	static inline constexpr auto kMin = Vector(std::numeric_limits<double>::min(), std::numeric_limits<double>::min(), std::numeric_limits<double>::min());
+	static inline constexpr auto kMax = Vector(std::numeric_limits<double>::max(), std::numeric_limits<double>::max(), std::numeric_limits<double>::max());
 }

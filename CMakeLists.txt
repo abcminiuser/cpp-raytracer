@@ -8,7 +8,6 @@ if (CPPCHECK_BIN)
 
     list (APPEND CMAKE_CXX_CPPCHECK
         "--enable=warning"
-        "--inconclusive"
         "--force"
         "--inline-suppr"
         "--quiet"

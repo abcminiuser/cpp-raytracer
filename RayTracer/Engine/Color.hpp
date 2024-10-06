@@ -2,7 +2,7 @@
 
 #include <algorithm>
 #include <stdint.h>
-#include <utility>
+#include <tuple>
 
 struct Color
 {
@@ -101,13 +101,13 @@ private:
 
 namespace Palette
 {
-	static constexpr auto kTransparent = Color(0, 0, 0, 0);
-	static constexpr auto kRed = Color(255, 0, 0);
-	static constexpr auto kGreen = Color(0, 255, 0);
-	static constexpr auto kBlue = Color(0, 0, 255);
-	static constexpr auto kBlack = Color(0, 0, 0);
-	static constexpr auto kWhite = Color(255, 255, 255);
-	static constexpr auto kCyan = Color(0, 255, 255);
-	static constexpr auto kYellow = Color(255, 255, 0);
-	static constexpr auto kMagenta = Color(255, 0, 255);
+	static inline constexpr auto kTransparent = Color(0, 0, 0, 0);
+	static inline constexpr auto kRed = Color(255, 0, 0);
+	static inline constexpr auto kGreen = Color(0, 255, 0);
+	static inline constexpr auto kBlue = Color(0, 0, 255);
+	static inline constexpr auto kBlack = Color(0, 0, 0);
+	static inline constexpr auto kWhite = Color(255, 255, 255);
+	static inline constexpr auto kCyan = Color(0, 255, 255);
+	static inline constexpr auto kYellow = Color(255, 255, 0);
+	static inline constexpr auto kMagenta = Color(255, 0, 255);
 }
