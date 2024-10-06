@@ -62,7 +62,7 @@ namespace
 				triangles.push_back(Triangle{ meshStartPos + mesh.Indices[i + 0], meshStartPos + mesh.Indices[i + 1], meshStartPos + mesh.Indices[i + 2] });
 		}
 
-		return BuildMesh(vertices, triangles);
+		return BuildMesh(std::move(vertices), std::move(triangles));
 	}
 }
 
