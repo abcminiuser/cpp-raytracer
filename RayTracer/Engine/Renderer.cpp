@@ -7,9 +7,9 @@
 #include <algorithm>
 
 #if defined(NDEBUG)
-constexpr bool kIsDebug = false;
+[[maybe_unused]] constexpr bool kIsDebug = false;
 #else
-constexpr bool kIsDebug = true;
+[[maybe_unused]] constexpr bool kIsDebug = true;
 #endif
 
 namespace
