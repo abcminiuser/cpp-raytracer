@@ -7,7 +7,7 @@
 #include <memory>
 #include <vector>
 
-using Triangle = std::array<uint32_t, 3>;
+using Triangle = std::array<size_t, 3>;
 
 struct Vertex
 {
