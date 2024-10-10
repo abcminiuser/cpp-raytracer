@@ -24,8 +24,8 @@ double MeshObject::intersectWith(const Ray& ray) const
 	// and triangle intersection tests, than to offset it for every point.
 	const auto rayAdjusted = Ray(ray.position().subtract(m_position), ray.direction());
 
-	m_mesh->octree.walk(
-		[&](const Vector& lowerCorner, const Vector& upperCorner, const std::vector<Triangle>& triangles) -> bool
+	m_mesh->walk(
+		[&](const Vector& lowerCorner, const Vector& upperCorner, const std::vector<Vertex>& vertices, const std::vector<Triangle>& triangles) -> bool
 		{
 			const auto t1 = lowerCorner.subtract(rayAdjusted.position()).multiply(rayAdjusted.directionInverse());
 			const auto t2 = upperCorner.subtract(rayAdjusted.position()).multiply(rayAdjusted.directionInverse());
@@ -48,8 +48,16 @@ double MeshObject::intersectWith(const Ray& ray) const
 				return false;
 			}
 
-			for (const auto& t : triangles)
-				distance = std::min(distance, intersectWith(rayAdjusted, t));
+			for (const auto& triangle : triangles)
+			{
+				const auto& [p0, p1, p2] = triangle;
+
+				const auto& v0 = vertices[p0];
+				const auto& v1 = vertices[p1];
+				const auto& v2 = vertices[p2];
+
+				distance = std::min(distance, intersectWith(rayAdjusted, v0, v1, v2));
+			}
 
 			return true;
 		});
@@ -63,8 +71,8 @@ void MeshObject::getIntersectionProperties(const Vector& position, Vector& norma
 
 	bool found = false;
 
-	m_mesh->octree.walk(
-		[&](const Vector& lowerCorner, const Vector& upperCorner, const std::vector<Triangle>& triangles) -> bool
+	m_mesh->walk(
+		[&](const Vector& lowerCorner, const Vector& upperCorner, const std::vector<Vertex>& vertices, const std::vector<Triangle>& triangles) -> bool
 		{
 			if (positionAdjusted.x() < lowerCorner.x() || positionAdjusted.x() > upperCorner.x())
 				return false;
@@ -77,13 +85,19 @@ void MeshObject::getIntersectionProperties(const Vector& position, Vector& norma
 
 			for (const auto& triangle : triangles)
 			{
-				if (! pointOn(positionAdjusted, triangle))
+				const auto& [p0, p1, p2] = triangle;
+
+				const auto& v0 = vertices[p0];
+				const auto& v1 = vertices[p1];
+				const auto& v2 = vertices[p2];
+
+				if (! pointOn(positionAdjusted, v0, v1, v2))
 					continue;
 
-				const Vector mix = interpolate(positionAdjusted, triangle);
+				const Vector mix = interpolate(positionAdjusted, v0, v1, v2);
 
-				normal	= normalAt(triangle, mix);
-				color	= colorAt(triangle, mix);
+				normal	= normalAt(v0, v1, v2, mix);
+				color	= colorAt(v0, v1, v2, mix);
 
 				found = true;
 
@@ -100,44 +114,26 @@ void MeshObject::getIntersectionProperties(const Vector& position, Vector& norma
 	}
 }
 
-Vector MeshObject::normalAt(const Triangle& triangle, const Vector& mix) const
+Vector MeshObject::normalAt(const Vertex& v0, const Vertex& v1, const Vertex v2, const Vector& mix) const
 {
-	const auto& [p0, p1, p2] = triangle;
-
-	const auto& n0 = m_mesh->vertices[p0].normal;
-	const auto& n1 = m_mesh->vertices[p1].normal;
-	const auto& n2 = m_mesh->vertices[p2].normal;
-
-	return n0.scale(mix.x()).add(n1.scale(mix.y())).add(n2.scale(mix.z())).unit();
+	return v0.normal.scale(mix.x()).add(v1.normal.scale(mix.y())).add(v2.normal.scale(mix.z())).unit();
 }
 
-Color MeshObject::colorAt(const Triangle& triangle, const Vector& mix) const
+Color MeshObject::colorAt(const Vertex& v0, const Vertex& v1, const Vertex v2, const Vector& mix) const
 {
 	if (! m_texture)
 		return Palette::kBlack;
 
-	const auto& [p0, p1, p2] = triangle;
-
-	const auto& t0 = m_mesh->vertices[p0].texture;
-	const auto& t1 = m_mesh->vertices[p1].texture;
-	const auto& t2 = m_mesh->vertices[p2].texture;
-
-	const auto uv = t0.scale(mix.x()).add(t1.scale(mix.y())).add(t2.scale(mix.z())).unit();
+	const auto uv = v0.texture.scale(mix.x()).add(v1.texture.scale(mix.y())).add(v2.texture.scale(mix.z())).unit();
 	return m_texture->colorAt(uv.x(), uv.y());
 }
 
-double MeshObject::intersectWith(const Ray& ray, const Triangle& triangle) const
+double MeshObject::intersectWith(const Ray& ray, const Vertex& v0, const Vertex& v1, const Vertex v2) const
 {
 	// https://en.wikipedia.org/wiki/M%C3%B6ller%E2%80%93Trumbore_intersection_algorithm
 
-	const auto& [t0, t1, t2] = triangle;
-
-	const auto& v0 = m_mesh->vertices[t0].position;
-	const auto& v1 = m_mesh->vertices[t1].position;
-	const auto& v2 = m_mesh->vertices[t2].position;
-
-	const Vector edge1 = v1.subtract(v0);
-	const Vector edge2 = v2.subtract(v0);
+	const Vector edge1 = v1.position.subtract(v0.position);
+	const Vector edge2 = v2.position.subtract(v0.position);
 	const Vector rayCrossE2 = ray.direction().crossProduct(edge2);
 
 	const double det = edge1.dotProduct(rayCrossE2);
@@ -145,7 +141,7 @@ double MeshObject::intersectWith(const Ray& ray, const Triangle& triangle) const
 		return kNoIntersection;
 
 	const double invDet = 1.0 / det;
-	const Vector s = ray.position().subtract(v0);
+	const Vector s = ray.position().subtract(v0.position);
 
 	const double u = invDet * s.dotProduct(rayCrossE2);
 	if (u < 0 || u > 1)
@@ -164,19 +160,13 @@ double MeshObject::intersectWith(const Ray& ray, const Triangle& triangle) const
 	return t;
 }
 
-bool MeshObject::pointOn(const Vector& point, const Triangle& triangle) const
+bool MeshObject::pointOn(const Vector& point, const Vertex& v0, const Vertex& v1, const Vertex v2) const
 {
 	// https://gdbooks.gitbooks.io/3dcollisions/content/Chapter4/point_in_triangle.html
 
-	const auto& [p0, p1, p2] = triangle;
-
-	const auto& v0 = m_mesh->vertices[p0].position;
-	const auto& v1 = m_mesh->vertices[p1].position;
-	const auto& v2 = m_mesh->vertices[p2].position;
-
-	const Vector a = v0.subtract(point);
-	const Vector b = v1.subtract(point);
-	const Vector c = v2.subtract(point);
+	const Vector a = v0.position.subtract(point);
+	const Vector b = v1.position.subtract(point);
+	const Vector c = v2.position.subtract(point);
 
 	const Vector u = b.crossProduct(c);
 	const Vector v = c.crossProduct(a);
@@ -191,19 +181,13 @@ bool MeshObject::pointOn(const Vector& point, const Triangle& triangle) const
 	return true;
 }
 
-Vector MeshObject::interpolate(const Vector& point, const Triangle& triangle) const
+Vector MeshObject::interpolate(const Vector& point, const Vertex& v0, const Vertex& v1, const Vertex v2) const
 {
 	// https://gamedev.stackexchange.com/questions/23743/whats-the-most-efficient-way-to-find-barycentric-coordinates
 
-	const auto& [p0, p1, p2] = triangle;
-
-	const auto& v0 = m_mesh->vertices[p0].position;
-	const auto& v1 = m_mesh->vertices[p1].position;
-	const auto& v2 = m_mesh->vertices[p2].position;
-
-	const Vector e0 = v1.subtract(v0);
-	const Vector e1 = v2.subtract(v0);
-	const Vector e2 = point.subtract(v0);
+	const Vector e0 = v1.position.subtract(v0.position);
+	const Vector e1 = v2.position.subtract(v0.position);
+	const Vector e2 = point.subtract(v0.position);
 
 	double d00 = e0.dotProduct(e0);
 	double d01 = e0.dotProduct(e1);

@@ -24,7 +24,8 @@ namespace
 	}
 }
 
-Octree::Octree(const std::vector<Vertex>& vertices, std::vector<Triangle> triangles)
+Mesh::Mesh(std::vector<Vertex> vertices, std::vector<Triangle> triangles)
+	: m_vertices(std::move(vertices))
 {
 	if (triangles.empty())
 		return;
@@ -36,8 +37,8 @@ Octree::Octree(const std::vector<Vertex>& vertices, std::vector<Triangle> triang
 	{
 		for (const auto& p : t)
 		{
-			minPoint = Vector::MinPoint(minPoint, vertices[p].position);
-			maxPoint = Vector::MaxPoint(maxPoint, vertices[p].position);
+			minPoint = Vector::MinPoint(minPoint, m_vertices[p].position);
+			maxPoint = Vector::MaxPoint(maxPoint, m_vertices[p].position);
 		}
 	}
 
@@ -49,12 +50,12 @@ Octree::Octree(const std::vector<Vertex>& vertices, std::vector<Triangle> triang
 	const auto size		= maxPoint.subtract(minPoint);
 	printf("Partitioning mesh (%f %f %f) size (%f %f %f) - %zu triangles\n", position.x(), position.y(), position.z(), size.x(), size.y(), size.z(), triangles.size());
 
-	partition(position, size, vertices, 0, std::move(triangles));
+	partition(position, size, m_vertices, 0, std::move(triangles));
 
 	printf("Octree built, %zu nodes.\n", m_elements.size());
 }
 
-size_t Octree::partition(const Vector& position, const Vector& size, const std::vector<Vertex>& vertices, uint32_t depth, std::vector<Triangle> triangles)
+size_t Mesh::partition(const Vector& position, const Vector& size, const std::vector<Vertex>& vertices, uint32_t depth, std::vector<Triangle> triangles)
 {
 	const size_t nodeIndex = m_elements.size();
 	auto& node = m_elements.emplace_back(Node());
@@ -135,14 +136,4 @@ size_t Octree::partition(const Vector& position, const Vector& size, const std::
 	}
 
 	return nodeIndex;
-}
-
-std::shared_ptr<Mesh> BuildMesh(std::vector<Vertex> vertices, std::vector<Triangle> triangles)
-{
-	auto mesh = std::make_shared<Mesh>();
-
-	mesh->vertices	= std::move(vertices);
-	mesh->octree	= Octree(mesh->vertices, std::move(triangles));
-
-	return mesh;
 }
