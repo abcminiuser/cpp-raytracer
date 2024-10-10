@@ -181,7 +181,7 @@ Scene ExampleScene::Build()
 		std::make_unique<SphereObject>(
 			/* Position: */					Vector(-3, 0, -3),
 			/* Radius: */					1,
-			/* Texture: */					std::make_shared<SolidTexture>(Palette::kTransparent),
+			/* Texture: */					std::make_shared<SolidTexture>(Palette::kWhite),
 			/* Material: */					Material{
 				.ambient = 0.0,
 				.diffuse = 0.0,
