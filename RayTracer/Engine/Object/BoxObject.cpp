@@ -35,7 +35,10 @@ double BoxObject::intersectWith(const Ray& ray) const
 	const auto t1 = m_lowerCorner.subtract(ray.position()).multiply(ray.directionInverse());
 	const auto t2 = m_upperCorner.subtract(ray.position()).multiply(ray.directionInverse());
 
+	const Vector minPoint = Vector::MinPoint(t1, t2);
 	const Vector maxPoint = Vector::MaxPoint(t1, t2);
+
+	const double tMin = std::max({ minPoint.x(), minPoint.y(), minPoint.z() });
 	const double tMax = std::min({ maxPoint.x(), maxPoint.y(), maxPoint.z() });
 
 	if (tMax < 0)
@@ -44,8 +47,6 @@ double BoxObject::intersectWith(const Ray& ray) const
 		return kNoIntersection;
 	}
 
-	const Vector minPoint = Vector::MinPoint(t1, t2);
-	const double tMin = std::max({ minPoint.x(), minPoint.y(), minPoint.z() });
 
 	if (tMin >= tMax)
 	{

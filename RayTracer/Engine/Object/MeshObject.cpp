@@ -32,7 +32,10 @@ double MeshObject::intersectWith(const Ray& ray) const
 				const auto t1 = lowerCorner.subtract(rayAdjusted.position()).multiply(rayAdjusted.directionInverse());
 				const auto t2 = upperCorner.subtract(rayAdjusted.position()).multiply(rayAdjusted.directionInverse());
 
+				const Vector minPoint = Vector::MinPoint(t1, t2);
 				const Vector maxPoint = Vector::MaxPoint(t1, t2);
+
+				const double tMin = std::max({ minPoint.x(), minPoint.y(), minPoint.z() });
 				const double tMax = std::min({ maxPoint.x(), maxPoint.y(), maxPoint.z() });
 
 				if (tMax < 0)
@@ -41,12 +44,15 @@ double MeshObject::intersectWith(const Ray& ray) const
 					return false;
 				}
 
-				const Vector minPoint = Vector::MinPoint(t1, t2);
-				const double tMin = std::max({ minPoint.x(), minPoint.y(), minPoint.z() });
-
 				if (tMin >= tMax)
 				{
 					// No intersection
+					return false;
+				}
+
+				if (tMin >= distance)
+				{
+					// Intersected, but futher away than our existing closest match
 					return false;
 				}
 			}
