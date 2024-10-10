@@ -64,11 +64,13 @@ size_t Mesh::partition(const Vector& position, const Vector& size, const std::ve
 	node.upperCorner	= position.add(size);
 
 	// Find all triangles that are within this node's bounding box.
+	node.triangles.reserve(triangles.size());
 	for (const auto& t : triangles)
 	{
 		if (BoxContainsTriangle(node.lowerCorner, node.upperCorner, vertices, t))
 		    node.triangles.push_back(t);
 	}
+	node.triangles.shrink_to_fit();
 
 	// If this node matched no triangles, just return a null node to save space now and processing time later.
 	if (node.triangles.empty())

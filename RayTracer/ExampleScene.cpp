@@ -47,6 +47,9 @@ namespace
 
 			const uint32_t meshStartPos = static_cast<uint32_t>(vertices.size());
 
+			vertices.reserve(vertices.size() + mesh.Vertices.size());
+			triangles.reserve(triangles.size() + (mesh.Indices.size() / 3));
+
 			for (const auto& v : mesh.Vertices)
 			{
 				vertices.emplace_back(
