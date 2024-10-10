@@ -63,7 +63,8 @@ private:
 		triangleTest(std::as_const(m_vertices), node.triangles);
 	}
 
-	size_t	partition(const Vector& position, const Vector& size, const std::vector<Vertex>& vertices, uint32_t depth, std::vector<Triangle> triangles);
+	size_t	partition(const Vector& position, const Vector& size, uint32_t depth, std::vector<Triangle> triangles);
+	bool	boxContainsTriangle(const Vector& lowerCorner, const Vector& upperCorner, const Triangle& triangle);
 
 private:
 	std::vector<Vertex> 			m_vertices;
