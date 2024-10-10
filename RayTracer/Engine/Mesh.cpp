@@ -93,6 +93,7 @@ size_t Mesh::partition(const Vector& position, const Vector& size, const std::ve
 		std::swap(triangles, node.triangles);
 		node.triangles.clear();
 
+		// NOTE: Partitioning will invalidate our iterators (and out node reference).
 		std::array<size_t, 8> childrenIndexes
 			{
 				partition(position.add(Vector(0, 0, 0)), partitionSize, vertices, depth + 1, triangles),

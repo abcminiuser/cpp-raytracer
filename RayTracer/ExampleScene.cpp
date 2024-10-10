@@ -49,7 +49,7 @@ namespace
 
 			for (const auto& v : mesh.Vertices)
 			{
-				vertices.push_back(
+				vertices.emplace_back(
 					Vertex
 					{
 						.position = Vector(double(v.Position.X), double(v.Position.Y), double(v.Position.Z)).scale(scale),
@@ -60,7 +60,7 @@ namespace
 			}
 
 			for (size_t i = 0; i < mesh.Indices.size(); i += 3)
-				triangles.push_back(Triangle{ meshStartPos + mesh.Indices[i + 0], meshStartPos + mesh.Indices[i + 1], meshStartPos + mesh.Indices[i + 2] });
+				triangles.emplace_back(Triangle{ meshStartPos + mesh.Indices[i + 0], meshStartPos + mesh.Indices[i + 1], meshStartPos + mesh.Indices[i + 2] });
 		}
 
 		return std::make_shared<Mesh>(std::move(vertices), std::move(triangles));
