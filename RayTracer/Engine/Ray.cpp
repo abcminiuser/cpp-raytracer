@@ -6,11 +6,6 @@
 #include <cassert>
 #include <limits>
 
-namespace
-{
-	constexpr uint32_t kMaxDepth = 10;
-}
-
 Ray::Ray(const Vector& position, const Vector& direction)
 	: m_position(position)
 	, m_direction(direction)
@@ -21,7 +16,7 @@ Ray::Ray(const Vector& position, const Vector& direction)
 
 Color Ray::trace(const Scene& scene, uint32_t rayDepth) const
 {
-	if (rayDepth >= kMaxDepth)
+	if (rayDepth >= scene.maxRayDepth)
 		return Palette::kBlack;
 
 	double	closestIntersectionDistance = Object::kNoIntersection;

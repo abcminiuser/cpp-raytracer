@@ -40,7 +40,13 @@ Renderer::~Renderer()
 
 void Renderer::setScene(Scene scene)
 {
+	const bool wasRendering = isRendering();
+	stopRender();
+
 	m_scene = std::move(scene);
+
+	if (wasRendering)
+		startRender();
 }
 
 void Renderer::clear()
@@ -70,6 +76,7 @@ void Renderer::startRender()
 	m_lastRenderLineStart = 0;
 
 	m_renderStartTime = std::chrono::steady_clock::now();
+	m_renderEndTime = {};
 
 	m_runRenderThreads = true;
 	for (auto& t : m_renderThreads)

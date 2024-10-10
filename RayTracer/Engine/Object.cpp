@@ -33,13 +33,13 @@ Color Object::illuminate(const Scene& scene, const Vector& position, const Ray& 
 
 	Color finalColor = objectColor.scale(m_material.ambient);
 
-	if (m_material.reflectivity > 0)
+	if (scene.allowReflections && m_material.reflectivity > 0)
 	{
 		const auto reflectionColor = reflectionRay.trace(scene, rayDepth);
 		finalColor = finalColor.add(reflectionColor.scale(m_material.reflectivity));
 	}
 
-	if (m_material.refractivity > 0)
+	if (scene.allowRefractions && m_material.refractivity > 0)
 	{
 		const auto refractionRay = ray.refract(position, normal, scene.airRefractionIndex, m_material.refractionIndex);
 
@@ -50,8 +50,11 @@ Color Object::illuminate(const Scene& scene, const Vector& position, const Ray& 
 		}
 	}
 
-	for (const auto& l : scene.lights)
-		finalColor = finalColor.add(l->illuminate(scene, normal, objectColor, reflectionRay, m_material));
+	if (scene.allowLighting)
+	{
+		for (const auto& l : scene.lights)
+			finalColor = finalColor.add(l->illuminate(scene, normal, objectColor, reflectionRay, m_material));
+	}
 
 	return finalColor;
 }

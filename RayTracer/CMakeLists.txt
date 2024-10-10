@@ -35,6 +35,7 @@ set_property(TARGET RayTracer PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
 
 if (MSVC)
     target_compile_options (RayTracer PUBLIC /W4 /WX /wd4100)
+    target_compile_definitions (RayTracer PUBLIC _CRT_SECURE_NO_WARNINGS)
 else ()
     target_compile_options (RayTracer PUBLIC -Wall -Wextra -pedantic -Werror -Wno-unused-parameter -Wshadow -Wdouble-promotion)
 endif ()
@@ -58,6 +59,11 @@ add_custom_command (TARGET RayTracer POST_BUILD
 	COMMAND ${CMAKE_COMMAND}
 	ARGS -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/../Vendor/thebasemesh.com/Assets" "$<TARGET_FILE_DIR:RayTracer>/Assets"
 	COMMENT "Copying 'thebasemesh.com' third party assets...")
+
+add_custom_command (TARGET RayTracer POST_BUILD
+	COMMAND ${CMAKE_COMMAND}
+	ARGS -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/../Vendor/fontspace.com/Assets" "$<TARGET_FILE_DIR:RayTracer>/Assets"
+	COMMENT "Copying 'fontspace.com' third party assets...")
 
 install (FILES
 	$<TARGET_FILE:RayTracer>
