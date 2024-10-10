@@ -102,11 +102,11 @@ void Renderer::startRender()
 
 						for (size_t x = 0; x < m_width; x++)
 						{
-							double r = 0, g = 0, b = 0;
-
 							// Super-sample across a 3x3 grid, then average the results to anti-alias.
 							if constexpr(kEnableSuperSampling)
 							{
+								double r = 0, g = 0, b = 0;
+
 								for (int ssY = -1; ssY <= 1; ssY++)
 								{
 									for (int ssX = -1; ssX <= 1; ssX++)
