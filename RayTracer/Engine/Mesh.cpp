@@ -30,6 +30,8 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<Triangle> triangles)
 	if (triangles.empty())
 		return;
 
+	m_vertices.shrink_to_fit();
+
 	// First find the bounding box for all triangles in the mesh.
 	Vector minPoint = StandardVectors::kMax;
 	Vector maxPoint = StandardVectors::kMin;

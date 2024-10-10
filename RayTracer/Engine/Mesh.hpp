@@ -23,13 +23,13 @@ public:
 
 			Mesh(std::vector<Vertex> vertices, std::vector<Triangle> triangles);
 
-	template <typename Callable>
-	void	walk(const Callable& callable)
+	template <typename BBTestCallable, typename TriangleCallable>
+	void	walk(const BBTestCallable& boundingBoxTest, const TriangleCallable& triangleTest)
 	{
 		if (m_elements.empty())
 			return;
 
-		walk(callable, m_elements[0]);
+		walk(boundingBoxTest, triangleTest, m_elements[0]);
 	}
 
 private:
@@ -43,17 +43,24 @@ private:
 		std::array<size_t, 8>		childrenIndexes = {};
 	};
 
-	template <typename Callable>
-	void	walk(const Callable& callable, const Node& node)
+	template <typename BBTestCallable, typename TriangleCallable>
+	void	walk(const BBTestCallable& boundingBoxTest, const TriangleCallable& triangleTest, const Node& node)
 	{
-		if (! callable(node.lowerCorner, node.upperCorner, std::as_const(m_vertices), node.triangles))
+		if (! boundingBoxTest(node.lowerCorner, node.upperCorner))
 			return;
 
-		for (const auto& c : node.childrenIndexes)
+		if (node.triangles.empty())
 		{
-			if (c)
-				walk(callable, m_elements[c]);
+			for (const auto& c : node.childrenIndexes)
+			{
+				if (c)
+					walk(boundingBoxTest, triangleTest, m_elements[c]);
+			}
+
+			return;
 		}
+
+		triangleTest(std::as_const(m_vertices), node.triangles);
 	}
 
 	size_t	partition(const Vector& position, const Vector& size, const std::vector<Vertex>& vertices, uint32_t depth, std::vector<Triangle> triangles);

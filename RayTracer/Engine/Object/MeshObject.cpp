@@ -25,39 +25,44 @@ double MeshObject::intersectWith(const Ray& ray) const
 	const auto rayAdjusted = Ray(ray.position().subtract(m_position), ray.direction());
 
 	m_mesh->walk(
-		[&](const Vector& lowerCorner, const Vector& upperCorner, const std::vector<Vertex>& vertices, const std::vector<Triangle>& triangles) -> bool
+		[&](const Vector& lowerCorner, const Vector& upperCorner) -> bool
 		{
 			// Check if the ray intersects this node's bounding box.
+
+			const auto t1 = lowerCorner.subtract(rayAdjusted.position()).multiply(rayAdjusted.directionInverse());
+			const auto t2 = upperCorner.subtract(rayAdjusted.position()).multiply(rayAdjusted.directionInverse());
+
+			const Vector minPoint = Vector::MinPoint(t1, t2);
+			const Vector maxPoint = Vector::MaxPoint(t1, t2);
+
+			const double tMin = std::max({ minPoint.x(), minPoint.y(), minPoint.z() });
+			const double tMax = std::min({ maxPoint.x(), maxPoint.y(), maxPoint.z() });
+
+			if (tMax < 0)
 			{
-				const auto t1 = lowerCorner.subtract(rayAdjusted.position()).multiply(rayAdjusted.directionInverse());
-				const auto t2 = upperCorner.subtract(rayAdjusted.position()).multiply(rayAdjusted.directionInverse());
-
-				const Vector minPoint = Vector::MinPoint(t1, t2);
-				const Vector maxPoint = Vector::MaxPoint(t1, t2);
-
-				const double tMin = std::max({ minPoint.x(), minPoint.y(), minPoint.z() });
-				const double tMax = std::min({ maxPoint.x(), maxPoint.y(), maxPoint.z() });
-
-				if (tMax < 0)
-				{
-					// Intersection is behind us
-					return false;
-				}
-
-				if (tMin >= tMax)
-				{
-					// No intersection
-					return false;
-				}
-
-				if (tMin >= distance)
-				{
-					// Intersected, but futher away than our existing closest match
-					return false;
-				}
+				// Intersection is behind us
+				return false;
 			}
 
-			// if we intersect, find the distance to the closest triangle in this node (if any).
+			if (tMin >= tMax)
+			{
+				// No intersection
+				return false;
+			}
+
+			if (tMin >= distance)
+			{
+				// Intersected, but further away than our existing closest match
+				return false;
+			}
+
+			// Intersected, search this node.
+			return true;
+		},
+		[&](const std::vector<Vertex>& vertices, const std::vector<Triangle>& triangles)
+		{
+			// If we intersect, find the distance to the closest triangle in this node (if any).
+
 			for (const auto& triangle : triangles)
 			{
 				const auto& [p0, p1, p2] = triangle;
@@ -68,8 +73,6 @@ double MeshObject::intersectWith(const Ray& ray) const
 
 				distance = std::min(distance, intersectWith(rayAdjusted, v0, v1, v2));
 			}
-
-			return true;
 		});
 
 	return distance;
@@ -82,19 +85,25 @@ void MeshObject::getIntersectionProperties(const Vector& position, Vector& norma
 	bool found = false;
 
 	m_mesh->walk(
-		[&](const Vector& lowerCorner, const Vector& upperCorner, const std::vector<Vertex>& vertices, const std::vector<Triangle>& triangles) -> bool
+		[&](const Vector& lowerCorner, const Vector& upperCorner) -> bool
 		{
 			// Check if this point is within this node's bounding box.
-			{
-				if (positionAdjusted.x() < lowerCorner.x() || positionAdjusted.x() > upperCorner.x())
-					return false;
 
-				if (positionAdjusted.y() < lowerCorner.y() || positionAdjusted.y() > upperCorner.y())
-					return false;
+			if (positionAdjusted.x() < lowerCorner.x() || positionAdjusted.x() > upperCorner.x())
+				return false;
 
-				if (positionAdjusted.z() < lowerCorner.z() || positionAdjusted.z() > upperCorner.z())
-					return false;
-			}
+			if (positionAdjusted.y() < lowerCorner.y() || positionAdjusted.y() > upperCorner.y())
+				return false;
+
+			if (positionAdjusted.z() < lowerCorner.z() || positionAdjusted.z() > upperCorner.z())
+				return false;
+
+			// Our search point is contained in the bounding box, search this node.
+			return true;
+		},
+		[&](const std::vector<Vertex>& vertices, const std::vector<Triangle>& triangles)
+		{
+			// If we intersect, find the distance to the closest triangle in this node (if any).
 
 			for (const auto& triangle : triangles)
 			{
@@ -113,11 +122,8 @@ void MeshObject::getIntersectionProperties(const Vector& position, Vector& norma
 				color	= colorAt(v0, v1, v2, mix);
 
 				found = true;
-
-				return false;
+				return;
 			}
-
-			return true;
 		});
 
 	if (! found)
