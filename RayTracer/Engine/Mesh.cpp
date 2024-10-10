@@ -2,7 +2,7 @@
 
 namespace
 {
-	constexpr auto kMaxOctreePartitionDepth = 4;
+	constexpr auto kMaxOctreePartitionDepth = 5;
 	constexpr auto kMinTrianglesForOctreePartition = 1;
 
 	constexpr bool BoxContainsTriangle(const Vector& lowerCorner, const Vector& upperCorner, const std::vector<Vertex>& vertices, const Triangle& triangle)

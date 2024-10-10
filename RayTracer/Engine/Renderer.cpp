@@ -6,12 +6,6 @@
 
 #include <algorithm>
 
-#if defined(NDEBUG)
-[[maybe_unused]] constexpr bool kIsDebug = false;
-#else
-[[maybe_unused]] constexpr bool kIsDebug = true;
-#endif
-
 namespace
 {
 	constexpr size_t	kMaxLinesToRenderPerChunk	= 1;
@@ -103,6 +97,9 @@ void Renderer::startRender()
 
 					for (size_t y = startLine; y < endLine; y++)
 					{
+						if (! m_runningRenderThreads)
+							break;
+
 						for (size_t x = 0; x < m_width; x++)
 						{
 							double r = 0, g = 0, b = 0;
