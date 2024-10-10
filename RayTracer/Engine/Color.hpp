@@ -65,7 +65,7 @@ public:
 			ClampComponent(m_red * factor),
 			ClampComponent(m_green * factor),
 			ClampComponent(m_blue * factor),
-			ClampComponent(m_alpha * factor)
+			ClampComponent(m_alpha) // Don't scale alpha.
 		);
 	}
 
