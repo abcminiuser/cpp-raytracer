@@ -18,34 +18,41 @@ MeshObject::MeshObject(const Vector& position, std::shared_ptr<Mesh> mesh, std::
 
 double MeshObject::intersectWith(const Ray& ray) const
 {
+	double distance = kNoIntersection;
+
 	// Cheaper to adjust the ray by our position here once and re-use it for the bounding box
 	// and triangle intersection tests, than to offset it for every point.
 	const auto rayAdjusted = Ray(ray.position().subtract(m_position), ray.direction());
 
-	const auto t1 = m_mesh->lowerCorner.subtract(rayAdjusted.position()).multiply(rayAdjusted.directionInverse());
-	const auto t2 = m_mesh->upperCorner.subtract(rayAdjusted.position()).multiply(rayAdjusted.directionInverse());
+	m_mesh->octree.walk(
+		[&](const Vector& lowerCorner, const Vector& upperCorner, const std::vector<Triangle>& triangles) -> bool
+		{
+			const auto t1 = lowerCorner.subtract(rayAdjusted.position()).multiply(rayAdjusted.directionInverse());
+			const auto t2 = upperCorner.subtract(rayAdjusted.position()).multiply(rayAdjusted.directionInverse());
 
-	const Vector maxPoint = Vector::MaxPoint(t1, t2);
-	const double tMax = std::min({ maxPoint.x(), maxPoint.y(), maxPoint.z() });
+			const Vector maxPoint = Vector::MaxPoint(t1, t2);
+			const double tMax = std::min({ maxPoint.x(), maxPoint.y(), maxPoint.z() });
 
-	if (tMax < 0)
-	{
-		// Intersection is behind us
-		return kNoIntersection;
-	}
+			if (tMax < 0)
+			{
+				// Intersection is behind us
+				return false;
+			}
 
-	const Vector minPoint = Vector::MinPoint(t1, t2);
-	const double tMin = std::max({ minPoint.x(), minPoint.y(), minPoint.z() });
+			const Vector minPoint = Vector::MinPoint(t1, t2);
+			const double tMin = std::max({ minPoint.x(), minPoint.y(), minPoint.z() });
 
-	if (tMin >= tMax)
-	{
-		// No intersection
-		return kNoIntersection;
-	}
+			if (tMin >= tMax)
+			{
+				// No intersection
+				return false;
+			}
 
-	double distance = kNoIntersection;
-	for (const auto& triangle : m_mesh->triangles)
-		distance = std::min(distance, intersectWith(rayAdjusted, triangle));
+			for (const auto& t : triangles)
+				distance = std::min(distance, intersectWith(rayAdjusted, t));
+
+			return true;
+		});
 
 	return distance;
 }
@@ -54,21 +61,43 @@ void MeshObject::getIntersectionProperties(const Vector& position, Vector& norma
 {
 	const Vector positionAdjusted = position.subtract(m_position);
 
-	for (const auto& triangle : m_mesh->triangles)
+	bool found = false;
+
+	m_mesh->octree.walk(
+		[&](const Vector& lowerCorner, const Vector& upperCorner, const std::vector<Triangle>& triangles) -> bool
+		{
+			if (positionAdjusted.x() < lowerCorner.x() || positionAdjusted.x() > upperCorner.x())
+				return false;
+
+			if (positionAdjusted.y() < lowerCorner.y() || positionAdjusted.y() > upperCorner.y())
+				return false;
+
+			if (positionAdjusted.z() < lowerCorner.z() || positionAdjusted.z() > upperCorner.z())
+				return false;
+
+			for (const auto& triangle : triangles)
+			{
+				if (! pointOn(positionAdjusted, triangle))
+					continue;
+
+				const Vector mix = interpolate(positionAdjusted, triangle);
+
+				normal	= normalAt(triangle, mix);
+				color	= colorAt(triangle, mix);
+
+				found = true;
+
+				return false;
+			}
+
+			return true;
+		});
+
+	if (! found)
 	{
-		if (! pointOn(positionAdjusted, triangle))
-			continue;
-
-		const Vector mix = interpolate(positionAdjusted, triangle);
-
-		normal	= normalAt(triangle, mix);
-		color	= colorAt(triangle, mix);
-
-		return;
+		normal	= StandardVectors::kUnitZ;
+		color	= Palette::kBlack;
 	}
-
-	normal	= StandardVectors::kUnitZ;
-	color	= Palette::kBlack;
 }
 
 Vector MeshObject::normalAt(const Triangle& triangle, const Vector& mix) const
