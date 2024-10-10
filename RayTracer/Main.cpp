@@ -152,6 +152,17 @@ int main(int argc, char* argv[])
 			infoTextUpdatePending = true;
 		}
 
+		const bool isRendering = renderer.isRendering();
+		if (isRendering || wasRendering)
+			texture.update(reinterpret_cast<const sf::Uint8*>(renderer.pixels()));
+
+		if (isRendering != wasRendering)
+		{
+			wasRendering = isRendering;
+
+			infoTextUpdatePending = true;
+		}
+
 		if (infoTextUpdatePending)
 		{
 			std::string infoMessage;
@@ -161,27 +172,14 @@ int main(int argc, char* argv[])
 			infoMessage += std::string("(L)ock/Unlock Camera (") + (isCameraLocked ? "Locked" : "Unlocked") + ")\n";
 
 			infoMessage += "\n";
-			infoMessage += "Camera Position : " + ToString(scene.camera.position()) + "\n";
+			infoMessage += "Camera Position: " + ToString(scene.camera.position()) + "\n";
 			infoMessage += "Camera Direction: " + ToString(scene.camera.direction()) + "\n";
+			infoMessage += isRendering ? std::string("Rendering In Progress") : std::string("Rendering Completed (") + std::to_string(renderer.renderTime().count()) + " ms)";
 
 			infoText.setString(infoMessage);
 
 			infoTextUpdatePending = false;
 		}
-
-		const bool isRendering = renderer.isRendering();
-		if (isRendering || wasRendering)
-			texture.update(reinterpret_cast<const sf::Uint8*>(renderer.pixels()));
-
-		if (isRendering != wasRendering)
-		{
-			if (! isRendering)
-				window.setTitle(std::string("Ray Tracer - Rendering Completed (") + std::to_string(renderer.renderTime().count()) + " ms)");
-			else
-				window.setTitle("Ray Tracer - Rendering In Progress");
-		}
-
-		wasRendering = isRendering;
 
 		window.draw(sprite);
 		window.draw(infoText);
