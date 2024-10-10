@@ -15,17 +15,16 @@ private:
 
 	constexpr auto		tied() const
 	{
-		return std::tie(m_red, m_green, m_blue, m_alpha);
+		return std::tie(m_red, m_green, m_blue);
 	}
 
 public:
 	constexpr			Color() = default;
 
-	constexpr			Color(uint8_t r, uint8_t g, uint8_t b, uint8_t a = 255)
+	constexpr			Color(uint8_t r, uint8_t g, uint8_t b)
 		: m_red(r)
 		, m_green(g)
 		, m_blue(b)
-		, m_alpha(a)
 	{
 
 	}
@@ -34,7 +33,6 @@ public:
 		: m_red(static_cast<uint8_t>(argb32 >> 0))
 		, m_green(static_cast<uint8_t>(argb32 >> 8))
 		, m_blue(static_cast<uint8_t>(argb32 >> 16))
-		, m_alpha(static_cast<uint8_t>(argb32 >> 24))
 	{
 
 	}
@@ -44,8 +42,7 @@ public:
 		return Color(
 			ClampComponent(m_red + other.m_red),
 			ClampComponent(m_green + other.m_green),
-			ClampComponent(m_blue + other.m_blue),
-			ClampComponent(m_alpha + other.m_alpha)
+			ClampComponent(m_blue + other.m_blue)
 		);
 	}
 
@@ -54,8 +51,7 @@ public:
 		return Color(
 			ClampComponent(m_red * other.m_red / 255),
 			ClampComponent(m_green * other.m_green / 255),
-			ClampComponent(m_blue * other.m_blue / 255),
-			ClampComponent(m_alpha * other.m_alpha / 255)
+			ClampComponent(m_blue * other.m_blue / 255)
 		);
 	}
 
@@ -64,20 +60,18 @@ public:
 		return Color(
 			ClampComponent(m_red * factor),
 			ClampComponent(m_green * factor),
-			ClampComponent(m_blue * factor),
-			ClampComponent(m_alpha) // Don't scale alpha.
+			ClampComponent(m_blue * factor)
 		);
 	}
 
 	constexpr uint8_t	red() const 	{ return static_cast<uint8_t>(m_red); }
 	constexpr uint8_t	green() const 	{ return static_cast<uint8_t>(m_green); }
 	constexpr uint8_t	blue() const	{ return static_cast<uint8_t>(m_blue); }
-	constexpr uint8_t	alpha() const	{ return static_cast<uint8_t>(m_alpha); }
 
 	constexpr uint32_t	toRGBA() const
 	{
 		return
-			m_alpha << 24 |
+			255 << 24 |
 			m_blue << 16 |
 			m_green << 8 |
 			m_red << 0;
@@ -92,12 +86,10 @@ private:
 	uint32_t			m_red = 0;
 	uint32_t			m_green = 0;
 	uint32_t			m_blue = 0;
-	uint32_t			m_alpha = 0;
 };
 
 namespace Palette
 {
-	static inline constexpr auto kTransparent = Color(0, 0, 0, 0);
 	static inline constexpr auto kRed = Color(255, 0, 0);
 	static inline constexpr auto kGreen = Color(0, 255, 0);
 	static inline constexpr auto kBlue = Color(0, 0, 255);
