@@ -27,27 +27,31 @@ double MeshObject::intersectWith(const Ray& ray) const
 	m_mesh->walk(
 		[&](const Vector& lowerCorner, const Vector& upperCorner, const std::vector<Vertex>& vertices, const std::vector<Triangle>& triangles) -> bool
 		{
-			const auto t1 = lowerCorner.subtract(rayAdjusted.position()).multiply(rayAdjusted.directionInverse());
-			const auto t2 = upperCorner.subtract(rayAdjusted.position()).multiply(rayAdjusted.directionInverse());
-
-			const Vector maxPoint = Vector::MaxPoint(t1, t2);
-			const double tMax = std::min({ maxPoint.x(), maxPoint.y(), maxPoint.z() });
-
-			if (tMax < 0)
+			// Check if the ray intersects this node's bounding box.
 			{
-				// Intersection is behind us
-				return false;
+				const auto t1 = lowerCorner.subtract(rayAdjusted.position()).multiply(rayAdjusted.directionInverse());
+				const auto t2 = upperCorner.subtract(rayAdjusted.position()).multiply(rayAdjusted.directionInverse());
+
+				const Vector maxPoint = Vector::MaxPoint(t1, t2);
+				const double tMax = std::min({ maxPoint.x(), maxPoint.y(), maxPoint.z() });
+
+				if (tMax < 0)
+				{
+					// Intersection is behind us
+					return false;
+				}
+
+				const Vector minPoint = Vector::MinPoint(t1, t2);
+				const double tMin = std::max({ minPoint.x(), minPoint.y(), minPoint.z() });
+
+				if (tMin >= tMax)
+				{
+					// No intersection
+					return false;
+				}
 			}
 
-			const Vector minPoint = Vector::MinPoint(t1, t2);
-			const double tMin = std::max({ minPoint.x(), minPoint.y(), minPoint.z() });
-
-			if (tMin >= tMax)
-			{
-				// No intersection
-				return false;
-			}
-
+			// if we intersect, find the distance to the closest triangle in this node (if any).
 			for (const auto& triangle : triangles)
 			{
 				const auto& [p0, p1, p2] = triangle;
@@ -74,14 +78,17 @@ void MeshObject::getIntersectionProperties(const Vector& position, Vector& norma
 	m_mesh->walk(
 		[&](const Vector& lowerCorner, const Vector& upperCorner, const std::vector<Vertex>& vertices, const std::vector<Triangle>& triangles) -> bool
 		{
-			if (positionAdjusted.x() < lowerCorner.x() || positionAdjusted.x() > upperCorner.x())
-				return false;
+			// Check if this point is within this node's bounding box.
+			{
+				if (positionAdjusted.x() < lowerCorner.x() || positionAdjusted.x() > upperCorner.x())
+					return false;
 
-			if (positionAdjusted.y() < lowerCorner.y() || positionAdjusted.y() > upperCorner.y())
-				return false;
+				if (positionAdjusted.y() < lowerCorner.y() || positionAdjusted.y() > upperCorner.y())
+					return false;
 
-			if (positionAdjusted.z() < lowerCorner.z() || positionAdjusted.z() > upperCorner.z())
-				return false;
+				if (positionAdjusted.z() < lowerCorner.z() || positionAdjusted.z() > upperCorner.z())
+					return false;
+			}
 
 			for (const auto& triangle : triangles)
 			{
@@ -189,16 +196,16 @@ Vector MeshObject::interpolate(const Vector& point, const Vertex& v0, const Vert
 	const Vector e1 = v2.position.subtract(v0.position);
 	const Vector e2 = point.subtract(v0.position);
 
-	double d00 = e0.dotProduct(e0);
-	double d01 = e0.dotProduct(e1);
-	double d11 = e1.dotProduct(e1);
-	double d20 = e2.dotProduct(e0);
-	double d21 = e2.dotProduct(e1);
-	double denom = d00 * d11 - d01 * d01;
+	const double d00 = e0.dotProduct(e0);
+	const double d01 = e0.dotProduct(e1);
+	const double d11 = e1.dotProduct(e1);
+	const double d20 = e2.dotProduct(e0);
+	const double d21 = e2.dotProduct(e1);
+	const double denom = d00 * d11 - d01 * d01;
 
-	double v = (d11 * d20 - d01 * d21) / denom;
-	double w = (d00 * d21 - d01 * d20) / denom;
-	double u = 1.0 - v - w;
+	const double v = (d11 * d20 - d01 * d21) / denom;
+	const double w = (d00 * d21 - d01 * d20) / denom;
+	const double u = 1.0 - v - w;
 
 	return Vector(u, v, w);
 }
