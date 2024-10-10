@@ -36,7 +36,7 @@ namespace
 	{
 		objl::Loader objLoader;
 		if (! objLoader.LoadFile(path))
-			throw std::runtime_error("Failed to load object filee: " + path);
+			throw std::runtime_error("Failed to load object file: " + path);
 
 		std::vector<Vertex>		vertices;
 		std::vector<Triangle>	triangles;
