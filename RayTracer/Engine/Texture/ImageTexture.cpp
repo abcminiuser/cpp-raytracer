@@ -19,8 +19,11 @@ Color ImageTexture::colorAt(double u, double v) const
 	u -= std::floor(u);
 	v -= std::floor(v);
 
-	const size_t x = static_cast<size_t>(u * m_width);
-	const size_t y = (m_height - 1) - static_cast<size_t>(v * (m_height - 1));
+	size_t x = static_cast<size_t>(u * (m_width - 1));
+	size_t y = (m_height - 1) - static_cast<size_t>(v * (m_height - 1));
 
-	return Color(m_pixels.at((y * m_width) + x));
+	x = std::min(x, m_width - 1);
+	y = std::min(y, m_height - 1);
+
+	return Color(m_pixels[(y * m_width) + x]);
 }
