@@ -17,6 +17,15 @@ namespace
 	constexpr size_t	kHeight		= 1080;
 
 	constexpr uint32_t	kUpdateFps	= 60;
+
+	std::string ToString(const Vector& v)
+	{
+		char buffer[64];
+		snprintf(buffer, std::size(buffer), "(% f, % f, % f)", v.x(), v.y(), v.z());
+		buffer[std::size(buffer) - 1] = '\0';
+
+		return buffer;
+	}
 }
 
 int main(int argc, char* argv[])
@@ -40,7 +49,7 @@ int main(int argc, char* argv[])
 	infoText.setOutlineColor(sf::Color::Black);
 	infoText.setOutlineThickness(1);
 	infoText.setFillColor(sf::Color::White);
-	infoText.move(10, 0);
+	infoText.move(10, 10);
 
 	auto scene = ExampleScene::Build();
 
@@ -86,6 +95,8 @@ int main(int argc, char* argv[])
 						std::string fileName = "Render Output " + std::string(timestampBuffer) + ".png";
 						if (texture.copyToImage().saveToFile(fileName))
 							printf("Saved image to '%s'.\n", fileName.c_str());
+
+						break;
 					}
 
 					case sf::Keyboard::Key::R:
@@ -95,6 +106,7 @@ int main(int argc, char* argv[])
 						renderer.clear();
 
 						sceneUpdatePending = true;
+						break;
 					}
 
 					case sf::Keyboard::Key::L:
@@ -103,10 +115,13 @@ int main(int argc, char* argv[])
 						printf("Camera %s\n", isCameraLocked ? "Locked" : "Unlocked");
 
 						infoTextUpdatePending = true;
+						break;
 					}
 
 					default:
+					{
 						break;
+					}
 				}
 			}
 			else if (event.type == sf::Event::MouseWheelScrolled)
@@ -145,10 +160,9 @@ int main(int argc, char* argv[])
 			infoMessage += std::string("(R)estart Render") + "\n";
 			infoMessage += std::string("(L)ock/Unlock Camera (") + (isCameraLocked ? "Locked" : "Unlocked") + ")\n";
 
-			char cameraPosBuffer[64];
-			snprintf(cameraPosBuffer, std::size(cameraPosBuffer), "(% f, % f, % f)", scene.camera.position().x(), scene.camera.position().y(), scene.camera.position().z());
-			cameraPosBuffer[std::size(cameraPosBuffer) - 1] = '\0';
-			infoMessage += "\nCamera Position: " + std::string(cameraPosBuffer) + "\n";
+			infoMessage += "\n";
+			infoMessage += "Camera Position : " + ToString(scene.camera.position()) + "\n";
+			infoMessage += "Camera Direction: " + ToString(scene.camera.direction()) + "\n";
 
 			infoText.setString(infoMessage);
 
