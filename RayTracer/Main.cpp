@@ -92,7 +92,7 @@ int main(int argc, char* argv[])
 						std::strftime(timestampBuffer, std::size(timestampBuffer), "%Y-%m-%d %H%M%S", std::localtime(&now));
 						timestampBuffer[std::size(timestampBuffer) - 1] = '0';
 
-						std::string fileName = "Render Output " + std::string(timestampBuffer) + ".png";
+						std::string fileName = "Render Output " + std::string(timestampBuffer) + ".jpg";
 						if (texture.copyToImage().saveToFile(fileName))
 							printf("Saved image to '%s'.\n", fileName.c_str());
 
