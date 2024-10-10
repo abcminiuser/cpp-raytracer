@@ -13,11 +13,7 @@ private:
 	}
 
 public:
-	constexpr			Vector()
-							: Vector(0, 0, 0)
-	{
-
-	}
+	constexpr			Vector() = default;
 
 	constexpr			Vector(double x, double y, double z)
 		: m_x(x)
