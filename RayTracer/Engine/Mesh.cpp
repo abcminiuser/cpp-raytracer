@@ -65,10 +65,10 @@ size_t Mesh::partition(const Vector& position, const Vector& size, const std::ve
 
 	// Find all triangles that are within this node's bounding box.
 	node.triangles.reserve(triangles.size());
-	for (const auto& t : triangles)
+	for (const auto& triangle : triangles)
 	{
-		if (BoxContainsTriangle(node.lowerCorner, node.upperCorner, vertices, t))
-		    node.triangles.push_back(t);
+		if (BoxContainsTriangle(node.lowerCorner, node.upperCorner, vertices, triangle))
+		    node.triangles.push_back(triangle);
 	}
 	node.triangles.shrink_to_fit();
 
@@ -83,59 +83,60 @@ size_t Mesh::partition(const Vector& position, const Vector& size, const std::ve
 	if (depth >= kMaxOctreePartitionDepth)
 		return nodeIndex;
 
+	// If we have fewer than our minimum number of triangles before a split, adopt all the matching triangles here and bail out.
+	if (node.triangles.size() <= kMinTrianglesForOctreePartition)
+		return nodeIndex;
+
 	// If we matched too many triangles for this node, split it up into eight smaller cubes within our bounding box.
-	if (node.triangles.size() > kMinTrianglesForOctreePartition)
-	{
-		const auto partitionSize = size.scale(0.5);
+	const auto partitionSize = size.scale(0.5);
 
-		const auto oX = partitionSize.x();
-		const auto oY = partitionSize.y();
-		const auto oZ = partitionSize.z();
+	const auto oX = partitionSize.x();
+	const auto oY = partitionSize.y();
+	const auto oZ = partitionSize.z();
 
-		std::swap(triangles, node.triangles);
-		node.triangles.clear();
+	std::swap(triangles, node.triangles);
+	node.triangles.clear();
 
-		// NOTE: Partitioning will invalidate our iterators (and out node reference).
-		std::array<size_t, 8> childrenIndexes
-			{
-				partition(position.add(Vector(0, 0, 0)), partitionSize, vertices, depth + 1, triangles),
-				partition(position.add(Vector(oX, 0, 0)), partitionSize, vertices, depth + 1, triangles),
-				partition(position.add(Vector(0, oY, 0)), partitionSize, vertices, depth + 1, triangles),
-				partition(position.add(Vector(oX, oY, 0)), partitionSize, vertices, depth + 1, triangles),
-
-				partition(position.add(Vector(0, 0, oZ)), partitionSize, vertices, depth + 1, triangles),
-				partition(position.add(Vector(oX, 0, oZ)), partitionSize, vertices, depth + 1, triangles),
-				partition(position.add(Vector(0, oY, oZ)), partitionSize, vertices, depth + 1, triangles),
-				partition(position.add(Vector(oX, oY, oZ)), partitionSize, vertices, depth + 1, triangles)
-			};
-
-		// Check if we've ended up with all our divided triangles in a single, smaller octant.
-		size_t orphanChild = 0;
-		for (const auto& c : childrenIndexes)
+	// NOTE: Partitioning will invalidate our iterators (and out node reference).
+	const std::array<size_t, 8> childrenIndexes
 		{
-			if (! c)
-				continue;
+			partition(position.add(Vector(0, 0, 0)), partitionSize, vertices, depth + 1, triangles),
+			partition(position.add(Vector(oX, 0, 0)), partitionSize, vertices, depth + 1, triangles),
+			partition(position.add(Vector(0, oY, 0)), partitionSize, vertices, depth + 1, triangles),
+			partition(position.add(Vector(0, 0, oZ)), partitionSize, vertices, depth + 1, triangles),
 
-			if (orphanChild)
-			{
-				orphanChild = 0;
-				break;
-			}
+			partition(position.add(Vector(oX, oY, 0)), partitionSize, vertices, depth + 1, triangles),
+			partition(position.add(Vector(oX, 0, oZ)), partitionSize, vertices, depth + 1, triangles),
+			partition(position.add(Vector(0, oY, oZ)), partitionSize, vertices, depth + 1, triangles),
+			partition(position.add(Vector(oX, oY, oZ)), partitionSize, vertices, depth + 1, triangles)
+		};
 
-			orphanChild = c;
-		}
+	// Check if we've ended up with all our divided triangles in a single, smaller octant.
+	size_t orphanChild = 0;
+	for (const auto& c : childrenIndexes)
+	{
+		if (! c)
+			continue;
 
-		// If all the triangles are in one child, just adopt its bounding box and contents and remove it,
-		// to avoid redundant bounding box checks later on.
 		if (orphanChild)
 		{
-			m_elements[nodeIndex] = m_elements[orphanChild];
-			m_elements.pop_back();
+			orphanChild = 0;
+			break;
 		}
-		else
-		{
-			m_elements[nodeIndex].childrenIndexes = childrenIndexes;
-		}
+
+		orphanChild = c;
+	}
+
+	// If all the triangles are in one child, just adopt its bounding box and contents and remove it,
+	// to avoid redundant bounding box checks later on.
+	if (orphanChild)
+	{
+		m_elements[nodeIndex] = m_elements[orphanChild];
+		m_elements.pop_back();
+	}
+	else
+	{
+		m_elements[nodeIndex].childrenIndexes = childrenIndexes;
 	}
 
 	return nodeIndex;

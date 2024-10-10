@@ -40,7 +40,7 @@ private:
 
 		std::vector<Triangle>		triangles;
 
-		std::array<size_t, 8>		childrenIndexes;
+		std::array<size_t, 8>		childrenIndexes = {};
 	};
 
 	template <typename Callable>
