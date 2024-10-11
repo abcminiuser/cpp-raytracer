@@ -71,7 +71,7 @@ public:
 	constexpr uint32_t	toRGBA() const
 	{
 		return
-			255 << 24 |
+			uint32_t(255) << 24 |
 			m_blue << 16 |
 			m_green << 8 |
 			m_red << 0;

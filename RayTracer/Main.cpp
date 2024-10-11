@@ -128,7 +128,7 @@ int main(int argc, char* argv[])
 			{
 				if (! isCameraLocked)
 				{
-					scene.camera.setPosition(scene.camera.position().add(Vector(0, 0, event.mouseWheelScroll.delta / 100)));
+					scene.camera.setPosition(scene.camera.position().add(Vector(0, 0, double(event.mouseWheelScroll.delta) / 100.0)));
 
 					printf("Moved camera to (%f, %f, %f)\n", scene.camera.position().x(), scene.camera.position().y(), scene.camera.position().z());
 					sceneUpdatePending = true;

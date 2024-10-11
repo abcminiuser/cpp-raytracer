@@ -42,22 +42,22 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<Triangle> triangles)
 size_t Mesh::partition(const Vector& position, const Vector& size, uint32_t depth, std::vector<Triangle> triangles)
 {
 	const size_t nodeIndex = m_elements.size();
-	auto& node = m_elements.emplace_back(Node());
+	auto* node = &m_elements.emplace_back(Node());
 
-	node.lowerCorner	= position;
-	node.upperCorner	= position.add(size);
+	node->lowerCorner	= position;
+	node->upperCorner	= position.add(size);
 
 	// Find all triangles that are within this node's bounding box.
-	node.triangles.reserve(triangles.size());
+	node->triangles.reserve(triangles.size());
 	for (const auto& triangle : triangles)
 	{
-		if (boxContainsTriangle(node.lowerCorner, node.upperCorner, triangle))
-		    node.triangles.push_back(triangle);
+		if (boxContainsTriangle(node->lowerCorner, node->upperCorner, triangle))
+		    node->triangles.push_back(triangle);
 	}
-	node.triangles.shrink_to_fit();
+	node->triangles.shrink_to_fit();
 
 	// If this node matched no triangles, just return a null node to save space now and processing time later.
-	if (node.triangles.empty())
+	if (node->triangles.empty())
 	{
 		m_elements.pop_back();
 		return 0;
@@ -68,7 +68,7 @@ size_t Mesh::partition(const Vector& position, const Vector& size, uint32_t dept
 		return nodeIndex;
 
 	// If we have fewer than our minimum number of triangles before a split, adopt all the matching triangles here and bail out.
-	if (node.triangles.size() <= kMinTrianglesForOctreePartition)
+	if (node->triangles.size() <= kMinTrianglesForOctreePartition)
 		return nodeIndex;
 
 	// If we matched too many triangles for this node, split it up into eight smaller cubes within our bounding box.
@@ -78,10 +78,10 @@ size_t Mesh::partition(const Vector& position, const Vector& size, uint32_t dept
 	const auto oY = partitionSize.y();
 	const auto oZ = partitionSize.z();
 
-	std::swap(triangles, node.triangles);
-	node.triangles.clear();
+	std::swap(triangles, node->triangles);
+	node->triangles.clear();
 
-	// NOTE: Partitioning will invalidate our iterators (and out node reference).
+	// NOTE: Partitioning will invalidate our iterators (and out node pointer).
 	const std::array<size_t, 8> childrenIndexes
 		{
 			partition(position.add(Vector(0, 0, 0)), partitionSize, depth + 1, triangles),
@@ -94,6 +94,9 @@ size_t Mesh::partition(const Vector& position, const Vector& size, uint32_t dept
 			partition(position.add(Vector(0, oY, oZ)), partitionSize, depth + 1, triangles),
 			partition(position.add(Vector(oX, oY, oZ)), partitionSize, depth + 1, triangles)
 		};
+
+	// Re-seat our node pointer into the list at the same position, which may have been reallocated.
+	node = &m_elements[nodeIndex];
 
 	// Check if we've ended up with all our divided triangles in a single, smaller octant.
 	size_t orphanChild = 0;
@@ -115,12 +118,12 @@ size_t Mesh::partition(const Vector& position, const Vector& size, uint32_t dept
 	// to avoid redundant bounding box checks later on.
 	if (orphanChild)
 	{
-		m_elements[nodeIndex] = m_elements[orphanChild];
+		*node = m_elements[orphanChild];
 		m_elements.pop_back();
 	}
 	else
 	{
-		m_elements[nodeIndex].childrenIndexes = childrenIndexes;
+		node->childrenIndexes = childrenIndexes;
 	}
 
 	return nodeIndex;
