@@ -114,6 +114,7 @@ Scene ExampleScene::Build()
 	scene.objects.push_back(
 		std::make_unique<SphereObject>(
 			/* Position: */					Vector(-4, 0, 4),
+			/* Rotation: */					Vector(0, 0, 0),
 			/* Radius: */					1,
 			/* Texture: */					std::make_shared<SolidTexture>(Palette::kWhite),
 			/* Material: */					Material{}
@@ -122,6 +123,7 @@ Scene ExampleScene::Build()
 	scene.objects.push_back(
 		std::make_unique<SphereObject>(
 			/* Position: */					Vector(-2, 0, 2),
+			/* Rotation: */					Vector(0, 0, 0),
 			/* Radius: */					1,
 			/* Texture */					std::make_shared<CheckerboardTexture>(Palette::kMagenta, Palette::kYellow, 8),
 			/* Material: */					Material{}
@@ -130,6 +132,7 @@ Scene ExampleScene::Build()
 	scene.objects.push_back(
 		std::make_unique<SphereObject>(
 			/* Position: */					Vector( 0, 0, 0),
+			/* Rotation: */					Vector(0, 0, 0),
 			/* Radius: */					1,
 			/* Texture: */					std::make_shared<SolidTexture>(Palette::kRed),
 			/* Material: */					Material{}
@@ -138,6 +141,7 @@ Scene ExampleScene::Build()
 	scene.objects.push_back(
 		std::make_unique<SphereObject>(
 			/* Position: */					Vector( 2, 0, 2),
+			/* Rotation: */					Vector(0, 0, 0),
 			/* Radius: */					1,
 			/* Texture: */					std::make_shared<SolidTexture>(Palette::kGreen),
 			/* Material: */					Material{}
@@ -146,6 +150,7 @@ Scene ExampleScene::Build()
 	scene.objects.push_back(
 		std::make_unique<SphereObject>(
 			/* Position: */					Vector( 4, 0, 4),
+			/* Rotation: */					Vector(0, 0, 0),
 			/* Radius: */					1,
 			/* Texture: */					std::make_shared<SolidTexture>(Palette::kBlue),
 			/* Material: */					Material{}
@@ -154,6 +159,7 @@ Scene ExampleScene::Build()
 	scene.objects.push_back(
 		std::make_unique<SphereObject>(
 			/* Position: */					Vector(6, 0, 0),
+			/* Rotation: */					Vector(0, 0, 0),
 			/* Radius: */					1,
 			/* Texture: */					std::make_shared<SolidTexture>(Palette::kWhite),
 			/* Material: */					Material{
@@ -167,6 +173,7 @@ Scene ExampleScene::Build()
 	scene.objects.push_back(
 		std::make_unique<SphereObject>(
 			/* Position: */					Vector(-6, 0, 0),
+			/* Rotation: */					Vector(0, 0, 0),
 			/* Radius: */					1,
 			/* Texture: */					MakeImageTexture("Assets/Marble.jpg"),
 			/* Material: */					Material{
@@ -180,6 +187,7 @@ Scene ExampleScene::Build()
 	scene.objects.push_back(
 		std::make_unique<SphereObject>(
 			/* Position: */					Vector(-3, 0, -3),
+			/* Rotation: */					Vector(0, 0, 0),
 			/* Radius: */					1,
 			/* Texture: */					std::make_shared<SolidTexture>(Palette::kWhite),
 			/* Material: */					Material{
@@ -195,6 +203,7 @@ Scene ExampleScene::Build()
 	scene.objects.push_back(
 		std::make_unique<BoxObject>(
 			/* Position: */					Vector(0, 0, 6),
+			/* Rotation: */					Vector(0, 0, 0),
 			/* Size: */						Vector(2, 2, 2),
 			/* Texture: */					std::make_shared<SolidTexture>(Palette::kWhite),
 			/* Material: */					Material{
@@ -208,6 +217,7 @@ Scene ExampleScene::Build()
 	scene.objects.push_back(
 		std::make_unique<BoxObject>(
 			/* Position: */					Vector(1, 0, -4),
+			/* Rotation: */					Vector(0, 3.14 / 4, 0),
 			/* Size: */						Vector(1, 1, 1),
 			/* Texture: */					MakeImageTexture("Assets/Cube.png"),
 			/* Material: */					Material{
@@ -221,6 +231,7 @@ Scene ExampleScene::Build()
 	scene.objects.push_back(
 		std::make_unique<MeshObject>(
 			/* Position: */					Vector(8, 0, 8),
+			/* Rotation: */					Vector(0, 3.14 / 2, 0),
 			/* Mesh: */						MakeObjectMesh("Assets/Teapot.obj", 1.0),
 			/* Texture: */					std::make_shared<SolidTexture>(Palette::kWhite),
 			/* Material: */					Material{

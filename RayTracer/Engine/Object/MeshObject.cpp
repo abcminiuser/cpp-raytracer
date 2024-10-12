@@ -7,8 +7,8 @@
 
 #include <stdexcept>
 
-MeshObject::MeshObject(const Vector& position, std::shared_ptr<Mesh> mesh, std::shared_ptr<Texture> texture, const Material& material)
-	: Object(position, std::move(texture), material)
+MeshObject::MeshObject(const Vector& position, const Vector& rotation, std::shared_ptr<Mesh> mesh, std::shared_ptr<Texture> texture, const Material& material)
+	: Object(position, rotation, std::move(texture), material)
 	, m_mesh(std::move(mesh))
 {
 	if (! m_mesh)
