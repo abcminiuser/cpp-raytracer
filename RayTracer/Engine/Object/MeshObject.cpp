@@ -82,6 +82,9 @@ void MeshObject::getIntersectionProperties(const Vector& position, Vector& norma
 		{
 			// Check if this point is within this node's bounding box.
 
+			if (found)
+				return false;
+
 			if (position.x() < lowerCorner.x() || position.x() > upperCorner.x())
 				return false;
 
