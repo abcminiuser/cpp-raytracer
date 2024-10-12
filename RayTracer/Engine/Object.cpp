@@ -6,8 +6,9 @@
 #include <cassert>
 #include <limits>
 
-Object::Object(const Vector& position, const Material& material)
+Object::Object(const Vector& position, std::shared_ptr<Texture> texture, const Material& material)
 	: m_position(position)
+	, m_texture(std::move(texture))
 	, m_material(material)
 {
 

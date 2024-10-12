@@ -8,9 +8,8 @@
 #include <stdexcept>
 
 MeshObject::MeshObject(const Vector& position, std::shared_ptr<Mesh> mesh, std::shared_ptr<Texture> texture, const Material& material)
-	: Object(position, material)
+	: Object(position, std::move(texture), material)
 	, m_mesh(std::move(mesh))
-	, m_texture(std::move(texture))
 {
 	if (! m_mesh)
 		throw std::runtime_error("Mesh object create with no associated mesh.");

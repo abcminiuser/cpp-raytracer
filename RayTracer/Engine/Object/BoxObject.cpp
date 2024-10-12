@@ -19,9 +19,8 @@ namespace
 }
 
 BoxObject::BoxObject(const Vector& position, const Vector& size, std::shared_ptr<Texture> texture, const Material& material)
-	: Object(position, material)
+	: Object(position, std::move(texture), material)
 	, m_size(size)
-	, m_texture(std::move(texture))
 {
 
 }
@@ -93,37 +92,31 @@ Color BoxObject::colorAt(const Vector& position, const Vector& normal) const
 
 	if (normal == kFrontNormal)
 	{
-		// Front face
 		u = kStepU * (1 + dLower.x());
 		v = kStepV * (1 + dLower.y());
 	}
 	else if (normal == kLeftNormal)
 	{
-		// Left face
 		u = kStepU * (0 + dUpper.z());
 		v = kStepV * (1 + dLower.y());
 	}
 	else if (normal == kTopNormal)
 	{
-		// Top face
 		u = kStepU * (1 + dUpper.z());
 		v = kStepV * (0 + dLower.x());
 	}
 	else if (normal == kBottomNormal)
 	{
-		// Bottom face
 		u = kStepU * (1 + dLower.x());
 		v = kStepV * (2 + dLower.z());
 	}
 	else if (normal == kRightNormal)
 	{
-		// Right face
 		u = kStepU * (2 + dLower.z());
 		v = kStepV * (1 + dLower.y());
 	}
 	else if (normal == kBackNormal)
 	{
-		// Back face
 		u = kStepU * (3 + dUpper.x());
 		v = kStepV * (1 + dLower.y());
 	}

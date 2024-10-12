@@ -5,9 +5,11 @@
 #include "Engine/Vector.hpp"
 
 #include <limits>
+#include <memory>
 #include <stdint.h>
 
 class Ray;
+class Texture;
 
 struct Scene;
 
@@ -17,17 +19,20 @@ public:
 	static inline constexpr double kNoIntersection			= std::numeric_limits<double>::max();
 	static inline constexpr double kComparisonThreshold		= std::numeric_limits<double>::epsilon() * 1000;
 
-					Object(const Vector& position, const Material& material);
-	virtual			~Object() = default;
+								Object(const Vector& position, std::shared_ptr<Texture> texture, const Material& material);
+	virtual						~Object() = default;
 
-	double			intersect(const Ray& ray) const;
-	Color			illuminate(const Scene& scene, const Vector& position, const Ray& ray, uint32_t rayDepth) const;
-
-protected:
-	virtual double	intersectWith(const Ray& ray) const = 0;
-	virtual void	getIntersectionProperties(const Vector& position, Vector& normal, Color& color) const = 0;
+	double						intersect(const Ray& ray) const;
+	Color						illuminate(const Scene& scene, const Vector& position, const Ray& ray, uint32_t rayDepth) const;
 
 protected:
-	Vector			m_position;
-	Material		m_material;
+	virtual double				intersectWith(const Ray& ray) const = 0;
+	virtual void				getIntersectionProperties(const Vector& position, Vector& normal, Color& color) const = 0;
+
+protected:
+	std::shared_ptr<Texture>	m_texture;
+	Material					m_material;
+
+private:
+	Vector						m_position;
 };

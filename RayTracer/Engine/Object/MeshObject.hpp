@@ -34,5 +34,4 @@ private:
 
 private:
 	std::shared_ptr<Mesh>		m_mesh;
-	std::shared_ptr<Texture>	m_texture;
 };

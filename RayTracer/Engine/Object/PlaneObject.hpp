@@ -13,19 +13,18 @@ class PlaneObject
 	: public Object
 {
 public:
-								PlaneObject(const Vector& normal, double distance, std::shared_ptr<Texture> texture, double textureScaleFactor, const Material& material);
-								~PlaneObject() override = default;
+				PlaneObject(const Vector& normal, double distance, std::shared_ptr<Texture> texture, double textureScaleFactor, const Material& material);
+				~PlaneObject() override = default;
 
 // Object i/f:
 protected:
-	double						intersectWith(const Ray& ray) const override;
-	void						getIntersectionProperties(const Vector& position, Vector& normal, Color& color) const override;
+	double		intersectWith(const Ray& ray) const override;
+	void		getIntersectionProperties(const Vector& position, Vector& normal, Color& color) const override;
 
 private:
-	Color						colorAt(const Vector& position, const Vector& normal) const;
+	Color		colorAt(const Vector& position, const Vector& normal) const;
 
 private:
-	std::shared_ptr<Texture>	m_texture;
-	double						m_textureScaleFactor;
-	Vector						m_normal;
+	double		m_textureScaleFactor;
+	Vector		m_normal;
 };

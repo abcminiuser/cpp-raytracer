@@ -6,8 +6,7 @@
 #include "Engine/Vector.hpp"
 
 PlaneObject::PlaneObject(const Vector& normal, double distance, std::shared_ptr<Texture> texture, double textureScaleFactor, const Material& material)
-	: Object(normal.scale(distance), material)
-	, m_texture(std::move(texture))
+	: Object(normal.scale(distance), std::move(texture), material)
 	, m_textureScaleFactor(textureScaleFactor)
 	, m_normal(normal)
 {
