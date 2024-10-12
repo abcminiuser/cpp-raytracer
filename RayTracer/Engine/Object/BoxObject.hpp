@@ -27,7 +27,5 @@ private:
 
 private:
 	Vector						m_size;
-	Vector						m_lowerCorner;
-	Vector						m_upperCorner;
 	std::shared_ptr<Texture>	m_texture;
 };

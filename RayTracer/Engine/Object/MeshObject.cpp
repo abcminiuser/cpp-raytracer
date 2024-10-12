@@ -20,17 +20,13 @@ double MeshObject::intersectWith(const Ray& ray) const
 {
 	double distance = kNoIntersection;
 
-	// Cheaper to adjust the ray by our position here once and re-use it for the bounding box
-	// and triangle intersection tests, than to offset it for every point.
-	const auto rayAdjusted = Ray(ray.position().subtract(m_position), ray.direction());
-
 	m_mesh->walk(
 		[&](const Vector& lowerCorner, const Vector& upperCorner) -> bool
 		{
 			// Check if the ray intersects this node's bounding box.
 
-			const auto t1 = lowerCorner.subtract(rayAdjusted.position()).multiply(rayAdjusted.directionInverse());
-			const auto t2 = upperCorner.subtract(rayAdjusted.position()).multiply(rayAdjusted.directionInverse());
+			const auto t1 = lowerCorner.subtract(ray.position()).multiply(ray.directionInverse());
+			const auto t2 = upperCorner.subtract(ray.position()).multiply(ray.directionInverse());
 
 			const Vector minPoint = Vector::MinPoint(t1, t2);
 			const Vector maxPoint = Vector::MaxPoint(t1, t2);
@@ -71,7 +67,7 @@ double MeshObject::intersectWith(const Ray& ray) const
 				const auto& v1 = vertices[p1];
 				const auto& v2 = vertices[p2];
 
-				distance = std::min(distance, intersectWith(rayAdjusted, v0, v1, v2));
+				distance = std::min(distance, intersectWith(ray, v0, v1, v2));
 			}
 		});
 
@@ -80,8 +76,6 @@ double MeshObject::intersectWith(const Ray& ray) const
 
 void MeshObject::getIntersectionProperties(const Vector& position, Vector& normal, Color& color) const
 {
-	const Vector positionAdjusted = position.subtract(m_position);
-
 	bool found = false;
 
 	m_mesh->walk(
@@ -89,13 +83,13 @@ void MeshObject::getIntersectionProperties(const Vector& position, Vector& norma
 		{
 			// Check if this point is within this node's bounding box.
 
-			if (positionAdjusted.x() < lowerCorner.x() || positionAdjusted.x() > upperCorner.x())
+			if (position.x() < lowerCorner.x() || position.x() > upperCorner.x())
 				return false;
 
-			if (positionAdjusted.y() < lowerCorner.y() || positionAdjusted.y() > upperCorner.y())
+			if (position.y() < lowerCorner.y() || position.y() > upperCorner.y())
 				return false;
 
-			if (positionAdjusted.z() < lowerCorner.z() || positionAdjusted.z() > upperCorner.z())
+			if (position.z() < lowerCorner.z() || position.z() > upperCorner.z())
 				return false;
 
 			// Our search point is contained in the bounding box, search this node.
@@ -113,10 +107,10 @@ void MeshObject::getIntersectionProperties(const Vector& position, Vector& norma
 				const auto& v1 = vertices[p1];
 				const auto& v2 = vertices[p2];
 
-				if (! pointOn(positionAdjusted, v0, v1, v2))
+				if (! pointOn(position, v0, v1, v2))
 					continue;
 
-				const Vector mix = interpolate(positionAdjusted, v0, v1, v2);
+				const Vector mix = interpolate(position, v0, v1, v2);
 
 				normal	= normalAt(v0, v1, v2, mix);
 				color	= colorAt(v0, v1, v2, mix);

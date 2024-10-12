@@ -19,10 +19,8 @@ SphereObject::SphereObject(const Vector& position, double radius, std::shared_pt
 
 double SphereObject::intersectWith(const Ray& ray) const
 {
-	const auto os = ray.position().subtract(m_position);
-
-	const double b = 2 * os.dotProduct(ray.direction());
-	const double c = os.squaredEuclidianDistance() - m_diameter;
+	const double b = 2 * ray.position().dotProduct(ray.direction());
+	const double c = ray.position().squaredEuclidianDistance() - m_diameter;
 	const double d = (b * b) - 4 * c;
 
 	if (d < 0)
@@ -50,7 +48,7 @@ double SphereObject::intersectWith(const Ray& ray) const
 
 void SphereObject::getIntersectionProperties(const Vector& position, Vector& normal, Color& color) const
 {
-	normal	= position.subtract(m_position).unit();
+	normal	= position.unit();
 	color	= colorAt(position, normal);
 }
 
@@ -59,12 +57,8 @@ Color SphereObject::colorAt(const Vector& position, const Vector& normal) const
 	if (! m_texture)
 		return Palette::kBlack;
 
-	const auto x = normal.x();
-	const auto y = normal.y();
-	const auto z = normal.z();
-
-	double u = .5 + std::atan2(z, x) / (2 * std::numbers::pi);
-	double v = .5 + std::asin(y) / std::numbers::pi;
+	double u = .5 + std::atan2(normal.z(), normal.x()) / (2 * std::numbers::pi);
+	double v = .5 + std::asin(normal.y()) / std::numbers::pi;
 
 	return m_texture->colorAt(u, v);
 }

@@ -15,7 +15,9 @@ Object::Object(const Vector& position, const Material& material)
 
 double Object::intersect(const Ray& ray) const
 {
-	const auto closestIntersectionDistance = intersectWith(ray);
+	const Ray rayObjectSpace = Ray(ray.position().subtract(m_position), ray.direction());
+
+	const auto closestIntersectionDistance = intersectWith(rayObjectSpace);
 	if (closestIntersectionDistance < kComparisonThreshold)
 		return kNoIntersection;
 
@@ -24,9 +26,11 @@ double Object::intersect(const Ray& ray) const
 
 Color Object::illuminate(const Scene& scene, const Vector& position, const Ray& ray, uint32_t rayDepth) const
 {
+	const Vector positionObjectSpace = position.subtract(m_position);
+
 	Vector	normal;
 	Color	objectColor;
-	getIntersectionProperties(position, normal, objectColor);
+	getIntersectionProperties(positionObjectSpace, normal, objectColor);
 	assert(normal.length() - 1 <= std::numeric_limits<double>::epsilon());
 
 	const Ray reflectionRay	= ray.reflect(position, normal);

@@ -21,8 +21,6 @@ namespace
 BoxObject::BoxObject(const Vector& position, const Vector& size, std::shared_ptr<Texture> texture, const Material& material)
 	: Object(position, material)
 	, m_size(size)
-	, m_lowerCorner(Vector::MinPoint(position, position.add(size)))
-	, m_upperCorner(Vector::MaxPoint(position, position.add(size)))
 	, m_texture(std::move(texture))
 {
 
@@ -32,8 +30,8 @@ double BoxObject::intersectWith(const Ray& ray) const
 {
 	// https://en.wikipedia.org/wiki/Slab_method
 
-	const auto t1 = m_lowerCorner.subtract(ray.position()).multiply(ray.directionInverse());
-	const auto t2 = m_upperCorner.subtract(ray.position()).multiply(ray.directionInverse());
+	const auto t1 = Vector(0, 0, 0).subtract(ray.position()).multiply(ray.directionInverse());
+	const auto t2 = m_size.subtract(ray.position()).multiply(ray.directionInverse());
 
 	const Vector minPoint = Vector::MinPoint(t1, t2);
 	const Vector maxPoint = Vector::MaxPoint(t1, t2);
@@ -65,15 +63,15 @@ void BoxObject::getIntersectionProperties(const Vector& position, Vector& normal
 
 Vector BoxObject::normalAt(const Vector& position) const
 {
-	if (std::abs(position.z() - m_lowerCorner.z()) < kComparisonThreshold)
+	if (std::abs(position.z()) < kComparisonThreshold)
 		return kFrontNormal; // Front face
-	else if (std::abs(position.x() - m_lowerCorner.x()) < kComparisonThreshold)
+	else if (std::abs(position.x()) < kComparisonThreshold)
 		return kLeftNormal; // Left face
-	else if (std::abs(position.y() - m_lowerCorner.y()) < kComparisonThreshold)
+	else if (std::abs(position.y()) < kComparisonThreshold)
 		return kTopNormal; // Top face
-	else if (std::abs(position.y() - m_upperCorner.y()) < kComparisonThreshold)
+	else if (std::abs(position.y() - m_size.y()) < kComparisonThreshold)
 		return kBottomNormal; // Bottom face
-	else if (std::abs(position.x() - m_upperCorner.x()) < kComparisonThreshold)
+	else if (std::abs(position.x() - m_size.x()) < kComparisonThreshold)
 		return kRightNormal; // Right face
 	else
 		return kBackNormal; // Back face
@@ -87,8 +85,8 @@ Color BoxObject::colorAt(const Vector& position, const Vector& normal) const
 	constexpr double kStepU = (1.0 / 4);
 	constexpr double kStepV = (1.0 / 3);
 
-	const auto dLower = position.subtract(m_lowerCorner).divide(m_size);
-	const auto dUpper = m_upperCorner.subtract(position).divide(m_size);
+	const auto dLower = position.divide(m_size);
+	const auto dUpper = m_size.subtract(position).divide(m_size);
 
 	double u = 0;
 	double v = 0;

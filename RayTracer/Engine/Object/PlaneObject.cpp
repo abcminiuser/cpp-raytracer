@@ -25,7 +25,7 @@ double PlaneObject::intersectWith(const Ray& ray) const
 	}
 
 	// Intersection at a single point (as we're infinitely thin)
-	const auto b = m_normal.dotProduct(ray.position().subtract(m_position));
+	const auto b = m_normal.dotProduct(ray.position());
 	return -b / angle;
 }
 
@@ -40,7 +40,7 @@ Color PlaneObject::colorAt(const Vector& position, const Vector& normal) const
 	if (! m_texture)
 		return Palette::kBlack;
 
-	const auto positionFromOrigin = position.subtract(m_position).scale(m_textureScaleFactor);
+	const auto positionFromOrigin = position.scale(m_textureScaleFactor);
 
 	auto u = positionFromOrigin.x();
 	auto v = positionFromOrigin.z();
