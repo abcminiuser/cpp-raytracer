@@ -32,12 +32,12 @@ Color Object::illuminate(const Scene& scene, const Vector& position, const Ray& 
 {
 	const Vector positionObjectSpace = rotate(position.subtract(m_position), m_rotationMatrix);
 
-	Vector	normal;
+	Vector	normalObjectSpace;
 	Color	objectColor;
-	getIntersectionProperties(positionObjectSpace, normal, objectColor);
-	assert(normal.length() - 1 <= std::numeric_limits<double>::epsilon());
+	getIntersectionProperties(positionObjectSpace, normalObjectSpace, objectColor);
+	assert(normalObjectSpace.length() - 1 <= std::numeric_limits<double>::epsilon());
 
-	normal = rotate(normal, m_rotationMatrixInverse).unit();
+	const auto normal = rotate(normalObjectSpace, m_rotationMatrixInverse).unit();
 
 	Color finalColor = objectColor;
 
