@@ -44,7 +44,7 @@ double BoxObject::intersectWith(const Ray& ray) const
 		return kNoIntersection;
 	}
 
-	if (tMin >= tMax)
+	if (tMin > tMax)
 	{
 		// No intersection
 		return kNoIntersection;

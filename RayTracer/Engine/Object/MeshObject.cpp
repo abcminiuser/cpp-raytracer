@@ -39,7 +39,7 @@ double MeshObject::intersectWith(const Ray& ray) const
 				return false;
 			}
 
-			if (tMin >= tMax)
+			if (tMin > tMax)
 			{
 				// No intersection
 				return false;
