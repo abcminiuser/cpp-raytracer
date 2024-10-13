@@ -27,6 +27,7 @@ add_executable (RayTracer
     "Engine/Vector.cpp"
     "ExampleScene.cpp"
     "Main.cpp"
+    "Viewer.cpp"
     "$<$<BOOL:WINDOWS>:WindowsResources.rc>"
 )
 
