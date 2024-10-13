@@ -31,8 +31,8 @@ protected:
 	virtual void				getIntersectionProperties(const Vector& position, Vector& normal, Color& color) const = 0;
 
 private:
-	Matrix						makeRotationMatrix(const Vector& rotation) const;
-	Vector						rotate(const Vector& vector, const Matrix& rotation) const;
+	Matrix<3, 3>				makeRotationMatrix(const Vector& rotation) const;
+	Vector						rotate(const Vector& vector, const Matrix<3, 3>& rotation) const;
 
 protected:
 	std::shared_ptr<Texture>	m_texture;
@@ -42,6 +42,6 @@ private:
 	Vector						m_position;
 	Vector						m_rotation;
 
-	Matrix						m_rotationMatrix;
-	Matrix						m_rotationMatrixInverse;
+	Matrix<3, 3>				m_rotationMatrix;
+	Matrix<3, 3>				m_rotationMatrixInverse;
 };

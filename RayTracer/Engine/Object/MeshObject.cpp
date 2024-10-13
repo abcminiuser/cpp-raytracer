@@ -27,11 +27,11 @@ double MeshObject::intersectWith(const Ray& ray) const
 			const auto t1 = lowerCorner.subtract(ray.position()).multiply(ray.directionInverse());
 			const auto t2 = upperCorner.subtract(ray.position()).multiply(ray.directionInverse());
 
-			const Vector minPoint = Vector::MinPoint(t1, t2);
-			const Vector maxPoint = Vector::MaxPoint(t1, t2);
+			const Vector minPoint = VectorUtils::MinPoint(t1, t2);
+			const Vector maxPoint = VectorUtils::MaxPoint(t1, t2);
 
-			const double tMin = std::max({ minPoint.x(), minPoint.y(), minPoint.z() });
-			const double tMax = std::min({ maxPoint.x(), maxPoint.y(), maxPoint.z() });
+			const double tMin = VectorUtils::MaxComponent(minPoint);
+			const double tMax = VectorUtils::MinComponent(maxPoint);
 
 			if (tMax < 0)
 			{

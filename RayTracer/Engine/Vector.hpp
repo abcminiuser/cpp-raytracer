@@ -107,6 +107,18 @@ public:
 		return tied() == other.tied();
 	}
 
+private:
+	double				m_x = 0;
+	double				m_y = 0;
+	double				m_z = 0;
+
+private:
+	mutable double		m_squaredEuclidianDistance = 0;
+	mutable double		m_length = 0;
+};
+
+namespace VectorUtils
+{
 	static constexpr Vector MinPoint(const Vector& v1, const Vector& v2)
 	{
 		return Vector(
@@ -125,15 +137,16 @@ public:
 		);
 	}
 
-private:
-	double				m_x = 0;
-	double				m_y = 0;
-	double				m_z = 0;
+	static constexpr double	MinComponent(const Vector& v)
+	{
+		return std::min({ v.x(), v.y(), v.z() });
+	}
 
-private:
-	mutable double		m_squaredEuclidianDistance = 0;
-	mutable double		m_length = 0;
-};
+	static constexpr double	MaxComponent(const Vector& v)
+	{
+		return std::max({ v.x(), v.y(), v.z() });
+	}
+}
 
 namespace StandardVectors
 {

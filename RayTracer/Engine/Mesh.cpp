@@ -21,8 +21,8 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<Triangle> triangles)
 	{
 		for (const auto& p : t)
 		{
-			minPoint = Vector::MinPoint(minPoint, m_vertices[p].position);
-			maxPoint = Vector::MaxPoint(maxPoint, m_vertices[p].position);
+			minPoint = VectorUtils::MinPoint(minPoint, m_vertices[p].position);
+			maxPoint = VectorUtils::MaxPoint(maxPoint, m_vertices[p].position);
 		}
 	}
 
@@ -136,8 +136,8 @@ bool Mesh::boxContainsTriangle(const Vector& lowerCorner, const Vector& upperCor
 	Vector triangleUpperCorner = StandardVectors::kMin;
 	for (const auto& p : triangle)
 	{
-		triangleLowerCorner = Vector::MinPoint(triangleLowerCorner, m_vertices[p].position);
-		triangleUpperCorner = Vector::MaxPoint(triangleUpperCorner, m_vertices[p].position);
+		triangleLowerCorner = VectorUtils::MinPoint(triangleLowerCorner, m_vertices[p].position);
+		triangleUpperCorner = VectorUtils::MaxPoint(triangleUpperCorner, m_vertices[p].position);
 	}
 
 	const auto xInBounds = lowerCorner.x() <= triangleUpperCorner.x() && triangleLowerCorner.x() <= upperCorner.x();

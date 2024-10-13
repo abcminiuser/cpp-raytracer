@@ -14,6 +14,7 @@
 
 #include <OBJ_Loader.h>
 
+#include <numbers>
 #include <stdexcept>
 #include <stdint.h>
 #include <vector>
@@ -217,7 +218,7 @@ Scene ExampleScene::Build()
 	scene.objects.push_back(
 		std::make_unique<BoxObject>(
 			/* Position: */					Vector(1, 0, -4),
-			/* Rotation: */					Vector(0, 3.14 / 4, 0),
+			/* Rotation: */					Vector(0, std::numbers::pi / 4, 0),
 			/* Size: */						Vector(1, 1, 1),
 			/* Texture: */					MakeImageTexture("Assets/Cube.png"),
 			/* Material: */					Material{
@@ -231,7 +232,7 @@ Scene ExampleScene::Build()
 	scene.objects.push_back(
 		std::make_unique<MeshObject>(
 			/* Position: */					Vector(8, 0, 8),
-			/* Rotation: */					Vector(0, 3.14 / 2, 0),
+			/* Rotation: */					Vector(0, std::numbers::pi / 2, 0),
 			/* Mesh: */						MakeObjectMesh("Assets/Teapot.obj", 1.0),
 			/* Texture: */					std::make_shared<SolidTexture>(Palette::kWhite),
 			/* Material: */					Material{
