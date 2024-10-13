@@ -42,9 +42,7 @@ Renderer::Renderer(size_t width, size_t height, size_t numRenderThreads)
 					if (m_renderState == RenderState::Run && (startLine < m_height) && (endLine <= m_height))
 					{
 						lock.unlock();
-
 						renderLines(startLine, endLine);
-
 						lock.lock();
 					}
 
@@ -162,15 +160,15 @@ void Renderer::renderLines(size_t startLine, size_t endLine)
 
 	for (size_t y = startLine; y < endLine; y++)
 	{
-		if (m_renderState.load() != RenderState::Run)
-			break;
-
 		if (m_coarsePreview && (y % kCoarsePreviewLineSpacing != 0))
 		{
 			// If we're doing a coarse preview render, we only render every few lines to save time.
 			currentPixel += m_width;
 			continue;
 		}
+
+		if (m_renderState.load() != RenderState::Run)
+			break;
 
 		for (size_t x = 0; x < m_width; x++)
 		{

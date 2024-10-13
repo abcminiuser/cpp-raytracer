@@ -36,34 +36,36 @@ Color Object::illuminate(const Scene& scene, const Vector& position, const Ray& 
 	getIntersectionProperties(positionObjectSpace, normal, objectColor);
 	assert(normal.length() - 1 <= std::numeric_limits<double>::epsilon());
 
-	 if (! scene.lighting)
-		return objectColor;
-
 	normal = rotate(normal, m_rotationMatrixInverse).unit();
 
-	Color finalColor = objectColor.scale(m_material.ambient);
+	Color finalColor = objectColor;
 
-	const Ray reflectionRay = ray.reflect(position, normal);
-
-	if (m_material.reflectivity > 0)
+	if (scene.lighting)
 	{
-		const auto reflectionColor = reflectionRay.trace(scene, rayDepth);
-		finalColor = finalColor.add(reflectionColor.scale(m_material.reflectivity));
-	}
+		finalColor = finalColor.scale(m_material.ambient);
 
-	if (m_material.refractivity > 0)
-	{
-		const auto refractionRay = ray.refract(position, normal, scene.airRefractionIndex, m_material.refractionIndex);
+		const Ray reflectionRay = ray.reflect(position, normal);
 
-		if (refractionRay)
+		if (m_material.reflectivity > 0)
 		{
-			const auto refractionColor = refractionRay->trace(scene, rayDepth);
-			finalColor = finalColor.add(refractionColor.scale(m_material.refractivity));
+			const auto reflectionColor = reflectionRay.trace(scene, rayDepth);
+			finalColor = finalColor.add(reflectionColor.scale(m_material.reflectivity));
 		}
-	}
 
-	for (const auto& l : scene.lights)
-		finalColor = finalColor.add(l->illuminate(scene, normal, objectColor, reflectionRay, m_material));
+		if (m_material.refractivity > 0)
+		{
+			const auto refractionRay = ray.refract(position, normal, scene.airRefractionIndex, m_material.refractionIndex);
+
+			if (refractionRay)
+			{
+				const auto refractionColor = refractionRay->trace(scene, rayDepth);
+				finalColor = finalColor.add(refractionColor.scale(m_material.refractivity));
+			}
+		}
+
+		for (const auto& l : scene.lights)
+			finalColor = finalColor.add(l->illuminate(scene, normal, objectColor, reflectionRay, m_material));
+	}
 
 	return finalColor;
 }
