@@ -81,7 +81,7 @@ void Viewer::view(Scene scene)
 						m_renderer.stopRender();
 						m_renderer.clear();
 
-						nextRenderType = RenderType::Preview;
+						nextRenderType = RenderType::Full;
 						sceneUpdatePending = true;
 						break;
 					}
