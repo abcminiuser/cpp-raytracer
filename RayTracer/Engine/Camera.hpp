@@ -12,10 +12,10 @@ public:
 					Camera(const Vector& position, const Vector& target, double viewWidth, double viewHeight);
 
 	const Vector&	position() const						{ return m_position; }
-	void			setPosition(const Vector& position)		{ m_position = position; }
-
 	const Vector&	direction() const						{ return m_direction; }
-	void			setDirection(const Vector& direction)	{ m_direction = direction; }
+
+	void			setPosition(const Vector& position);
+	void			setDirection(const Vector& direction);
 
 	Color			trace(const Scene& scene, double x, double y) const;
 

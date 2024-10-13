@@ -1,4 +1,5 @@
-﻿#include "Engine/Renderer.hpp"
+﻿#include "Engine/Matrix.hpp"
+#include "Engine/Renderer.hpp"
 #include "Engine/Scene.hpp"
 
 #include "ExampleScene.hpp"
@@ -6,6 +7,7 @@
 #include <SFML/Graphics.hpp>
 
 #include <chrono>
+#include <numbers>
 #include <stddef.h>
 #include <stdexcept>
 #include <stdint.h>
@@ -56,7 +58,6 @@ int main(int argc, char* argv[])
 	Renderer renderer(kWidth, kHeight, std::thread::hardware_concurrency());
 
 	bool isPreview = false;
-	bool isCameraLocked = true;
 
 	bool wasRendering = false;
 	bool infoTextUpdatePending = true;
@@ -75,16 +76,7 @@ int main(int argc, char* argv[])
 			{
 				switch (event.key.code)
 				{
-					case sf::Keyboard::Key::P:
-					{
-						isPreview = ! isPreview;
-
-						printf("Preview mode %s\n", isPreview ? "Enabled" : "Disabled");
-						sceneUpdatePending = true;
-						break;
-					}
-
-					case sf::Keyboard::Key::S:
+					case sf::Keyboard::Key::Enter:
 					{
 						const auto now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
 
@@ -99,22 +91,62 @@ int main(int argc, char* argv[])
 						break;
 					}
 
-					case sf::Keyboard::Key::R:
+					case sf::Keyboard::Key::Backspace:
 					{
 						printf("Restarting render\n");
 						renderer.stopRender();
 						renderer.clear();
 
+						isPreview = false;
 						sceneUpdatePending = true;
 						break;
 					}
 
+					case sf::Keyboard::Key::W:
+					case sf::Keyboard::Key::A:
+					case sf::Keyboard::Key::S:
+					case sf::Keyboard::Key::D:
+					case sf::Keyboard::Key::R:
+					case sf::Keyboard::Key::F:
+					{
+						constexpr auto kMoveDelta = .1;
+
+						static std::map<sf::Keyboard::Key, Vector> cameraMoveAmount
+							{
+								{ sf::Keyboard::Key::W, Vector(0, 0, kMoveDelta) },
+								{ sf::Keyboard::Key::A, Vector(-kMoveDelta, 0, 0) },
+								{ sf::Keyboard::Key::S, Vector(0, 0,-kMoveDelta) },
+								{ sf::Keyboard::Key::D, Vector(kMoveDelta, 0, 0) },
+								{ sf::Keyboard::Key::R, Vector(0, kMoveDelta, 0) },
+								{ sf::Keyboard::Key::F, Vector(0, -kMoveDelta, 0) },
+							};
+
+						scene.camera.setPosition(scene.camera.position().add(cameraMoveAmount.at(event.key.code)));
+
+						isPreview = true;
+						sceneUpdatePending = true;
+						break;
+					}
+
+					case sf::Keyboard::Key::I:
+					case sf::Keyboard::Key::J:
+					case sf::Keyboard::Key::K:
 					case sf::Keyboard::Key::L:
 					{
-						isCameraLocked = ! isCameraLocked;
-						printf("Camera %s\n", isCameraLocked ? "Locked" : "Unlocked");
+						constexpr auto kRotateDelta = std::numbers::pi / 360.0;
 
-						infoTextUpdatePending = true;
+						static std::map<sf::Keyboard::Key, Matrix<3, 3>> cameraRotateAmount
+						{
+							{ sf::Keyboard::Key::I, MatrixUtils::RotationMatrix(Vector(0, 0, kRotateDelta)) },
+							{ sf::Keyboard::Key::J, MatrixUtils::RotationMatrix(Vector(0, -kRotateDelta, 0)) },
+							{ sf::Keyboard::Key::K, MatrixUtils::RotationMatrix(Vector(0, 0, -kRotateDelta)) },
+							{ sf::Keyboard::Key::L, MatrixUtils::RotationMatrix(Vector(0, kRotateDelta, 0)) },
+						};
+
+						scene.camera.setDirection(cameraRotateAmount.at(event.key.code).multiply(scene.camera.direction()).toVector().unit());
+
+						isPreview = true;
+						sceneUpdatePending = true;
 						break;
 					}
 
@@ -122,16 +154,6 @@ int main(int argc, char* argv[])
 					{
 						break;
 					}
-				}
-			}
-			else if (event.type == sf::Event::MouseWheelScrolled)
-			{
-				if (! isCameraLocked)
-				{
-					scene.camera.setPosition(scene.camera.position().add(Vector(0, 0, double(event.mouseWheelScroll.delta) / 100.0)));
-
-					printf("Moved camera to (%f, %f, %f)\n", scene.camera.position().x(), scene.camera.position().y(), scene.camera.position().z());
-					sceneUpdatePending = true;
 				}
 			}
 		}
@@ -157,21 +179,31 @@ int main(int argc, char* argv[])
 		{
 			wasRendering = isRendering;
 
+			if (! isRendering && isPreview)
+			{
+				isPreview = false;
+				sceneUpdatePending = true;
+			}
+
 			infoTextUpdatePending = true;
 		}
 
 		if (infoTextUpdatePending)
 		{
 			std::string infoMessage;
-			infoMessage += std::string("(P)review (") + (isPreview ? "Enabled" : "Disabled") + ")\n";
-			infoMessage += std::string("(S)ave Image") + "\n";
-			infoMessage += std::string("(R)estart Render") + "\n";
-			infoMessage += std::string("(L)ock/Unlock Camera (") + (isCameraLocked ? "Locked" : "Unlocked") + ")\n";
+			infoMessage += std::string("(Enter) Save Image to File") + "\n";
+			infoMessage += std::string("(Backspace) Restart Render") + "\n";
+			infoMessage += std::string("(W/A/S/D, R/F) Move Camera\n");
+			infoMessage += std::string("(I/J/K/L) Rotate Camera\n");
 
 			infoMessage += "\n";
 			infoMessage += "Camera Position: " + ToString(scene.camera.position()) + "\n";
 			infoMessage += "Camera Direction: " + ToString(scene.camera.direction()) + "\n";
-			infoMessage += isRendering ? std::string("Rendering In Progress") : std::string("Rendering Completed (") + std::to_string(renderer.renderTime().count()) + " ms)";
+
+			if (isRendering)
+				infoMessage += std::string("Rendering In Progress (" + std::string(isPreview ? "Preview" : "Full") + ")");
+			else
+				infoMessage += std::string("Rendering Completed (") + std::to_string(renderer.renderTime().count()) + " ms)";
 
 			infoText.setString(infoMessage);
 
