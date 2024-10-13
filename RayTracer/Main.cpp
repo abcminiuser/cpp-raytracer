@@ -23,9 +23,13 @@ namespace
 
 int main(int argc, char* argv[])
 {
+	sf::Image icon;
+	icon.loadFromFile("Assets/Icon.png");
+
 	sf::RenderWindow window(sf::VideoMode(kWidth, kHeight), "Ray Tracer", sf::Style::Titlebar | sf::Style::Close);
 	window.setSize(sf::Vector2u(kWidth, kHeight));
 	window.setFramerateLimit(kUpdateFps);
+	window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
 
 	sf::Texture texture;
 	texture.create(kWidth, kHeight);
