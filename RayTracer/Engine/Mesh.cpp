@@ -32,7 +32,7 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<Triangle> triangles)
 	// or right side of the bounding box.
 	const auto position	= minPoint;
 	const auto size		= maxPoint.subtract(minPoint);
-	printf("Partitioning mesh (%f %f %f) size (%f %f %f) - %zu triangles\n", position.x(), position.y(), position.z(), size.x(), size.y(), size.z(), triangles.size());
+	printf("Partitioning mesh %s size %s - %zu triangles\n", position.string().c_str(), size.string().c_str(), triangles.size());
 
 	partition(position, size, 0, std::move(triangles));
 
