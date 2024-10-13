@@ -81,13 +81,9 @@ Renderer::~Renderer()
 
 void Renderer::setScene(Scene scene)
 {
-	const bool wasRendering = isRendering();
 	stopRender();
 
 	m_scene = std::move(scene);
-
-	if (wasRendering)
-		startRender();
 }
 
 void Renderer::clear()
@@ -99,6 +95,10 @@ void Renderer::clear()
 void Renderer::stopRender()
 {
 	std::unique_lock lock(m_lock);
+
+	if (m_renderState == RenderState::Stop)
+		return;
+
 	m_renderState = RenderState::Stop;
 
 	lock.unlock();
@@ -110,19 +110,23 @@ void Renderer::stopRender()
 
 void Renderer::startRender()
 {
+	std::unique_lock lock(m_lock);
+
+	if (m_renderState == RenderState::Run)
+		return;
+
+	lock.unlock();
 	stopRender();
+	lock.lock();
 
-	{
-		std::lock_guard lock(m_lock);
+	m_lastRenderLineStart = 0;
 
-		m_lastRenderLineStart = 0;
+	m_renderStartTime = std::chrono::steady_clock::now();
+	m_renderEndTime = {};
 
-		m_renderStartTime = std::chrono::steady_clock::now();
-		m_renderEndTime = {};
+	m_renderState = RenderState::Run;
 
-		m_renderState = RenderState::Run;
-	}
-
+	lock.unlock();
 	m_renderStateCondition.notify_all();
 }
 
