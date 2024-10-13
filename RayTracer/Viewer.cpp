@@ -40,8 +40,10 @@ Viewer::Viewer(Renderer& renderer, size_t width, size_t height)
 
 void Viewer::view(Scene scene)
 {
-	bool isPreview = false;
+	enum class RenderType { CoarsePreview, Preview, Full };
 
+	RenderType nextRenderType = RenderType::Preview;
+	RenderType previousRenderType = RenderType::Preview;
 	bool wasRendering = false;
 	bool infoTextUpdatePending = true;
 	bool sceneUpdatePending = true;
@@ -79,7 +81,7 @@ void Viewer::view(Scene scene)
 						m_renderer.stopRender();
 						m_renderer.clear();
 
-						isPreview = false;
+						nextRenderType = RenderType::Preview;
 						sceneUpdatePending = true;
 						break;
 					}
@@ -105,7 +107,7 @@ void Viewer::view(Scene scene)
 
 						scene.camera.setPosition(scene.camera.position().add(cameraMoveAmount.at(event.key.code)));
 
-						isPreview = true;
+						nextRenderType = RenderType::CoarsePreview;
 						sceneUpdatePending = true;
 						break;
 					}
@@ -127,7 +129,7 @@ void Viewer::view(Scene scene)
 
 						scene.camera.setDirection(cameraRotateAmount.at(event.key.code).multiply(scene.camera.direction()).toVector().unit());
 
-						isPreview = true;
+						nextRenderType = RenderType::CoarsePreview;
 						sceneUpdatePending = true;
 						break;
 					}
@@ -142,12 +144,18 @@ void Viewer::view(Scene scene)
 
 		if (sceneUpdatePending)
 		{
-			scene.maxRayDepth = isPreview ? 1 : 10;
+			scene.maxRayDepth = nextRenderType == RenderType::Full ? 10 : 1;
+			scene.lighting = nextRenderType != RenderType::CoarsePreview;
+
+			if (nextRenderType == RenderType::CoarsePreview && previousRenderType == RenderType::CoarsePreview)
+				m_renderer.waitForRenderCompletion();
 
 			m_renderer.setScene(scene);
+			m_renderer.setCoarsePreview(nextRenderType == RenderType::CoarsePreview);
 			m_renderer.startRender();
 
 			wasRendering = false;
+			previousRenderType = nextRenderType;
 
 			sceneUpdatePending = false;
 			infoTextUpdatePending = true;
@@ -161,10 +169,23 @@ void Viewer::view(Scene scene)
 		{
 			wasRendering = isRendering;
 
-			if (! isRendering && isPreview)
+			if (! isRendering)
 			{
-				isPreview = false;
-				sceneUpdatePending = true;
+				switch (previousRenderType)
+				{
+					case RenderType::CoarsePreview:
+						nextRenderType = RenderType::Preview;
+						sceneUpdatePending = true;
+						break;
+
+					case RenderType::Preview:
+						nextRenderType = RenderType::Full;
+						sceneUpdatePending = true;
+						break;
+
+					case RenderType::Full:
+						break;
+				}
 			}
 
 			infoTextUpdatePending = true;
@@ -183,7 +204,7 @@ void Viewer::view(Scene scene)
 			infoMessage += "Camera Direction: " + scene.camera.direction().string() + "\n";
 
 			if (isRendering)
-				infoMessage += std::string("Rendering In Progress (" + std::string(isPreview ? "Preview" : "Full") + ")");
+				infoMessage += std::string("Rendering In Progress (" + std::string(previousRenderType != RenderType::Full ? "Preview" : "Full") + ")");
 			else
 				infoMessage += std::string("Rendering Completed (") + std::to_string(m_renderer.renderTime().count()) + " ms)";
 

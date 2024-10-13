@@ -10,9 +10,8 @@ Object::Object(const Vector& position, const Vector& rotation, std::shared_ptr<T
 	: m_texture(std::move(texture))
 	, m_material(material)
 	, m_position(position)
-	, m_rotation(rotation)
-	, m_rotationMatrix(MatrixUtils::RotationMatrix(m_rotation))
-	, m_rotationMatrixInverse(MatrixUtils::RotationMatrix(m_rotation.invert()))
+	, m_rotationMatrix(MatrixUtils::RotationMatrix(rotation))
+	, m_rotationMatrixInverse(MatrixUtils::RotationMatrix(rotation.invert()))
 {
 
 }
@@ -37,11 +36,14 @@ Color Object::illuminate(const Scene& scene, const Vector& position, const Ray& 
 	getIntersectionProperties(positionObjectSpace, normal, objectColor);
 	assert(normal.length() - 1 <= std::numeric_limits<double>::epsilon());
 
+	 if (! scene.lighting)
+		return objectColor;
+
 	normal = rotate(normal, m_rotationMatrixInverse).unit();
 
-	const Ray reflectionRay	= ray.reflect(position, normal);
-
 	Color finalColor = objectColor.scale(m_material.ambient);
+
+	const Ray reflectionRay = ray.reflect(position, normal);
 
 	if (m_material.reflectivity > 0)
 	{

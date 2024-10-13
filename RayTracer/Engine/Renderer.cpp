@@ -9,6 +9,7 @@
 namespace
 {
 	constexpr size_t	kMaxLinesToRenderPerChunk	= 10;
+	constexpr size_t	kCoarsePreviewLineSpacing	= 4;
 	constexpr bool		kEnableSuperSampling		= false;
 }
 
@@ -86,10 +87,26 @@ void Renderer::setScene(Scene scene)
 	m_scene = std::move(scene);
 }
 
+void Renderer::setCoarsePreview(bool preview)
+{
+	stopRender();
+
+	if (! m_coarsePreview && preview)
+		clear();
+
+	m_coarsePreview = preview;
+}
+
 void Renderer::clear()
 {
 	const uint32_t fillColor = Palette::kBlack.toRGBA();
 	std::fill(m_pixels.begin(), m_pixels.end(), fillColor);
+}
+
+void Renderer::waitForRenderCompletion()
+{
+	std::unique_lock lock(m_lock);
+	m_renderStateCondition.wait(lock, [&] { return m_busyThreads == 0; });
 }
 
 void Renderer::stopRender()
@@ -148,6 +165,13 @@ void Renderer::renderLines(size_t startLine, size_t endLine)
 		if (m_renderState.load() != RenderState::Run)
 			break;
 
+		if (m_coarsePreview && (y % kCoarsePreviewLineSpacing != 0))
+		{
+			// If we're doing a coarse preview render, we only render every few lines to save time.
+			currentPixel += m_width;
+			continue;
+		}
+
 		for (size_t x = 0; x < m_width; x++)
 		{
 			// Super-sample across a 3x3 grid, then average the results to anti-alias.
@@ -174,7 +198,7 @@ void Renderer::renderLines(size_t startLine, size_t endLine)
 				g /= 9;
 				b /= 9;
 
-				*(currentPixel++) = Color(uint8_t(r), uint8_t(g), uint8_t(b)).toRGBA();
+				*(currentPixel++) = Color(static_cast<uint8_t>(r), static_cast<uint8_t>(g), static_cast<uint8_t>(b)).toRGBA();
 			}
 			else
 			{

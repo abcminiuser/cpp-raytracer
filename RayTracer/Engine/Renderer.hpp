@@ -21,12 +21,16 @@ public:
 											~Renderer();
 
 	void									setScene(Scene scene);
+	void									setCoarsePreview(bool preview);
 
 	const uint32_t* 						pixels() const { return m_pixels.data(); }
 
 	void									clear();
+
+	void									waitForRenderCompletion();
 	void									stopRender();
 	void									startRender();
+
 	bool									isRendering() const { return m_renderState.load() == RenderState::Run && m_busyThreads.load() != 0; }
 	std::chrono::milliseconds				renderTime() const;
 
@@ -38,6 +42,8 @@ private:
 	size_t									m_height = 0;
 
 	std::vector<uint32_t>					m_pixels;
+
+	bool									m_coarsePreview = false;
 
 	Scene									m_scene;
 
@@ -52,5 +58,5 @@ private:
 	std::chrono::steady_clock::time_point	m_renderEndTime = {};
 
 	std::atomic<size_t>						m_busyThreads = 0;
-	std::atomic<size_t>					m_lastRenderLineStart = 0;
+	std::atomic<size_t>						m_lastRenderLineStart = 0;
 };

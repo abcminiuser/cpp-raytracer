@@ -40,7 +40,6 @@ protected:
 
 private:
 	Vector						m_position;
-	Vector						m_rotation;
 
 	Matrix<3, 3>				m_rotationMatrix;
 	Matrix<3, 3>				m_rotationMatrixInverse;

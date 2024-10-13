@@ -17,5 +17,7 @@ public:
 	std::vector<std::shared_ptr<Light>>		lights;
 	std::vector<std::shared_ptr<Object>>	objects;
 	double									airRefractionIndex = 1.0;
+
 	uint8_t									maxRayDepth = 10;
+	bool									lighting = true;
 };
