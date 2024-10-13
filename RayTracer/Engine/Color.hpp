@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <stdint.h>
+#include <string>
 #include <tuple>
 
 struct Color
@@ -81,6 +82,8 @@ public:
 	{
 		return tied() == other.tied();
 	}
+
+	std::string			string() const;
 
 private:
 	uint32_t			m_red = 0;

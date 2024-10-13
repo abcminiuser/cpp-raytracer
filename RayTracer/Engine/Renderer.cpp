@@ -8,7 +8,7 @@
 
 namespace
 {
-	constexpr size_t	kMaxLinesToRenderPerChunk	= 1;
+	constexpr size_t	kMaxLinesToRenderPerChunk	= 10;
 	constexpr bool		kEnableSuperSampling		= false;
 }
 

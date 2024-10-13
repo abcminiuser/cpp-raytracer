@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <cmath>
 #include <tuple>
+#include <string>
 
 struct Vector
 {
@@ -106,6 +107,8 @@ public:
 	{
 		return tied() == other.tied();
 	}
+
+	std::string			string() const;
 
 private:
 	double				m_x = 0;

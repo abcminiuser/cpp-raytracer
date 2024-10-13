@@ -19,15 +19,6 @@ namespace
 	constexpr size_t	kHeight		= 1080;
 
 	constexpr uint32_t	kUpdateFps	= 60;
-
-	std::string ToString(const Vector& v)
-	{
-		char buffer[64];
-		snprintf(buffer, std::size(buffer), "(% f, % f, % f)", v.x(), v.y(), v.z());
-		buffer[std::size(buffer) - 1] = '\0';
-
-		return buffer;
-	}
 }
 
 int main(int argc, char* argv[])
@@ -93,7 +84,6 @@ int main(int argc, char* argv[])
 
 					case sf::Keyboard::Key::Backspace:
 					{
-						printf("Restarting render\n");
 						renderer.stopRender();
 						renderer.clear();
 
@@ -111,7 +101,7 @@ int main(int argc, char* argv[])
 					{
 						constexpr auto kMoveDelta = .1;
 
-						static std::map<sf::Keyboard::Key, Vector> cameraMoveAmount
+						static const std::map<sf::Keyboard::Key, Vector> cameraMoveAmount
 							{
 								{ sf::Keyboard::Key::W, Vector(0, 0, kMoveDelta) },
 								{ sf::Keyboard::Key::A, Vector(-kMoveDelta, 0, 0) },
@@ -135,13 +125,13 @@ int main(int argc, char* argv[])
 					{
 						constexpr auto kRotateDelta = std::numbers::pi / 360.0;
 
-						static std::map<sf::Keyboard::Key, Matrix<3, 3>> cameraRotateAmount
-						{
-							{ sf::Keyboard::Key::I, MatrixUtils::RotationMatrix(Vector(0, 0, -kRotateDelta)) },
-							{ sf::Keyboard::Key::J, MatrixUtils::RotationMatrix(Vector(0, -kRotateDelta, 0)) },
-							{ sf::Keyboard::Key::K, MatrixUtils::RotationMatrix(Vector(0, 0, kRotateDelta)) },
-							{ sf::Keyboard::Key::L, MatrixUtils::RotationMatrix(Vector(0, kRotateDelta, 0)) },
-						};
+						static const std::map<sf::Keyboard::Key, Matrix<3, 3>> cameraRotateAmount
+							{
+								{ sf::Keyboard::Key::I, MatrixUtils::RotationMatrix(Vector(0, 0, -kRotateDelta)) },
+								{ sf::Keyboard::Key::J, MatrixUtils::RotationMatrix(Vector(0, -kRotateDelta, 0)) },
+								{ sf::Keyboard::Key::K, MatrixUtils::RotationMatrix(Vector(0, 0, kRotateDelta)) },
+								{ sf::Keyboard::Key::L, MatrixUtils::RotationMatrix(Vector(0, kRotateDelta, 0)) },
+							};
 
 						scene.camera.setDirection(cameraRotateAmount.at(event.key.code).multiply(scene.camera.direction()).toVector().unit());
 
@@ -197,8 +187,8 @@ int main(int argc, char* argv[])
 			infoMessage += std::string("(I/J/K/L) Rotate Camera\n");
 
 			infoMessage += "\n";
-			infoMessage += "Camera Position: " + ToString(scene.camera.position()) + "\n";
-			infoMessage += "Camera Direction: " + ToString(scene.camera.direction()) + "\n";
+			infoMessage += "Camera Position: " + scene.camera.position().string() + "\n";
+			infoMessage += "Camera Direction: " + scene.camera.direction().string() + "\n";
 
 			if (isRendering)
 				infoMessage += std::string("Rendering In Progress (" + std::string(isPreview ? "Preview" : "Full") + ")");

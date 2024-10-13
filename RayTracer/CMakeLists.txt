@@ -12,6 +12,7 @@ find_package (SFML CONFIG REQUIRED COMPONENTS graphics)
 add_executable (RayTracer
 	"Engine/Renderer.cpp"
     "Engine/Camera.cpp"
+    "Engine/Color.cpp"
     "Engine/Light.cpp"
     "Engine/Mesh.cpp"
     "Engine/Object.cpp"
@@ -23,6 +24,7 @@ add_executable (RayTracer
     "Engine/Texture/ImageTexture.cpp"
     "Engine/Texture/SolidTexture.cpp"
     "Engine/Ray.cpp"
+    "Engine/Vector.cpp"
     "ExampleScene.cpp"
     "Main.cpp"
 )
