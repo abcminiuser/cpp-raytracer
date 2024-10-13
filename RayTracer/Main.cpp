@@ -137,9 +137,9 @@ int main(int argc, char* argv[])
 
 						static std::map<sf::Keyboard::Key, Matrix<3, 3>> cameraRotateAmount
 						{
-							{ sf::Keyboard::Key::I, MatrixUtils::RotationMatrix(Vector(0, 0, kRotateDelta)) },
+							{ sf::Keyboard::Key::I, MatrixUtils::RotationMatrix(Vector(0, 0, -kRotateDelta)) },
 							{ sf::Keyboard::Key::J, MatrixUtils::RotationMatrix(Vector(0, -kRotateDelta, 0)) },
-							{ sf::Keyboard::Key::K, MatrixUtils::RotationMatrix(Vector(0, 0, -kRotateDelta)) },
+							{ sf::Keyboard::Key::K, MatrixUtils::RotationMatrix(Vector(0, 0, kRotateDelta)) },
 							{ sf::Keyboard::Key::L, MatrixUtils::RotationMatrix(Vector(0, kRotateDelta, 0)) },
 						};
 
