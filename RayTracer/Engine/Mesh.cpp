@@ -42,7 +42,9 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<Triangle> triangles)
 size_t Mesh::partition(const Vector& position, const Vector& size, uint32_t depth, std::vector<Triangle> triangles)
 {
 	const size_t nodeIndex = m_elements.size();
-	auto* node = &m_elements.emplace_back(Node());
+	m_elements.emplace_back(Node());
+
+	auto* node = &m_elements.back();
 
 	node->lowerCorner	= position;
 	node->upperCorner	= position.add(size);
