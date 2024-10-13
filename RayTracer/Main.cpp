@@ -38,7 +38,7 @@ int main(int argc, char* argv[])
 	sprite.setTexture(texture);
 
 	sf::Font font;
-	font.loadFromFile("Assets/JupiteroidLight-R90XW.ttf");
+	font.loadFromFile("Assets/ConsolaMono-Book.ttf");
 
 	sf::Text infoText;
 	infoText.setFont(font);
@@ -191,7 +191,7 @@ int main(int argc, char* argv[])
 			infoMessage += std::string("(I/J/K/L) Rotate Camera\n");
 
 			infoMessage += "\n";
-			infoMessage += "Camera Position: " + scene.camera.position().string() + "\n";
+			infoMessage += "Camera Position:  " + scene.camera.position().string() + "\n";
 			infoMessage += "Camera Direction: " + scene.camera.direction().string() + "\n";
 
 			if (isRendering)

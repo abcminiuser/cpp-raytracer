@@ -65,8 +65,8 @@ add_custom_command (TARGET RayTracer POST_BUILD
 
 add_custom_command (TARGET RayTracer POST_BUILD
 	COMMAND ${CMAKE_COMMAND}
-	ARGS -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/../Vendor/fontspace.com/Assets" "$<TARGET_FILE_DIR:RayTracer>/Assets"
-	COMMENT "Copying 'fontspace.com' third party assets...")
+	ARGS -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/../Vendor/openfontlibrary.org/Assets" "$<TARGET_FILE_DIR:RayTracer>/Assets"
+	COMMENT "Copying 'openfontlibrary.org' third party assets...")
 
 install (FILES
 	$<TARGET_FILE:RayTracer>
