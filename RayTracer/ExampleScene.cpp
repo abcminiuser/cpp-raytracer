@@ -124,7 +124,7 @@ Scene ExampleScene::Build()
 	scene.objects.push_back(
 		std::make_unique<SphereObject>(
 			/* Position: */					Vector(-2, 0, 2),
-			/* Rotation: */					Vector(0, 0, 0),
+			/* Rotation: */					Vector(0, std::numbers::pi / 8, std::numbers::pi / 8),
 			/* Radius: */					1,
 			/* Texture */					std::make_shared<CheckerboardTexture>(Palette::kMagenta, Palette::kYellow, 8),
 			/* Material: */					Material{}
@@ -232,7 +232,7 @@ Scene ExampleScene::Build()
 	scene.objects.push_back(
 		std::make_unique<MeshObject>(
 			/* Position: */					Vector(8, 0, 8),
-			/* Rotation: */					Vector(0, std::numbers::pi / 2, 0),
+			/* Rotation: */					Vector(0, std::numbers::pi / 4, 0),
 			/* Mesh: */						MakeObjectMesh("Assets/Teapot.obj", 1.0),
 			/* Texture: */					std::make_shared<SolidTexture>(Palette::kWhite),
 			/* Material: */					Material{
