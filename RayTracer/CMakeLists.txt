@@ -27,6 +27,7 @@ add_executable (RayTracer
     "Engine/Vector.cpp"
     "ExampleScene.cpp"
     "Main.cpp"
+    "$<$<BOOL:WINDOWS>:WindowsResources.rc>"
 )
 
 target_include_directories (RayTracer PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/../Vendor/OBJ-Loader/Source)
@@ -69,5 +70,6 @@ add_custom_command (TARGET RayTracer POST_BUILD
 
 install (FILES
 	$<TARGET_FILE:RayTracer>
+	$<TARGET_FILE_DIR:RayTracer>/Assets
 	DESTINATION .
 )
