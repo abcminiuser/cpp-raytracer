@@ -77,7 +77,7 @@ int main(int argc, char* argv[])
 				{
 					case sf::Keyboard::Key::P:
 					{
-						isPreview = !isPreview;
+						isPreview = ! isPreview;
 
 						printf("Preview mode %s\n", isPreview ? "Enabled" : "Disabled");
 						sceneUpdatePending = true;
@@ -139,9 +139,6 @@ int main(int argc, char* argv[])
 		if (sceneUpdatePending)
 		{
 			scene.maxRayDepth = isPreview ? 1 : 10;
-			scene.allowReflections = !isPreview;
-			scene.allowRefractions = !isPreview;
-			scene.allowLighting = !isPreview;
 
 			renderer.setScene(scene);
 			renderer.startRender();
