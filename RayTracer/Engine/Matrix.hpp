@@ -12,8 +12,6 @@ class Matrix
 public:
 	using					ElementStorage = std::array<std::array<double, COLS>, ROWS>;
 
-	constexpr static bool	IsVectorConvertable = ROWS == 3 && COLS == 1;
-
 	constexpr								Matrix() = default;
 
 	constexpr								Matrix(const ElementStorage& values)
@@ -22,8 +20,8 @@ public:
 
 	}
 
-	template <typename T = std::enable_if_t<IsVectorConvertable>>
 	constexpr								Matrix(const Vector& vector)
+		requires (ROWS == 3 && COLS == 1)
 		: Matrix(std::array
 			{
 				std::array{ vector.x() },
@@ -34,8 +32,8 @@ public:
 
 	}
 
-	template <typename T = std::enable_if_t<ROWS == 3>>
 	constexpr Matrix<3, 1>					multiply(const Vector& vector) const
+		requires (ROWS == 3)
 	{
 		return multiply(Matrix<3, 1>(vector));
 	}
@@ -67,8 +65,8 @@ public:
 		return m_elements[row][col];
 	}
 
-	template <typename T = std::enable_if_t<IsVectorConvertable>>
 	constexpr Vector						toVector() const
+		requires (ROWS == 3 && COLS == 1)
 	{
 		return Vector(m_elements[0][0], m_elements[1][0], m_elements[2][0]);
 	}

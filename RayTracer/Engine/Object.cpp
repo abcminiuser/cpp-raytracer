@@ -7,10 +7,10 @@
 #include <limits>
 
 Object::Object(const Vector& position, const Vector& rotation, std::shared_ptr<Texture> texture, const Material& material)
-	: m_position(position)
-	, m_rotation(rotation)
-	, m_texture(std::move(texture))
+	: m_texture(std::move(texture))
 	, m_material(material)
+	, m_position(position)
+	, m_rotation(rotation)
 	, m_rotationMatrix(MatrixUtils::RotationMatrix(m_rotation))
 	, m_rotationMatrixInverse(MatrixUtils::RotationMatrix(m_rotation.invert()))
 {
