@@ -17,7 +17,7 @@ namespace
 
 Viewer::Viewer(Renderer& renderer, size_t width, size_t height)
 	: m_renderer(renderer)
-	, m_window(sf::VideoMode(uint32_t(width), uint32_t(height)), "Ray Tracer", sf::Style::Titlebar | sf::Style::Close)
+	, m_window(sf::VideoMode(static_cast<uint32_t>(width), static_cast<uint32_t>(height)), "Ray Tracer", sf::Style::Titlebar | sf::Style::Close)
 {
 	m_icon.loadFromFile("Assets/Icon.png");
 

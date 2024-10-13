@@ -6,6 +6,7 @@
 #include "Engine/Object.hpp"
 
 #include <memory>
+#include <stdint.h>
 #include <vector>
 
 struct Scene
