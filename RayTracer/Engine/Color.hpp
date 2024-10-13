@@ -30,6 +30,14 @@ public:
 
 	}
 
+	constexpr			Color(const Color& other)
+		: m_red(other.m_red)
+		, m_green(other.m_green)
+		, m_blue(other.m_blue)
+	{
+
+	}
+
 	constexpr			Color(uint32_t argb32)
 		: m_red(static_cast<uint8_t>(argb32 >> 0))
 		, m_green(static_cast<uint8_t>(argb32 >> 8))
