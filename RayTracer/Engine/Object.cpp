@@ -78,5 +78,5 @@ Vector Object::rotate(const Vector& vector, const Matrix<3, 3>& rotation) const
 
 	const auto result = rotation.multiply(targetMatrix);
 
-	return Vector(result(0, 0), result(0, 1), result(0, 2));
+	return Vector(result(0, 0), result(1, 0), result(2, 0));
 }

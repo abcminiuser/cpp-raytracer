@@ -20,7 +20,7 @@ public:
 			for (size_t j = 0; j < OTHERCOLS; j++)
 			{
 				for (size_t k = 0; k < COLS; k++)
-					result(i, j) += m_elements[i][k] * other(j, k);
+					result(i, j) += operator()(i, k) * other(k, j);
 			}
 		}
 
