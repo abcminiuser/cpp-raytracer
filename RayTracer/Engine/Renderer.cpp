@@ -38,7 +38,7 @@ Renderer::Renderer(size_t width, size_t height, size_t numRenderThreads)
 
 					const size_t startLine = m_lastRenderLineStart.fetch_add(kMaxLinesToRenderPerChunk);
 					const size_t endLine = startLine + std::min(kMaxLinesToRenderPerChunk, m_height - startLine);
-					if (m_renderState == RenderState::Run && (startLine < m_height) && (endLine < m_height))
+					if (m_renderState == RenderState::Run && (startLine < m_height) && (endLine <= m_height))
 					{
 						lock.unlock();
 

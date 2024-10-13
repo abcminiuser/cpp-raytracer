@@ -27,7 +27,7 @@ public:
 	void									clear();
 	void									stopRender();
 	void									startRender();
-	bool									isRendering() const { return m_busyThreads.load() != 0; }
+	bool									isRendering() const { return m_renderState.load() == RenderState::Run && m_busyThreads.load() != 0; }
 	std::chrono::milliseconds				renderTime() const;
 
 private:
