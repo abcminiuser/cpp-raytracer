@@ -69,6 +69,11 @@ add_custom_command (TARGET RayTracer POST_BUILD
 	ARGS -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/../Vendor/openfontlibrary.org/Assets" "$<TARGET_FILE_DIR:RayTracer>/Assets"
 	COMMENT "Copying 'openfontlibrary.org' third party assets...")
 
+add_custom_command (TARGET RayTracer POST_BUILD
+	COMMAND ${CMAKE_COMMAND}
+	ARGS -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/../Vendor/Blender/Assets" "$<TARGET_FILE_DIR:RayTracer>/Assets"
+	COMMENT "Copying 'Blender' third party assets...")
+
 install (FILES
 	$<TARGET_FILE:RayTracer>
 	$<TARGET_FILE_DIR:RayTracer>/Assets
