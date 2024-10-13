@@ -10,8 +10,26 @@ template <size_t ROWS, size_t COLS>
 class Matrix
 {
 public:
+	constexpr static bool	IsVectorConvertable = ROWS == 3 && COLS == 1;
+
+	constexpr								Matrix() = default;
+
+	template <typename T = std::enable_if_t<IsVectorConvertable>>
+	constexpr								Matrix(const Vector& vector)
+	{
+		m_elements[0][0] = vector.x();
+		m_elements[1][0] = vector.y();
+		m_elements[2][0] = vector.z();
+	}
+
+	template <typename T = std::enable_if_t<ROWS == 3>>
+	constexpr Matrix<3, 1>					multiply(const Vector& vector) const
+	{
+		return multiply(Matrix<3, 1>(vector));
+	}
+
 	template <size_t OTHERCOLS>
-	constexpr Matrix<ROWS, OTHERCOLS>	multiply(const Matrix<ROWS, OTHERCOLS>& other) const
+	constexpr Matrix<ROWS, OTHERCOLS>		multiply(const Matrix<ROWS, OTHERCOLS>& other) const
 	{
 		Matrix<ROWS, OTHERCOLS> result;
 
@@ -27,14 +45,20 @@ public:
 		return result;
 	}
 
-	constexpr double&					operator()(size_t row, size_t col)
+	constexpr double&						operator()(size_t row, size_t col)
 	{
 		return m_elements[row][col];
 	}
 
-	constexpr const double&				operator()(size_t row, size_t col) const
+	constexpr const double&					operator()(size_t row, size_t col) const
 	{
 		return m_elements[row][col];
+	}
+
+	template <typename T = std::enable_if_t<IsVectorConvertable>>
+	constexpr Vector						toVector() const
+	{
+		return Vector(m_elements[0][0], m_elements[1][0], m_elements[2][0]);
 	}
 
 private:
@@ -43,7 +67,7 @@ private:
 
 namespace MatrixUtils
 {
-	static inline Matrix<3, 3>			RotationMatrix(const Vector& rotation)
+	static inline Matrix<3, 3>				RotationMatrix(const Vector& rotation)
 	{
 		const auto& alpha = rotation.x();
 		const auto cosAlpha = std::cos(alpha);
