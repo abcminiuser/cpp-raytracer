@@ -8,9 +8,14 @@
 #include <stdint.h>
 #include <thread>
 #include <vector>
+#include <condition_variable>
+#include <mutex>
 
 class Renderer
 {
+private:
+	enum class RenderState { Stop, Run, Exit };
+
 public:
 											Renderer(size_t width, size_t height, size_t numRenderThreads);
 											~Renderer();
@@ -22,8 +27,11 @@ public:
 	void									clear();
 	void									stopRender();
 	void									startRender();
-	bool									isRendering() const { return m_runningRenderThreads.load() != 0; }
+	bool									isRendering() const { return m_busyThreads.load() != 0; }
 	std::chrono::milliseconds				renderTime() const;
+
+private:
+	void									renderLines(size_t startLine, size_t endLine);
 
 private:
 	size_t									m_width = 0;
@@ -33,11 +41,16 @@ private:
 
 	Scene									m_scene;
 
+	std::mutex								m_lock;
+
+	std::condition_variable					m_renderStateCondition;
+	std::atomic<RenderState>				m_renderState = RenderState::Stop;
+
 	std::vector<std::thread>				m_renderThreads;
-	std::atomic_bool						m_runRenderThreads = false;
+
 	std::chrono::steady_clock::time_point	m_renderStartTime = {};
 	std::chrono::steady_clock::time_point	m_renderEndTime = {};
 
-	std::atomic<uint32_t>					m_runningRenderThreads = 0;
-	std::atomic<uint32_t>					m_lastRenderLineStart = 0;
+	std::atomic<size_t>						m_busyThreads = 0;
+	std::atomic<size_t>					m_lastRenderLineStart = 0;
 };
