@@ -10,16 +10,28 @@ template <size_t ROWS, size_t COLS>
 class Matrix
 {
 public:
+	using					ElementStorage = std::array<std::array<double, COLS>, ROWS>;
+
 	constexpr static bool	IsVectorConvertable = ROWS == 3 && COLS == 1;
 
 	constexpr								Matrix() = default;
 
+	constexpr								Matrix(const ElementStorage& values)
+		: m_elements(values)
+	{
+
+	}
+
 	template <typename T = std::enable_if_t<IsVectorConvertable>>
 	constexpr								Matrix(const Vector& vector)
+		: Matrix(std::array
+			{
+				std::array{ vector.x() },
+				std::array{ vector.y() },
+				std::array{ vector.z() }
+			})
 	{
-		m_elements[0][0] = vector.x();
-		m_elements[1][0] = vector.y();
-		m_elements[2][0] = vector.z();
+
 	}
 
 	template <typename T = std::enable_if_t<ROWS == 3>>
@@ -62,7 +74,7 @@ public:
 	}
 
 private:
-	std::array<std::array<double, COLS>, ROWS> m_elements = {};
+	ElementStorage							m_elements = {};
 };
 
 namespace MatrixUtils
@@ -81,17 +93,24 @@ namespace MatrixUtils
 		const auto cosGamma = std::cos(gamma);
 		const auto sinGamma = std::sin(gamma);
 
-		Matrix<3, 3> rotationMatrix;
-		rotationMatrix(0, 0) = cosAlpha * cosBeta;
-		rotationMatrix(0, 1) = (cosAlpha * sinBeta * sinGamma) - (sinAlpha * cosGamma);
-		rotationMatrix(0, 2) = (cosAlpha * sinBeta * cosGamma) + (sinAlpha * sinGamma);
-		rotationMatrix(1, 0) = sinAlpha * cosBeta;
-		rotationMatrix(1, 1) = (sinAlpha * sinBeta * sinGamma) + (cosAlpha * cosGamma);
-		rotationMatrix(1, 2) = (sinAlpha * sinBeta * cosGamma) - (cosAlpha * sinGamma);
-		rotationMatrix(2, 0) = -sinBeta;
-		rotationMatrix(2, 1) = cosBeta * sinGamma;
-		rotationMatrix(2, 2) = cosBeta * cosGamma;
-
-		return rotationMatrix;
+		return Matrix<3, 3>(
+			std::array
+			{
+				std::array{
+					cosAlpha * cosBeta,
+					(cosAlpha * sinBeta * sinGamma) - (sinAlpha * cosGamma),
+					(cosAlpha * sinBeta * cosGamma) + (sinAlpha * sinGamma)
+				},
+				std::array{
+					sinAlpha * cosBeta,
+					(sinAlpha * sinBeta * sinGamma) + (cosAlpha * cosGamma),
+					(sinAlpha * sinBeta * cosGamma) - (cosAlpha * sinGamma)
+				},
+				std::array{
+					-sinBeta,
+					cosBeta * sinGamma,
+					cosBeta * cosGamma
+				}
+			});
 	}
 }
