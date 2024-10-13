@@ -41,6 +41,7 @@ protected:
 private:
 	Vector						m_position;
 
+	bool						m_hasRotation = false;
 	Matrix<3, 3>				m_rotationMatrix;
 	Matrix<3, 3>				m_rotationMatrixInverse;
 };

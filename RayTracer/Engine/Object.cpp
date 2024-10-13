@@ -10,6 +10,7 @@ Object::Object(const Vector& position, const Vector& rotation, std::shared_ptr<T
 	: m_texture(std::move(texture))
 	, m_material(material)
 	, m_position(position)
+	, m_hasRotation(rotation != Vector())
 	, m_rotationMatrix(MatrixUtils::RotationMatrix(rotation))
 	, m_rotationMatrixInverse(MatrixUtils::RotationMatrix(rotation.invert()))
 {
@@ -72,5 +73,5 @@ Color Object::illuminate(const Scene& scene, const Vector& position, const Ray& 
 
 Vector Object::rotate(const Vector& vector, const Matrix<3, 3>& rotation) const
 {
-	return rotation.multiply(vector).toVector();
+	return m_hasRotation ? rotation.multiply(vector).toVector() : vector;
 }
