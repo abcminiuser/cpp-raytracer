@@ -44,5 +44,8 @@ Color PlaneObject::colorAt(const Vector& position, const Vector& normal) const
 	auto u = positionFromOrigin.x();
 	auto v = positionFromOrigin.z();
 
+	u -= std::floor(u);
+	v -= std::floor(v);
+
 	return m_texture->colorAt(u, v);
 }
