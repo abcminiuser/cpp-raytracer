@@ -243,6 +243,20 @@ Scene ExampleScene::Build()
 			}
 		)
 	);
+	scene.objects.push_back(
+		std::make_unique<MeshObject>(
+			/* Position: */					Vector(-8, 0, 8),
+			/* Rotation: */					Vector(0, 3 * std::numbers::pi / 4, 0),
+			/* Mesh: */						MakeObjectMesh("Assets/House.obj", 0.6),
+			/* Texture: */					MakeImageTexture("Assets/buildingPartsTexture.png"),
+			/* Material: */					Material{
+				.ambient = 0.2,
+				.diffuse = 0.1,
+				.specular = 0.1,
+				.reflectivity = 0.0
+			}
+		)
+	);
 
 	return scene;
 }
