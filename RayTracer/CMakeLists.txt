@@ -4,10 +4,10 @@ set (VENDOR_BASE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../Vendor")
 
 if (MSVC)
     list (APPEND CMAKE_PREFIX_PATH ${CMAKE_SOURCE_DIR}/Vendor)
-    set(SFML_STATIC_LIBRARIES TRUE)
+    set (SFML_STATIC_LIBRARIES TRUE)
 endif ()
 
-find_package (SFML CONFIG REQUIRED COMPONENTS graphics)
+find_package (SFML CONFIG REQUIRED COMPONENTS graphics HINTS ${VENDOR_BASE_DIR})
 
 add_executable (RayTracer
 	"Engine/Renderer.cpp"
@@ -31,7 +31,7 @@ add_executable (RayTracer
     "$<$<BOOL:WINDOWS>:WindowsResources.rc>"
 )
 
-target_include_directories (RayTracer PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/../Vendor/OBJ-Loader/Source)
+target_include_directories (RayTracer PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${VENDOR_BASE_DIR}/OBJ-Loader/Source)
 target_link_libraries (RayTracer PRIVATE sfml-graphics)
 target_compile_features (RayTracer PUBLIC cxx_std_20)
 
@@ -51,27 +51,27 @@ add_custom_command (TARGET RayTracer POST_BUILD
 
 add_custom_command (TARGET RayTracer POST_BUILD
 	COMMAND ${CMAKE_COMMAND}
-	ARGS -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/../Vendor/PublicDomainTextures.com/Assets" "$<TARGET_FILE_DIR:RayTracer>/Assets"
+	ARGS -E copy_directory "${VENDOR_BASE_DIR}/PublicDomainTextures.com/Assets" "$<TARGET_FILE_DIR:RayTracer>/Assets"
 	COMMENT "Copying 'PublicDomainTextures.com' third party assets...")
 
 add_custom_command (TARGET RayTracer POST_BUILD
 	COMMAND ${CMAKE_COMMAND}
-	ARGS -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/../Vendor/cs.utah.edu/Assets" "$<TARGET_FILE_DIR:RayTracer>/Assets"
+	ARGS -E copy_directory "${VENDOR_BASE_DIR}/cs.utah.edu/Assets" "$<TARGET_FILE_DIR:RayTracer>/Assets"
 	COMMENT "Copying 'cs.utah.edu' third party assets...")
 
 add_custom_command (TARGET RayTracer POST_BUILD
 	COMMAND ${CMAKE_COMMAND}
-	ARGS -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/../Vendor/thebasemesh.com/Assets" "$<TARGET_FILE_DIR:RayTracer>/Assets"
+	ARGS -E copy_directory "${VENDOR_BASE_DIR}/thebasemesh.com/Assets" "$<TARGET_FILE_DIR:RayTracer>/Assets"
 	COMMENT "Copying 'thebasemesh.com' third party assets...")
 
 add_custom_command (TARGET RayTracer POST_BUILD
 	COMMAND ${CMAKE_COMMAND}
-	ARGS -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/../Vendor/openfontlibrary.org/Assets" "$<TARGET_FILE_DIR:RayTracer>/Assets"
+	ARGS -E copy_directory "${VENDOR_BASE_DIR}/openfontlibrary.org/Assets" "$<TARGET_FILE_DIR:RayTracer>/Assets"
 	COMMENT "Copying 'openfontlibrary.org' third party assets...")
 
 add_custom_command (TARGET RayTracer POST_BUILD
 	COMMAND ${CMAKE_COMMAND}
-	ARGS -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/../Vendor/Blender/Assets" "$<TARGET_FILE_DIR:RayTracer>/Assets"
+	ARGS -E copy_directory "${VENDOR_BASE_DIR}/Blender/Assets" "$<TARGET_FILE_DIR:RayTracer>/Assets"
 	COMMENT "Copying 'Blender' third party assets...")
 
 install (FILES
