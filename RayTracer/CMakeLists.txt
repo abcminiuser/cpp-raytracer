@@ -74,6 +74,11 @@ add_custom_command (TARGET RayTracer POST_BUILD
 	ARGS -E copy_directory "${VENDOR_BASE_DIR}/Blender/Assets" "$<TARGET_FILE_DIR:RayTracer>/Assets"
 	COMMENT "Copying 'Blender' third party assets...")
 
+add_custom_command (TARGET RayTracer POST_BUILD
+	COMMAND ${CMAKE_COMMAND}
+	ARGS -E copy_directory "${VENDOR_BASE_DIR}/astrellon/Assets" "$<TARGET_FILE_DIR:RayTracer>/Assets"
+	COMMENT "Copying 'astrellon' third party assets...")
+
 install (FILES
 	$<TARGET_FILE:RayTracer>
 	$<TARGET_FILE_DIR:RayTracer>/Assets
