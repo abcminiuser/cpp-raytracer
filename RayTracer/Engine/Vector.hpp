@@ -125,7 +125,7 @@ private:
 
 namespace VectorUtils
 {
-	static constexpr Vector MinPoint(const Vector& v1, const Vector& v2)
+	static inline constexpr Vector MinPoint(const Vector& v1, const Vector& v2)
 	{
 		return Vector(
 			std::min(v1.x(), v2.x()),
@@ -134,7 +134,7 @@ namespace VectorUtils
 		);
 	}
 
-	static constexpr Vector MaxPoint(const Vector& v1, const Vector& v2)
+	static inline constexpr Vector MaxPoint(const Vector& v1, const Vector& v2)
 	{
 		return Vector(
 			std::max(v1.x(), v2.x()),
@@ -143,12 +143,12 @@ namespace VectorUtils
 		);
 	}
 
-	static constexpr double	MinComponent(const Vector& v)
+	static inline constexpr double	MinComponent(const Vector& v)
 	{
 		return std::min({ v.x(), v.y(), v.z() });
 	}
 
-	static constexpr double	MaxComponent(const Vector& v)
+	static inline constexpr double	MaxComponent(const Vector& v)
 	{
 		return std::max({ v.x(), v.y(), v.z() });
 	}

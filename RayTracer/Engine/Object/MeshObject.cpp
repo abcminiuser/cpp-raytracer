@@ -139,7 +139,7 @@ Color MeshObject::colorAt(const Vertex& v0, const Vertex& v1, const Vertex v2, c
 	if (! m_texture)
 		return Palette::kBlack;
 
-	const auto uv = v0.texture.scale(mix.x()).add(v1.texture.scale(mix.y())).add(v2.texture.scale(mix.z())).unit();
+	const auto uv = v0.texture.scale(mix.x()).add(v1.texture.scale(mix.y())).add(v2.texture.scale(mix.z()));
 	return m_texture->colorAt(uv.x(), uv.y());
 }
 

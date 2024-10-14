@@ -10,7 +10,7 @@ template <size_t ROWS, size_t COLS>
 class Matrix
 {
 public:
-	using					ElementStorage = std::array<std::array<double, COLS>, ROWS>;
+	using ElementStorage = std::array<std::array<double, COLS>, ROWS>;
 
 	constexpr								Matrix() = default;
 
