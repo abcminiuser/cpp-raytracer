@@ -22,5 +22,5 @@ Color ImageTexture::colorAt(double u, double v) const
 	size_t x = static_cast<size_t>(u * (m_width - 1));
 	size_t y = static_cast<size_t>((1 - v) * (m_height - 1));
 
-	return Color(m_pixels[(y * m_width) + x]);
+	return Color::FromPackedRGBA(m_pixels[(y * m_width) + x]);
 }

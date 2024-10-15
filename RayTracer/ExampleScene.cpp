@@ -94,7 +94,7 @@ Scene ExampleScene::Build()
 	scene.lights.push_back(
 		std::make_unique<Light>(
 			/* Position: */					Vector(-5, 3, -5),
-			/* Color */   					Color(255, 128, 0)
+			/* Color */   					Color::FromComponentRGB(255, 128, 0)
 		)
 	);
 

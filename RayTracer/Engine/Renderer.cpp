@@ -97,7 +97,7 @@ void Renderer::setCoarsePreview(bool preview)
 
 void Renderer::clear()
 {
-	const uint32_t fillColor = Palette::kBlack.toRGBA();
+	const uint32_t fillColor = Palette::kBlack.toPackedRGBA();
 	std::fill(m_pixels.begin(), m_pixels.end(), fillColor);
 }
 
@@ -196,14 +196,14 @@ void Renderer::renderLines(size_t startLine, size_t endLine)
 				g /= 9;
 				b /= 9;
 
-				*(currentPixel++) = Color(static_cast<uint8_t>(r), static_cast<uint8_t>(g), static_cast<uint8_t>(b)).toRGBA();
+				*(currentPixel++) = Color(r, g, b).toPackedRGBA();
 			}
 			else
 			{
 				const double cameraY = (y * ySampleOffset) - .5;
 				const double cameraX = (x * xSampleOffset) - .5;
 
-				*(currentPixel++) = m_scene.camera.trace(m_scene, cameraX, cameraY).toRGBA();
+				*(currentPixel++) = m_scene.camera.trace(m_scene, cameraX, cameraY).toPackedRGBA();
 			}
 		}
 	}

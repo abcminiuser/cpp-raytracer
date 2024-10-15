@@ -8,97 +8,97 @@
 struct Color
 {
 private:
-	template <typename T>
-	static inline constexpr uint8_t	ClampComponent(T component)
-	{
-		return static_cast<uint8_t>(std::min<T>(component, 0xFF));
-	}
-
-	constexpr auto		tied() const
+	constexpr auto			tied() const
 	{
 		return std::tie(m_red, m_green, m_blue);
 	}
 
 public:
-	constexpr			Color() = default;
+	static constexpr Color	FromComponentRGB(uint8_t r, uint8_t g, uint8_t b)
+	{
+		return Color(r / 255.0, g / 255.0, b / 255.0);
+	}
 
-	constexpr			Color(uint8_t r, uint8_t g, uint8_t b)
-		: m_red(r)
-		, m_green(g)
-		, m_blue(b)
+	static constexpr Color	FromPackedRGBA(uint32_t rgba32)
+	{
+		uint8_t red		= static_cast<uint8_t>(rgba32 >> 0);
+		uint8_t green	= static_cast<uint8_t>(rgba32 >> 8);
+		uint8_t blue	= static_cast<uint8_t>(rgba32 >> 16);
+
+		return FromComponentRGB(red, green, blue);
+	}
+
+	constexpr				Color() = default;
+
+	constexpr				Color(double r, double g, double b)
+		: m_red(std::clamp(r, 0.0, 1.0))
+		, m_green(std::clamp(g, 0.0, 1.0))
+		, m_blue(std::clamp(b, 0.0, 1.0))
 	{
 
 	}
 
-	constexpr			Color(uint32_t argb32)
-		: m_red(static_cast<uint8_t>(argb32 >> 0))
-		, m_green(static_cast<uint8_t>(argb32 >> 8))
-		, m_blue(static_cast<uint8_t>(argb32 >> 16))
-	{
-
-	}
-
-	constexpr Color		add(const Color& other) const
+	constexpr Color			add(const Color& other) const
 	{
 		return Color(
-			ClampComponent(m_red + other.m_red),
-			ClampComponent(m_green + other.m_green),
-			ClampComponent(m_blue + other.m_blue)
+			m_red + other.m_red,
+			m_green + other.m_green,
+			m_blue + other.m_blue
 		);
 	}
 
-	constexpr Color		multiply(const Color& other) const
+	constexpr Color			multiply(const Color& other) const
 	{
 		return Color(
-			ClampComponent(m_red * other.m_red / 255),
-			ClampComponent(m_green * other.m_green / 255),
-			ClampComponent(m_blue * other.m_blue / 255)
+			m_red * other.m_red,
+			m_green * other.m_green,
+			m_blue * other.m_blue
 		);
 	}
 
-	constexpr Color		scale(double factor) const
+	constexpr Color			scale(double factor) const
 	{
 		return Color(
-			ClampComponent(m_red * factor),
-			ClampComponent(m_green * factor),
-			ClampComponent(m_blue * factor)
+			m_red * factor,
+			m_green * factor,
+			m_blue * factor
 		);
 	}
 
-	constexpr uint8_t	red() const 	{ return static_cast<uint8_t>(m_red); }
-	constexpr uint8_t	green() const 	{ return static_cast<uint8_t>(m_green); }
-	constexpr uint8_t	blue() const	{ return static_cast<uint8_t>(m_blue); }
+	constexpr double		red() const 	{ return m_red; }
+	constexpr double		green() const 	{ return m_green; }
+	constexpr double		blue() const	{ return m_blue; }
 
-	constexpr uint32_t	toRGBA() const
+	constexpr uint32_t		toPackedRGBA() const
 	{
 		return
 			static_cast<uint32_t>(255) << 24 |
-			m_blue << 16 |
-			m_green << 8 |
-			m_red << 0;
+			static_cast<uint32_t>(m_blue * 255.0) << 16 |
+			static_cast<uint32_t>(m_green * 255.0) << 8 |
+			static_cast<uint32_t>(m_red * 255.0) << 0;
 	}
 
-	constexpr bool		operator==(const Color& other) const
+	constexpr bool			operator==(const Color& other) const
 	{
 		return tied() == other.tied();
 	}
 
-	std::string			string() const;
+	std::string				string() const;
 
 private:
-	uint32_t			m_red = 0;
-	uint32_t			m_green = 0;
-	uint32_t			m_blue = 0;
+	double					m_red = 0;
+	double					m_green = 0;
+	double					m_blue = 0;
 };
 
 namespace Palette
 {
-	static inline constexpr auto kRed = Color(255, 0, 0);
-	static inline constexpr auto kGreen = Color(0, 255, 0);
-	static inline constexpr auto kBlue = Color(0, 0, 255);
-	static inline constexpr auto kBlack = Color(0, 0, 0);
-	static inline constexpr auto kWhite = Color(255, 255, 255);
-	static inline constexpr auto kCyan = Color(0, 255, 255);
-	static inline constexpr auto kYellow = Color(255, 255, 0);
-	static inline constexpr auto kMagenta = Color(255, 0, 255);
+	static inline constexpr auto kRed = Color::FromComponentRGB(255, 0, 0);
+	static inline constexpr auto kGreen = Color::FromComponentRGB(0, 255, 0);
+	static inline constexpr auto kBlue = Color::FromComponentRGB(0, 0, 255);
+	static inline constexpr auto kBlack = Color::FromComponentRGB(0, 0, 0);
+	static inline constexpr auto kWhite = Color::FromComponentRGB(255, 255, 255);
+	static inline constexpr auto kCyan = Color::FromComponentRGB(0, 255, 255);
+	static inline constexpr auto kYellow = Color::FromComponentRGB(255, 255, 0);
+	static inline constexpr auto kMagenta = Color::FromComponentRGB(255, 0, 255);
 }
