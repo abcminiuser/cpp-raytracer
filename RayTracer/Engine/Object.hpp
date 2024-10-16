@@ -17,7 +17,7 @@ struct Scene;
 class Object
 {
 public:
-	static inline constexpr double kNoIntersection			= std::numeric_limits<double>::max();
+	static inline constexpr double kNoIntersection			= std::numeric_limits<double>::infinity();
 	static inline constexpr double kComparisonThreshold		= std::numeric_limits<double>::epsilon() * 100;
 
 								Object(const Vector& position, const Vector& rotation, std::shared_ptr<Texture> texture, const Material& material);
