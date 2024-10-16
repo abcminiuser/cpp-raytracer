@@ -19,7 +19,7 @@ SphereObject::SphereObject(const Vector& position, const Vector& rotation, doubl
 double SphereObject::intersectWith(const Ray& ray) const
 {
 	const double b = 2 * ray.position().dotProduct(ray.direction());
-	const double c = ray.position().squaredEuclidianDistance() - m_diameter;
+	const double c = ray.position().lengthSquared() - m_diameter;
 	const double d = (b * b) - 4 * c;
 
 	if (d < 0)

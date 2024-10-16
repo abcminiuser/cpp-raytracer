@@ -34,18 +34,18 @@ public:
 
 	constexpr Vector&	operator=(const Vector& other) = default;
 
-	constexpr double	squaredEuclidianDistance() const
+	constexpr double	lengthSquared() const
 	{
-		if (! m_squaredEuclidianDistance)
-			m_squaredEuclidianDistance = (m_x * m_x) + (m_y * m_y) + (m_z * m_z);
+		if (! m_lengthSquared)
+			m_lengthSquared = (m_x * m_x) + (m_y * m_y) + (m_z * m_z);
 
-		return m_squaredEuclidianDistance;
+		return m_lengthSquared;
 	}
 
 	constexpr double	length() const
 	{
 		if (! m_length)
-			m_length = std::sqrt(squaredEuclidianDistance());
+			m_length = std::sqrt(lengthSquared());
 
 		return m_length;
 	}
@@ -119,7 +119,7 @@ private:
 	double				m_z = 0;
 
 private:
-	mutable double		m_squaredEuclidianDistance = 0;
+	mutable double		m_lengthSquared = 0;
 	mutable double		m_length = 0;
 };
 
