@@ -1,12 +1,11 @@
 #pragma once
 
-struct Material
+class Ray;
+
+struct Vector;
+
+class Material
 {
 public:
-	double	ambient = 0.1;
-	double	diffuse = 0.3;
-	double	specular = 0.5;
-	double	reflectivity = 0.2;
-	double	refractivity = 0.0;
-	double	refractionIndex = 1.0;
+	virtual Ray	scatter(const Ray& sourceRay, const Vector& hitPosition, const Vector& hitNormal) = 0;
 };

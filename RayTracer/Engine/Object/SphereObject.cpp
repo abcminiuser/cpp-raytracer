@@ -9,8 +9,8 @@
 #include <cmath>
 #include <numbers>
 
-SphereObject::SphereObject(const Vector& position, const Vector& rotation, double radius, std::shared_ptr<Texture> texture, const Material& material)
-	: Object(position, rotation, std::move(texture), material)
+SphereObject::SphereObject(const Vector& position, const Vector& rotation, double radius, std::shared_ptr<Texture> texture, std::shared_ptr<Material> material)
+	: Object(position, rotation, std::move(texture), std::move(material))
 	, m_diameter(radius * radius)
 {
 

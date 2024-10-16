@@ -2,7 +2,6 @@
 
 #include "Engine/Camera.hpp"
 #include "Engine/Color.hpp"
-#include "Engine/Light.hpp"
 #include "Engine/Object.hpp"
 
 #include <memory>
@@ -14,10 +13,10 @@ struct Scene
 public:
 	Camera									camera;
 	Color									background;
-	std::vector<std::shared_ptr<Light>>		lights;
 	std::vector<std::shared_ptr<Object>>	objects;
 	double									airRefractionIndex = 1.0;
 
-	uint8_t									maxRayDepth = 10;
+	uint8_t									maxRayDepth = 25;
+	uint8_t									sampledPerPixel = 25;
 	bool									lighting = true;
 };

@@ -38,23 +38,3 @@ Color Ray::trace(const Scene& scene, uint32_t rayDepth) const
 	const Vector closestCollisionPoint = m_position.add(m_direction.scale(closestIntersectionDistance));
 	return closestObject->illuminate(scene, closestCollisionPoint, *this, rayDepth + 1);
 }
-
-Ray Ray::reflect(const Vector& position, const Vector& normal) const
-{
-	return Ray(position, m_direction.subtract(normal.scale(2 * m_direction.dotProduct(normal))).unit());
-}
-
-std::optional<Ray> Ray::refract(const Vector& position, const Vector& normal, double n1, double n2) const
-{
-	// https://graphics.stanford.edu/courses/cs148-10-summer/docs/2006--degreve--reflection_refraction.pdf
-
-	double n = n1 / n2;
-	double cosI = m_direction.dotProduct(normal);
-	double sinT2 = (n * n) * (1.0 - (cosI * cosI));
-
-	if (sinT2 > 1.0)
-		return std::nullopt;
-
-	double cosT = std::sqrt(1.0 - sinT2);
-	return Ray(position, m_direction.scale(n).add(normal.scale(n * cosI - cosT)).unit());
-}

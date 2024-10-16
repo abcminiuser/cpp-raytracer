@@ -5,12 +5,13 @@
 #include "Engine/Camera.hpp"
 
 #include <algorithm>
+#include <random>
 
 namespace
 {
 	constexpr size_t	kMaxLinesToRenderPerChunk	= 10;
 	constexpr size_t	kCoarsePreviewLineSpacing	= 4;
-	constexpr bool		kEnableSuperSampling		= false;
+	constexpr double	kGamma						= 2.2;
 }
 
 Renderer::Renderer(size_t width, size_t height, size_t numRenderThreads)
@@ -172,39 +173,22 @@ void Renderer::renderLines(size_t startLine, size_t endLine)
 
 		for (size_t x = 0; x < m_width; x++)
 		{
-			// Super-sample across a 3x3 grid, then average the results to anti-alias.
-			if constexpr(kEnableSuperSampling)
+			Color sampleColor;
+			for (size_t i = 0; i < m_scene.sampledPerPixel; i++)
 			{
-				double r = 0, g = 0, b = 0;
+				static std::mt19937 generator;
+				static std::uniform_real_distribution<double> distribution(-1.0, 1.0);
 
-				for (int ssY = -1; ssY <= 1; ssY++)
-				{
-					for (int ssX = -1; ssX <= 1; ssX++)
-					{
-						const double cameraY = ((y + ssY) * ySampleOffset) - .5;
-						const double cameraX = ((x + ssX) * xSampleOffset) - .5;
+				const double cameraY = ((y + distribution(generator)) * ySampleOffset) - .5;
+				const double cameraX = ((x + distribution(generator)) * xSampleOffset) - .5;
 
-						const Color sampleColor = m_scene.camera.trace(m_scene, cameraX, cameraY);
-
-						r += sampleColor.red();
-						g += sampleColor.green();
-						b += sampleColor.blue();
-					}
-				}
-
-				r /= 9;
-				g /= 9;
-				b /= 9;
-
-				*(currentPixel++) = Color(r, g, b).toPackedRGBA();
+				sampleColor = sampleColor.add(m_scene.camera.trace(m_scene, cameraX, cameraY));
 			}
-			else
-			{
-				const double cameraY = (y * ySampleOffset) - .5;
-				const double cameraX = (x * xSampleOffset) - .5;
 
-				*(currentPixel++) = m_scene.camera.trace(m_scene, cameraX, cameraY).toPackedRGBA();
-			}
+			sampleColor = sampleColor.scale(1.0 / m_scene.sampledPerPixel);
+			sampleColor = Color(pow(sampleColor.red(), 1.0 / kGamma), pow(sampleColor.green(), 1.0 / kGamma), pow(sampleColor.blue(), 1.0 / kGamma));
+
+			*(currentPixel++) = sampleColor.toPackedRGBA();
 		}
 	}
 }

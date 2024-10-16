@@ -18,9 +18,6 @@ public:
 
 	Color				trace(const Scene& scene, uint32_t rayDepth) const;
 
-	Ray					reflect(const Vector& position, const Vector& normal) const;
-	std::optional<Ray>	refract(const Vector& position, const Vector& normal, double n1, double n2) const;
-
 private:
 	Vector				m_position;
 	Vector				m_direction;

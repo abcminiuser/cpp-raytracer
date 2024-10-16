@@ -2,6 +2,8 @@
 
 #include "Engine/Mesh.hpp"
 #include "Engine/Scene.hpp"
+#include "Engine/Material/DiffuseMaterial.hpp"
+#include "Engine/Material/ReflectiveMaterial.hpp"
 #include "Engine/Object/BoxObject.hpp"
 #include "Engine/Object/PlaneObject.hpp"
 #include "Engine/Object/MeshObject.hpp"
@@ -84,41 +86,23 @@ Scene ExampleScene::Build()
 		/* View Height: */					5.0 / 2
 	);
 
-	scene.lights.push_back(
-		std::make_unique<Light>(
-			/* Position: */					Vector(5, 10, -5),
-			/* Color */   					Palette::kWhite
-		)
-	);
-
-	scene.lights.push_back(
-		std::make_unique<Light>(
-			/* Position: */					Vector(-5, 3, -5),
-			/* Color */   					Color::FromComponentRGB(255, 128, 0)
-		)
-	);
-
 	scene.objects.push_back(
 		std::make_unique<PlaneObject>(
 			/* Normal: */					StandardVectors::kUnitY,
 			/* Distance to Normal: */		-1,
 			/* Texture: */					MakeImageTexture("Assets/Brick.jpg"),
 			/* Texture Scaling: */			1 / 3.0,
-			/* Material: */					Material{
-				.ambient = 0.2,
-				.diffuse = 0.1,
-				.specular = 0.0,
-				.reflectivity = 0.0
-			}
+			/* Material: */					std::make_shared<DiffuseMaterial>()
 		)
 	);
+
 	scene.objects.push_back(
 		std::make_unique<SphereObject>(
 			/* Position: */					Vector(-4, 0, 4),
 			/* Rotation: */					Vector(0, 0, 0),
 			/* Radius: */					1,
 			/* Texture: */					std::make_shared<SolidTexture>(Palette::kWhite),
-			/* Material: */					Material{}
+			/* Material: */					std::make_shared<DiffuseMaterial>()
 		)
 	);
 	scene.objects.push_back(
@@ -127,7 +111,7 @@ Scene ExampleScene::Build()
 			/* Rotation: */					Vector(0, std::numbers::pi / 8, std::numbers::pi / 8),
 			/* Radius: */					1,
 			/* Texture */					std::make_shared<CheckerboardTexture>(Palette::kMagenta, Palette::kYellow, 8),
-			/* Material: */					Material{}
+			/* Material: */					std::make_shared<DiffuseMaterial>()
 		)
 	);
 	scene.objects.push_back(
@@ -136,7 +120,7 @@ Scene ExampleScene::Build()
 			/* Rotation: */					Vector(0, 0, 0),
 			/* Radius: */					1,
 			/* Texture: */					std::make_shared<SolidTexture>(Palette::kRed),
-			/* Material: */					Material{}
+			/* Material: */					std::make_shared<DiffuseMaterial>()
 		)
 	);
 	scene.objects.push_back(
@@ -145,7 +129,7 @@ Scene ExampleScene::Build()
 			/* Rotation: */					Vector(0, 0, 0),
 			/* Radius: */					1,
 			/* Texture: */					std::make_shared<SolidTexture>(Palette::kGreen),
-			/* Material: */					Material{}
+			/* Material: */					std::make_shared<DiffuseMaterial>()
 		)
 	);
 	scene.objects.push_back(
@@ -154,7 +138,7 @@ Scene ExampleScene::Build()
 			/* Rotation: */					Vector(0, 0, 0),
 			/* Radius: */					1,
 			/* Texture: */					std::make_shared<SolidTexture>(Palette::kBlue),
-			/* Material: */					Material{}
+			/* Material: */					std::make_shared<DiffuseMaterial>()
 		)
 	);
 	scene.objects.push_back(
@@ -163,12 +147,7 @@ Scene ExampleScene::Build()
 			/* Rotation: */					Vector(0, 0, 0),
 			/* Radius: */					1,
 			/* Texture: */					std::make_shared<SolidTexture>(Palette::kWhite),
-			/* Material: */					Material{
-				.ambient = 0.1,
-				.diffuse = 0.0,
-				.specular = 0.5,
-				.reflectivity = 0.7
-			}
+			/* Material: */					std::make_shared<DiffuseMaterial>()
 		)
 	);
 	scene.objects.push_back(
@@ -177,12 +156,7 @@ Scene ExampleScene::Build()
 			/* Rotation: */					Vector(0, 0, 0),
 			/* Radius: */					1,
 			/* Texture: */					MakeImageTexture("Assets/Marble.jpg"),
-			/* Material: */					Material{
-				.ambient = 0.3,
-				.diffuse = 0.15,
-				.specular = 0.0,
-				.reflectivity = 0.0
-			}
+			/* Material: */					std::make_shared<DiffuseMaterial>()
 		)
 	);
 	scene.objects.push_back(
@@ -191,14 +165,7 @@ Scene ExampleScene::Build()
 			/* Rotation: */					Vector(0, 0, 0),
 			/* Radius: */					1,
 			/* Texture: */					std::make_shared<SolidTexture>(Palette::kWhite),
-			/* Material: */					Material{
-				.ambient = 0.0,
-				.diffuse = 0.0,
-				.specular = 0.1,
-				.reflectivity = 0.0,
-				.refractivity = 0.9,
-				.refractionIndex = 1.5,
-			}
+			/* Material: */					std::make_shared<DiffuseMaterial>()
 		)
 	);
 	scene.objects.push_back(
@@ -207,12 +174,7 @@ Scene ExampleScene::Build()
 			/* Rotation: */					Vector(0, 0, 0),
 			/* Size: */						Vector(2, 2, 2),
 			/* Texture: */					std::make_shared<SolidTexture>(Palette::kWhite),
-			/* Material: */					Material{
-				.ambient = 0.1,
-				.diffuse = 0.0,
-				.specular = 0.5,
-				.reflectivity = 0.7
-			}
+			/* Material: */					std::make_shared<ReflectiveMaterial>()
 		)
 	);
 	scene.objects.push_back(
@@ -221,26 +183,17 @@ Scene ExampleScene::Build()
 			/* Rotation: */					Vector(0, std::numbers::pi / 4, 0),
 			/* Size: */						Vector(1, 1, 1),
 			/* Texture: */					MakeImageTexture("Assets/Cube.png"),
-			/* Material: */					Material{
-				.ambient = 0.25,
-				.diffuse = 0.0,
-				.specular = 0.5,
-				.reflectivity = 0.0
-			}
+			/* Material: */					std::make_shared<DiffuseMaterial>()
 		)
 	);
+
 	scene.objects.push_back(
 		std::make_unique<MeshObject>(
 			/* Position: */					Vector(8, 0, 8),
 			/* Rotation: */					Vector(0, std::numbers::pi / 4, 0),
 			/* Mesh: */						MakeObjectMesh("Assets/Teapot.obj", 1.0),
 			/* Texture: */					std::make_shared<SolidTexture>(Palette::kWhite),
-			/* Material: */					Material{
-				.ambient = 0.2,
-				.diffuse = 0.1,
-				.specular = 0.3,
-				.reflectivity = 0.5
-			}
+			/* Material: */					std::make_shared<ReflectiveMaterial>()
 		)
 	);
 

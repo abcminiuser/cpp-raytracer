@@ -16,7 +16,7 @@ class MeshObject
 	: public Object
 {
 public:
-								MeshObject(const Vector& position, const Vector& rotation, std::shared_ptr<Mesh> mesh, std::shared_ptr<Texture> texture, const Material& material);
+								MeshObject(const Vector& position, const Vector& rotation, std::shared_ptr<Mesh> mesh, std::shared_ptr<Texture> texture, std::shared_ptr<Material> material);
 								~MeshObject() override = default;
 
 // Object i/f:

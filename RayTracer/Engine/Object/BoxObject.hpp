@@ -13,7 +13,7 @@ class BoxObject
 	: public Object
 {
 public:
-				BoxObject(const Vector& position, const Vector& rotation, const Vector& size, std::shared_ptr<Texture> texture, const Material& material);
+				BoxObject(const Vector& position, const Vector& rotation, const Vector& size, std::shared_ptr<Texture> texture, std::shared_ptr<Material> material);
 				~BoxObject() override = default;
 
 // Object i/f:

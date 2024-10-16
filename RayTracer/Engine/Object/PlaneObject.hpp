@@ -13,7 +13,7 @@ class PlaneObject
 	: public Object
 {
 public:
-				PlaneObject(const Vector& normal, double distance, std::shared_ptr<Texture> texture, double textureScaleFactor, const Material& material);
+				PlaneObject(const Vector& normal, double distance, std::shared_ptr<Texture> texture, double textureScaleFactor, std::shared_ptr<Material> material);
 				~PlaneObject() override = default;
 
 // Object i/f:

@@ -31,9 +31,9 @@ public:
 	constexpr				Color() = default;
 
 	constexpr				Color(double r, double g, double b)
-		: m_red(std::clamp(r, 0.0, 1.0))
-		, m_green(std::clamp(g, 0.0, 1.0))
-		, m_blue(std::clamp(b, 0.0, 1.0))
+		: m_red(r)
+		, m_green(g)
+		, m_blue(b)
 	{
 
 	}
@@ -73,9 +73,9 @@ public:
 	{
 		return
 			static_cast<uint32_t>(255) << 24 |
-			static_cast<uint32_t>(m_blue * 255.0) << 16 |
-			static_cast<uint32_t>(m_green * 255.0) << 8 |
-			static_cast<uint32_t>(m_red * 255.0) << 0;
+			static_cast<uint32_t>(std::clamp(m_blue, 0.0, 1.0) * 255.0) << 16 |
+			static_cast<uint32_t>(std::clamp(m_green, 0.0, 1.0) * 255.0) << 8 |
+			static_cast<uint32_t>(std::clamp(m_red, 0.0, 1.0) * 255.0) << 0;
 	}
 
 	constexpr bool			operator==(const Color& other) const

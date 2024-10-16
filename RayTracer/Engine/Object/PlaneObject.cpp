@@ -5,8 +5,8 @@
 #include "Engine/Texture.hpp"
 #include "Engine/Vector.hpp"
 
-PlaneObject::PlaneObject(const Vector& normal, double distance, std::shared_ptr<Texture> texture, double textureScaleFactor, const Material& material)
-	: Object(normal.scale(distance), Vector(), std::move(texture), material)
+PlaneObject::PlaneObject(const Vector& normal, double distance, std::shared_ptr<Texture> texture, double textureScaleFactor, std::shared_ptr<Material> material)
+	: Object(normal.scale(distance), Vector(), std::move(texture), std::move(material))
 	, m_textureScaleFactor(textureScaleFactor)
 	, m_normal(normal)
 {

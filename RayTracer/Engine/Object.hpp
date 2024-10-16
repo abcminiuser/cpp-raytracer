@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Engine/Color.hpp"
-#include "Engine/Material.hpp"
 #include "Engine/Matrix.hpp"
 #include "Engine/Vector.hpp"
 
@@ -9,6 +8,7 @@
 #include <memory>
 #include <stdint.h>
 
+class Material;
 class Ray;
 class Texture;
 
@@ -18,9 +18,9 @@ class Object
 {
 public:
 	static inline constexpr double kNoIntersection			= std::numeric_limits<double>::infinity();
-	static inline constexpr double kComparisonThreshold		= std::numeric_limits<double>::epsilon() * 100;
+	static inline constexpr double kComparisonThreshold		= std::numeric_limits<double>::epsilon() * 1000;
 
-								Object(const Vector& position, const Vector& rotation, std::shared_ptr<Texture> texture, const Material& material);
+								Object(const Vector& position, const Vector& rotation, std::shared_ptr<Texture> texture, std::shared_ptr<Material> material);
 	virtual						~Object() = default;
 
 	double						intersect(const Ray& ray) const;
@@ -36,7 +36,7 @@ private:
 
 protected:
 	std::shared_ptr<Texture>	m_texture;
-	Material					m_material;
+	std::shared_ptr<Material>	m_material;
 
 private:
 	Vector						m_position;
