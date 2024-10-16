@@ -96,7 +96,7 @@ public:
 
 	constexpr Vector	unit() const
 	{
-		if (length() == 1)
+		if (length() == 1.0)
 			return *this;
 
 		return scale(1 / length());

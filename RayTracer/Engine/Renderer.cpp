@@ -9,8 +9,8 @@
 
 namespace
 {
-	constexpr size_t	kMaxLinesToRenderPerChunk	= 10;
-	constexpr size_t	kCoarsePreviewLineSpacing	= 4;
+	constexpr size_t	kMaxLinesToRenderPerChunk	= 1;
+	constexpr size_t	kCoarsePreviewLineSpacing	= 8;
 	constexpr double	kGamma						= 2.2;
 }
 
@@ -174,6 +174,7 @@ void Renderer::renderLines(size_t startLine, size_t endLine)
 		for (size_t x = 0; x < m_width; x++)
 		{
 			Color sampleColor;
+
 			for (size_t i = 0; i < m_scene.sampledPerPixel; i++)
 			{
 				static std::mt19937 generator;
