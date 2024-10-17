@@ -102,7 +102,7 @@ Scene ExampleScene::Build()
 			/* Position: */					Vector(-6, 3, -5),
 			/* Rotation: */					Vector(0, 0, 0),
 			/* Material: */					std::make_shared<LightMaterial>(
-				/* Texture: */				std::make_shared<SolidTexture>(Color::FromComponentRGB(255, 128, 0).scale(1))
+				/* Texture: */				std::make_shared<SolidTexture>(Color::FromComponentRGB(255, 128, 0).scale(1.4))
 			),
 			/* Radius: */					1
 		)

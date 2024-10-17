@@ -42,7 +42,7 @@ void Viewer::view(Scene scene)
 {
 	enum class RenderType { CoarsePreview, Preview, Full };
 
-	RenderType nextRenderType = RenderType::Preview;
+	RenderType nextRenderType = RenderType::CoarsePreview;
 	RenderType previousRenderType = RenderType::Preview;
 	bool wasRendering = false;
 	bool infoTextUpdatePending = true;
@@ -145,10 +145,27 @@ void Viewer::view(Scene scene)
 
 		if (sceneUpdatePending)
 		{
-			scene.lighting = nextRenderType != RenderType::CoarsePreview;
-			scene.maxRayDepth = nextRenderType != RenderType::CoarsePreview ? 8 : 1;
-			scene.samplesPerPixel = nextRenderType == RenderType::Full ? 150 : 1;
+			switch (nextRenderType)
+			{
+				case RenderType::CoarsePreview:
+					scene.lighting = false; // Geometry only
+					scene.maxRayDepth = 1;
+					scene.samplesPerPixel = 1;
+					break;
+				case RenderType::Preview:
+					scene.lighting = true;
+					scene.maxRayDepth = 5;
+					scene.samplesPerPixel = 1;
+					break;
+				case RenderType::Full:
+					scene.lighting = true;
+					scene.maxRayDepth = 10;
+					scene.samplesPerPixel = 150;
+					break;
+			}
 
+			// If we're moving, wait for the existing coard preview to finish before
+			// starting the next, so the entire (coarse) preview is visible.
 			if (nextRenderType == RenderType::CoarsePreview && previousRenderType == RenderType::CoarsePreview)
 				m_renderer.waitForRenderCompletion();
 

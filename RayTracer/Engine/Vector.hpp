@@ -162,7 +162,7 @@ namespace VectorUtils
 	    for (;;)
 	    {
 			auto v = Vector(distribution(generator), distribution(generator), distribution(generator));
-			if (v.lengthSquared() > 1e-10 && v.lengthSquared() < 1)
+			if (v.lengthSquared() > 1e-10 && v.lengthSquared() <= 1)
 				return v.unit();
 		}
 	}
