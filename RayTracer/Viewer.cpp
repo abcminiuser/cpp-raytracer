@@ -36,6 +36,20 @@ Viewer::Viewer(Renderer& renderer, size_t width, size_t height)
 	m_infoText.setOutlineThickness(1);
 	m_infoText.setFillColor(sf::Color::White);
 	m_infoText.move(10, 10);
+
+	std::string instructionsMessage;
+	instructionsMessage += "(Enter) Save Image to File\n";
+	instructionsMessage += "(Backspace) Restart Render\n";
+	instructionsMessage += "(W/A/S/D, R/F) Move Camera\n";
+	instructionsMessage += "(I/J/K/L) Rotate Camera\n";
+
+	m_instructionsText.setFont(m_font);
+	m_instructionsText.setCharacterSize(16);
+	m_instructionsText.setOutlineColor(sf::Color::Black);
+	m_instructionsText.setOutlineThickness(1);
+	m_instructionsText.setFillColor(sf::Color::White);
+	m_instructionsText.setString(instructionsMessage);
+	m_instructionsText.move(width - m_instructionsText.getGlobalBounds().width - 10, 10);
 }
 
 void Viewer::view(Scene scene)
@@ -164,7 +178,7 @@ void Viewer::view(Scene scene)
 					break;
 			}
 
-			// If we're moving, wait for the existing coard preview to finish before
+			// If we're moving, wait for the existing coarse preview to finish before
 			// starting the next, so the entire (coarse) preview is visible.
 			if (nextRenderType == RenderType::CoarsePreview && previousRenderType == RenderType::CoarsePreview)
 				m_renderer.waitForRenderCompletion();
@@ -220,12 +234,6 @@ void Viewer::view(Scene scene)
 		if (infoTextUpdatePending)
 		{
 			std::string infoMessage;
-			infoMessage += std::string("(Enter) Save Image to File") + "\n";
-			infoMessage += std::string("(Backspace) Restart Render") + "\n";
-			infoMessage += std::string("(W/A/S/D, R/F) Move Camera\n");
-			infoMessage += std::string("(I/J/K/L) Rotate Camera\n");
-
-			infoMessage += "\n";
 			infoMessage += "Camera Position:  " + scene.camera.position().string() + "\n";
 			infoMessage += "Camera Direction: " + scene.camera.direction().string() + "\n";
 
@@ -240,6 +248,7 @@ void Viewer::view(Scene scene)
 		}
 
 		m_window.draw(m_sprite);
+		m_window.draw(m_instructionsText);
 		m_window.draw(m_infoText);
 		m_window.display();
 	}
