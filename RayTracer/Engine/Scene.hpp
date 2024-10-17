@@ -16,6 +16,6 @@ public:
 	std::vector<std::shared_ptr<Object>>	objects;
 
 	uint8_t									maxRayDepth = 25;
-	uint8_t									sampledPerPixel = 25;
+	uint8_t									samplesPerPixel = 25;
 	bool									lighting = true;
 };

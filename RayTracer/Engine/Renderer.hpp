@@ -31,8 +31,8 @@ public:
 	void									stopRender();
 	void									startRender();
 
-	bool									isRendering() const { return m_renderState.load() == RenderState::Run && m_busyThreads.load() != 0; }
-	uint8_t									renderPercentage() const { return static_cast<uint8_t>(std::ceil(100.0f * m_lastRenderLineStart.load() / m_height)); }
+	bool									isRendering() const;
+	uint8_t									renderPercentage() const;
 	std::chrono::milliseconds				renderTime() const;
 
 private:
@@ -60,4 +60,5 @@ private:
 
 	std::atomic<size_t>						m_busyThreads = 0;
 	std::atomic<size_t>						m_lastRenderLineStart = 0;
+	std::atomic<size_t>						m_finishedLines = 0;
 };

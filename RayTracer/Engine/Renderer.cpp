@@ -9,9 +9,8 @@
 
 namespace
 {
-	constexpr size_t	kMaxLinesToRenderPerChunk	= 1;
+	constexpr size_t	kMaxLinesToRenderPerChunk	= 10;
 	constexpr size_t	kCoarsePreviewLineSpacing	= 8;
-	constexpr double	kGamma						= 1.0;
 }
 
 Renderer::Renderer(size_t width, size_t height, size_t numRenderThreads)
@@ -45,6 +44,8 @@ Renderer::Renderer(size_t width, size_t height, size_t numRenderThreads)
 						lock.unlock();
 						renderLines(startLine, endLine);
 						lock.lock();
+
+						m_finishedLines += (endLine - startLine);
 					}
 
 					if (--m_busyThreads == 0)
@@ -136,6 +137,7 @@ void Renderer::startRender()
 	lock.lock();
 
 	m_lastRenderLineStart = 0;
+	m_finishedLines = 0;
 
 	m_renderStartTime = std::chrono::steady_clock::now();
 	m_renderEndTime = {};
@@ -144,6 +146,16 @@ void Renderer::startRender()
 
 	lock.unlock();
 	m_renderStateCondition.notify_all();
+}
+
+bool Renderer::isRendering() const
+{
+	return m_renderState.load() == RenderState::Run || m_busyThreads.load() != 0;
+}
+
+uint8_t Renderer::renderPercentage() const
+{
+	return std::ceil(100.0f * m_finishedLines.load() / m_height);
 }
 
 std::chrono::milliseconds Renderer::renderTime() const
@@ -175,7 +187,7 @@ void Renderer::renderLines(size_t startLine, size_t endLine)
 		{
 			Color sampleColor;
 
-			for (size_t i = 0; i < m_scene.sampledPerPixel; i++)
+			for (size_t i = 0; i < m_scene.samplesPerPixel; i++)
 			{
 				thread_local std::mt19937 generator;
 				thread_local std::uniform_real_distribution<double> distribution(-1.0, 1.0);
@@ -186,8 +198,7 @@ void Renderer::renderLines(size_t startLine, size_t endLine)
 				sampleColor = sampleColor.add(m_scene.camera.trace(m_scene, cameraX, cameraY));
 			}
 
-			sampleColor = sampleColor.scale(1.0 / m_scene.sampledPerPixel);
-			sampleColor = Color(pow(sampleColor.red(), 1.0 / kGamma), pow(sampleColor.green(), 1.0 / kGamma), pow(sampleColor.blue(), 1.0 / kGamma));
+			sampleColor = sampleColor.scale(1.0 / m_scene.samplesPerPixel);
 
 			*(currentPixel++) = sampleColor.toPackedRGBA();
 		}

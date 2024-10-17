@@ -146,8 +146,8 @@ void Viewer::view(Scene scene)
 		if (sceneUpdatePending)
 		{
 			scene.lighting = nextRenderType != RenderType::CoarsePreview;
-			scene.maxRayDepth = nextRenderType != RenderType::CoarsePreview ? 10 : 1;
-			scene.sampledPerPixel = nextRenderType == RenderType::Full ? 150 : 1;
+			scene.maxRayDepth = nextRenderType != RenderType::CoarsePreview ? 8 : 1;
+			scene.samplesPerPixel = nextRenderType == RenderType::Full ? 150 : 1;
 
 			if (nextRenderType == RenderType::CoarsePreview && previousRenderType == RenderType::CoarsePreview)
 				m_renderer.waitForRenderCompletion();

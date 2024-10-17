@@ -92,7 +92,7 @@ Scene ExampleScene::Build()
 			/* Position: */					Vector(-1e20, -1e20, -50),
 			/* Rotation: */					Vector(0, 0, 0),
 			/* Material: */					std::make_shared<LightMaterial>(
-				/* Texture: */				std::make_shared<SolidTexture>(Palette::kWhite.scale(1))
+				/* Texture: */				std::make_shared<SolidTexture>(Palette::kWhite.scale(.85))
 			),
 			/* Size: */						Vector(2e20, 2e20, 1)
 		)

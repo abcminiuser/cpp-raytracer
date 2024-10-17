@@ -9,7 +9,7 @@
 Ray::Ray(const Vector& position, const Vector& direction)
 	: m_position(position)
 	, m_direction(direction)
-	, m_directionInverse(1 / m_direction.x(), 1 / m_direction.y(), 1 / m_direction.z())
+	, m_directionInverse(Vector(1, 1, 1).divide(m_direction))
 {
 	assert(direction.length() - 1 <= std::numeric_limits<double>::epsilon());
 }
