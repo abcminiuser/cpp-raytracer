@@ -47,6 +47,7 @@ void Viewer::view(Scene scene)
 	bool wasRendering = false;
 	bool infoTextUpdatePending = true;
 	bool sceneUpdatePending = true;
+	uint8_t lastRenderPercent = 0;
 
 	while (m_window.isOpen())
 	{
@@ -157,6 +158,7 @@ void Viewer::view(Scene scene)
 
 			wasRendering = true;
 			previousRenderType = nextRenderType;
+			lastRenderPercent = 0;
 
 			sceneUpdatePending = false;
 			infoTextUpdatePending = true;
@@ -192,6 +194,12 @@ void Viewer::view(Scene scene)
 			infoTextUpdatePending = true;
 		}
 
+		if (lastRenderPercent != m_renderer.renderPercentage())
+		{
+			lastRenderPercent = m_renderer.renderPercentage();
+			infoTextUpdatePending = true;
+		}
+
 		if (infoTextUpdatePending)
 		{
 			std::string infoMessage;
@@ -205,7 +213,7 @@ void Viewer::view(Scene scene)
 			infoMessage += "Camera Direction: " + scene.camera.direction().string() + "\n";
 
 			if (isRendering)
-				infoMessage += std::string("Rendering In Progress (" + std::string(previousRenderType != RenderType::Full ? "Preview" : "Full") + ")");
+				infoMessage += std::string("Rendering In Progress (" + std::string(previousRenderType != RenderType::Full ? "Preview" : "Full") + " - " + std::to_string(m_renderer.renderPercentage()) + "%)");
 			else
 				infoMessage += std::string("Rendering Completed (") + std::to_string(m_renderer.renderTime().count()) + " ms)";
 

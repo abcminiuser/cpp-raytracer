@@ -32,6 +32,7 @@ public:
 	void									startRender();
 
 	bool									isRendering() const { return m_renderState.load() == RenderState::Run && m_busyThreads.load() != 0; }
+	uint8_t									renderPercentage() const { return static_cast<uint8_t>(std::ceil(100.0f * m_lastRenderLineStart.load() / m_height)); }
 	std::chrono::milliseconds				renderTime() const;
 
 private:
