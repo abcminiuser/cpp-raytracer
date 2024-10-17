@@ -28,7 +28,7 @@ DiffuseMaterial::DiffuseMaterial(std::shared_ptr<Texture> texture)
 
 }
 
-Ray DiffuseMaterial::scatter(const Ray& sourceRay, const Vector& hitPosition, const Vector& hitNormal)
+std::optional<Ray> DiffuseMaterial::scatter(const Ray& sourceRay, const Vector& hitPosition, const Vector& hitNormal)
 {
 	// Find a random unit vector in the same hemisphere as our surface normal. Easiest to
 	// first generate a random unit vector, then invert it if it landed on the wrong side.

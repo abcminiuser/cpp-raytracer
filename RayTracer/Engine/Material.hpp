@@ -1,11 +1,13 @@
 #pragma once
 
-#include <memory>
+#include "Engine/Color.hpp"
+#include "Engine/Ray.hpp"
 
-class Ray;
+#include <memory>
+#include <optional>
+
 class Texture;
 
-struct Color;
 struct Scene;
 struct Vector;
 
@@ -18,7 +20,8 @@ public:
 	Color							illuminate(const Scene& scene, const Ray& sourceRay, const Vector& hitPosition, const Vector& hitNormal, const Vector& uv, uint32_t rayDepth);
 
 public:
-	virtual Ray						scatter(const Ray& sourceRay, const Vector& hitPosition, const Vector& hitNormal) = 0;
+	virtual Color					emit(const Vector& uv)		{ return Palette::kBlack; }
+	virtual std::optional<Ray>		scatter(const Ray& sourceRay, const Vector& hitPosition, const Vector& hitNormal)						{ return std::nullopt; }
 
 protected:
 	const std::shared_ptr<Texture>	m_texture;

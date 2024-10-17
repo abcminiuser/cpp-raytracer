@@ -3,6 +3,7 @@
 #include "Engine/Mesh.hpp"
 #include "Engine/Scene.hpp"
 #include "Engine/Material/DiffuseMaterial.hpp"
+#include "Engine/Material/LightMaterial.hpp"
 #include "Engine/Material/ReflectiveMaterial.hpp"
 #include "Engine/Object/BoxObject.hpp"
 #include "Engine/Object/PlaneObject.hpp"
@@ -23,7 +24,7 @@
 
 namespace
 {
-	std::shared_ptr<ImageTexture> MakeImageTexture(const std::string& path)
+	std::shared_ptr<ImageTexture> MakeImageTexture(const std::string& path, Color multiplier = Color(1, 1, 1))
 	{
 		sf::Image imageTexture;
 		if (! imageTexture.loadFromFile(path))
@@ -32,7 +33,7 @@ namespace
 		const auto	dimensions	= imageTexture.getSize();
 		const auto* pixels		= imageTexture.getPixelsPtr();
 
-		return std::make_shared<ImageTexture>(dimensions.x, dimensions.y, reinterpret_cast<const uint32_t*>(pixels));
+		return std::make_shared<ImageTexture>(dimensions.x, dimensions.y, reinterpret_cast<const uint32_t*>(pixels), multiplier);
 	}
 
 	std::shared_ptr<Mesh> MakeObjectMesh(const std::string& path, double scale = 1.0)
@@ -86,6 +87,26 @@ Scene ExampleScene::Build()
 		/* View Height: */					5.0 / 2
 	);
 
+	scene.objects.push_back(
+		std::make_unique<BoxObject>(
+			/* Position: */					Vector(-1e20, -1e20, -50),
+			/* Rotation: */					Vector(0, 0, 0),
+			/* Material: */					std::make_shared<LightMaterial>(
+				/* Texture: */				std::make_shared<SolidTexture>(Palette::kWhite.scale(1))
+			),
+			/* Size: */						Vector(2e20, 2e20, 1)
+		)
+	);
+	scene.objects.push_back(
+		std::make_unique<SphereObject>(
+			/* Position: */					Vector(-6, 3, -5),
+			/* Rotation: */					Vector(0, 0, 0),
+			/* Material: */					std::make_shared<LightMaterial>(
+				/* Texture: */				std::make_shared<SolidTexture>(Color::FromComponentRGB(255, 128, 0).scale(1))
+			),
+			/* Radius: */					1
+		)
+	);
 	scene.objects.push_back(
 		std::make_unique<PlaneObject>(
 			/* Material: */					std::make_shared<DiffuseMaterial>(
@@ -197,7 +218,6 @@ Scene ExampleScene::Build()
 			/* Size: */						Vector(1, 1, 1)
 		)
 	);
-
 	scene.objects.push_back(
 		std::make_unique<MeshObject>(
 			/* Position: */					Vector(8, 0, 8),

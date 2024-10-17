@@ -14,7 +14,7 @@ Object::Object(const Vector& position, const Vector& rotation, std::shared_ptr<M
 	, m_rotationMatrix(MatrixUtils::RotationMatrix(rotation))
 	, m_rotationMatrixInverse(MatrixUtils::RotationMatrix(rotation.invert()))
 {
-
+	assert(m_material);
 }
 
 double Object::intersect(const Ray& ray) const

@@ -9,7 +9,7 @@ ReflectiveMaterial::ReflectiveMaterial(std::shared_ptr<Texture> texture)
 
 }
 
-Ray ReflectiveMaterial::scatter(const Ray& sourceRay, const Vector& hitPosition, const Vector& hitNormal)
+std::optional<Ray> ReflectiveMaterial::scatter(const Ray& sourceRay, const Vector& hitPosition, const Vector& hitNormal)
 {
 	return Ray(hitPosition, sourceRay.direction().subtract(hitNormal.scale(2 * sourceRay.direction().dotProduct(hitNormal))).unit());
 }

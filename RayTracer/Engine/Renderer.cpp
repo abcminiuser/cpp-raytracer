@@ -11,7 +11,7 @@ namespace
 {
 	constexpr size_t	kMaxLinesToRenderPerChunk	= 1;
 	constexpr size_t	kCoarsePreviewLineSpacing	= 8;
-	constexpr double	kGamma						= 2.2;
+	constexpr double	kGamma						= 1.0;
 }
 
 Renderer::Renderer(size_t width, size_t height, size_t numRenderThreads)
