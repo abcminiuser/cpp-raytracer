@@ -12,10 +12,13 @@ class ReflectiveMaterial
 	: public Material
 {
 public:
-							ReflectiveMaterial(std::shared_ptr<Texture> texture);
+							ReflectiveMaterial(std::shared_ptr<Texture> texture, double polish);
 							~ReflectiveMaterial() = default;
 
 // Material i/f:
 public:
 	std::optional<Ray>		scatter(const Ray& sourceRay, const Vector& hitPosition, const Vector& hitNormal) override;
+
+private:
+	double					m_scuff;
 };

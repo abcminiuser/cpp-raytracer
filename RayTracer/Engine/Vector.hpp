@@ -2,8 +2,9 @@
 
 #include <algorithm>
 #include <cmath>
-#include <tuple>
+#include <random>
 #include <string>
+#include <tuple>
 
 struct Vector
 {
@@ -151,6 +152,19 @@ namespace VectorUtils
 	static inline constexpr double	MaxComponent(const Vector& v)
 	{
 		return std::max({ v.x(), v.y(), v.z() });
+	}
+
+	static inline Vector RandomUnitVector()
+	{
+	    thread_local std::mt19937 generator;
+		thread_local std::uniform_real_distribution<double> distribution(-1.0, 1.0);
+
+	    for (;;)
+	    {
+			auto v = Vector(distribution(generator), distribution(generator), distribution(generator));
+			if (v.lengthSquared() > 1e-10 && v.lengthSquared() < 1)
+				return v.unit();
+		}
 	}
 }
 

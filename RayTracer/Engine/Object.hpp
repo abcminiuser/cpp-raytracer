@@ -17,7 +17,7 @@ class Object
 {
 public:
 	static inline constexpr double kNoIntersection			= std::numeric_limits<double>::infinity();
-	static inline constexpr double kComparisonThreshold		= std::numeric_limits<double>::epsilon() * 1000;
+	static inline constexpr double kComparisonThreshold		= 1e-10;
 
 									Object(const Vector& position, const Vector& rotation, std::shared_ptr<Material> material);
 	virtual							~Object() = default;

@@ -203,7 +203,8 @@ Scene ExampleScene::Build()
 			/* Position: */					Vector(0, 0, 6),
 			/* Rotation: */					Vector(0, 0, 0),
 			/* Material: */					std::make_shared<ReflectiveMaterial>(
-				/* Texture: */				std::make_shared<SolidTexture>(Palette::kWhite)
+				/* Texture: */				std::make_shared<SolidTexture>(Palette::kWhite),
+				/* Polish: */				1.0
 			),
 			/* Size: */						Vector(2, 2, 2)
 		)
@@ -223,7 +224,8 @@ Scene ExampleScene::Build()
 			/* Position: */					Vector(8, 0, 8),
 			/* Rotation: */					Vector(0, std::numbers::pi / 4, 0),
 			/* Material: */					std::make_shared<ReflectiveMaterial>(
-				/* Texture: */				std::make_shared<SolidTexture>(Palette::kWhite)
+				/* Texture: */				std::make_shared<SolidTexture>(Palette::kWhite),
+				/* Polish: */				0.99
 			),
 			/* Mesh: */						MakeObjectMesh("Assets/Teapot.obj", 1.0)
 		)
