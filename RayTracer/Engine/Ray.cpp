@@ -14,9 +14,9 @@ Ray::Ray(const Vector& position, const Vector& direction)
 	assert(direction.length() - 1 <= std::numeric_limits<double>::epsilon());
 }
 
-Color Ray::trace(const Scene& scene, uint32_t rayDepth) const
+Color Ray::trace(const Scene& scene, uint32_t rayDepthRemaining) const
 {
-	if (rayDepth >= scene.maxRayDepth)
+	if (rayDepthRemaining-- == 0)
 		return Palette::kBlack;
 
 	double	closestIntersectionDistance = Object::kNoIntersection;
@@ -36,5 +36,5 @@ Color Ray::trace(const Scene& scene, uint32_t rayDepth) const
 		return scene.background;
 
 	const Vector closestCollisionPoint = m_position.add(m_direction.scale(closestIntersectionDistance));
-	return closestObject->illuminate(scene, *this, closestCollisionPoint, rayDepth + 1);
+	return closestObject->illuminate(scene, *this, closestCollisionPoint, rayDepthRemaining);
 }

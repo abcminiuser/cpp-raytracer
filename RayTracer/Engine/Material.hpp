@@ -17,7 +17,7 @@ public:
 									Material(std::shared_ptr<Texture> texture);
 	virtual							~Material() = default;
 
-	Color							illuminate(const Scene& scene, const Ray& sourceRay, const Vector& hitPosition, const Vector& hitNormal, const Vector& uv, uint32_t rayDepth);
+	Color							illuminate(const Scene& scene, const Ray& sourceRay, const Vector& hitPosition, const Vector& hitNormal, const Vector& uv, uint32_t rayDepthRemaining);
 
 public:
 	virtual Color					emit(const Vector& uv)		{ return Palette::kBlack; }

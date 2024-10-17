@@ -16,7 +16,7 @@ public:
 	const Vector&		direction() const			{ return m_direction; }
 	const Vector&		directionInverse() const	{ return m_directionInverse; }
 
-	Color				trace(const Scene& scene, uint32_t rayDepth) const;
+	Color				trace(const Scene& scene, uint32_t rayDepthRemaining) const;
 
 private:
 	Vector				m_position;
