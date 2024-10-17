@@ -155,7 +155,7 @@ bool Renderer::isRendering() const
 
 uint8_t Renderer::renderPercentage() const
 {
-	return 100.0 * m_finishedLines.load() / m_height;
+	return static_cast<uint8_t>(100.0 * m_finishedLines.load() / m_height);
 }
 
 std::chrono::milliseconds Renderer::renderTime() const
