@@ -14,7 +14,6 @@ public:
 	Camera									camera;
 	Color									background;
 	std::vector<std::shared_ptr<Object>>	objects;
-	double									airRefractionIndex = 1.0;
 
 	uint8_t									maxRayDepth = 25;
 	uint8_t									sampledPerPixel = 25;

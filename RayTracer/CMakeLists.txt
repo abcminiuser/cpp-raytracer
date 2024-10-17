@@ -41,10 +41,10 @@ target_compile_features (RayTracer PUBLIC cxx_std_20)
 set_property(TARGET RayTracer PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
 
 if (MSVC)
-    target_compile_options (RayTracer PUBLIC /W4 /WX /wd4100)
+    target_compile_options (RayTracer PUBLIC /W4 /WX /wd4100 /fp:fast /arch:AVX2)
     target_compile_definitions (RayTracer PUBLIC _CRT_SECURE_NO_WARNINGS)
 else ()
-    target_compile_options (RayTracer PUBLIC -Wall -Wextra -pedantic -Werror -Wno-unused-parameter -Wshadow -Wdouble-promotion)
+    target_compile_options (RayTracer PUBLIC -Wall -Wextra -pedantic -Werror -Wno-unused-parameter -Wshadow -Wdouble-promotion -fno-math-errno -fno-trapping-math)
 endif ()
 
 add_custom_command (TARGET RayTracer POST_BUILD

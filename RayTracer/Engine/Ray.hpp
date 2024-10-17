@@ -3,8 +3,6 @@
 #include "Engine/Color.hpp"
 #include "Engine/Vector.hpp"
 
-#include <optional>
-
 struct Scene;
 
 class Ray
