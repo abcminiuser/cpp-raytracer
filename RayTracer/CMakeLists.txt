@@ -7,7 +7,7 @@ if (MSVC)
     set (SFML_STATIC_LIBRARIES TRUE)
 endif ()
 
-find_package (SFML CONFIG REQUIRED COMPONENTS graphics HINTS ${VENDOR_BASE_DIR})
+find_package (SFML CONFIG REQUIRED COMPONENTS graphics)
 
 add_executable (RayTracer
 	"Engine/Renderer.cpp"
