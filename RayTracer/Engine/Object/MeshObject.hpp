@@ -1,14 +1,11 @@
 #pragma once
 
-#include "Engine/Material.hpp"
 #include "Engine/Mesh.hpp"
 #include "Engine/Object.hpp"
 
-#include <array>
 #include <memory>
-#include <vector>
 
-class Texture;
+class Material;
 
 struct Vector;
 
@@ -16,17 +13,17 @@ class MeshObject
 	: public Object
 {
 public:
-								MeshObject(const Vector& position, const Vector& rotation, std::shared_ptr<Mesh> mesh, std::shared_ptr<Texture> texture, std::shared_ptr<Material> material);
+								MeshObject(const Vector& position, const Vector& rotation, std::shared_ptr<Material> material, std::shared_ptr<Mesh> mesh);
 								~MeshObject() override = default;
 
 // Object i/f:
 protected:
 	double						intersectWith(const Ray& ray) const override;
-	void						getIntersectionProperties(const Vector& position, Vector& normal, Color& color) const override;
+	void						getIntersectionProperties(const Vector& position, Vector& normal, Vector& uv) const override;
 
 private:
 	Vector						normalAt(const Vertex& v0, const Vertex& v1, const Vertex v2, const Vector& mix) const;
-	Color						colorAt(const Vertex& v0, const Vertex& v1, const Vertex v2, const Vector& mix) const;
+	Vector						uvAt(const Vertex& v0, const Vertex& v1, const Vertex v2, const Vector& mix) const;
 
 	double						intersectWith(const Ray& ray, const Vertex& v0, const Vertex& v1, const Vertex v2) const;
 	bool						pointOn(const Vector& point, const Vertex& v0, const Vertex& v1, const Vertex v2) const;

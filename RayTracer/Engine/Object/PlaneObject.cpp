@@ -1,14 +1,12 @@
 #include "Engine/Object/PlaneObject.hpp"
 
-#include "Engine/Material.hpp"
 #include "Engine/Ray.hpp"
-#include "Engine/Texture.hpp"
 #include "Engine/Vector.hpp"
 
-PlaneObject::PlaneObject(const Vector& normal, double distance, std::shared_ptr<Texture> texture, double textureScaleFactor, std::shared_ptr<Material> material)
-	: Object(normal.scale(distance), Vector(), std::move(texture), std::move(material))
-	, m_textureScaleFactor(textureScaleFactor)
+PlaneObject::PlaneObject(std::shared_ptr<Material> material, const Vector& normal, double distance, double uvScaleFactor)
+	: Object(normal.scale(distance), Vector(), std::move(material))
 	, m_normal(normal)
+	, m_uvScaleFactor(uvScaleFactor)
 {
 
 }
@@ -28,18 +26,15 @@ double PlaneObject::intersectWith(const Ray& ray) const
 	return -b / angle;
 }
 
-void PlaneObject::getIntersectionProperties(const Vector& position, Vector& normal, Color& color) const
+void PlaneObject::getIntersectionProperties(const Vector& position, Vector& normal, Vector& uv) const
 {
 	normal	= m_normal;
-	color	= colorAt(position, normal);
+	uv		= uvAt(position, normal);
 }
 
-Color PlaneObject::colorAt(const Vector& position, const Vector& normal) const
+Vector PlaneObject::uvAt(const Vector& position, const Vector& normal) const
 {
-	if (! m_texture)
-		return Palette::kBlack;
-
-	const auto positionFromOrigin = position.scale(m_textureScaleFactor);
+	const auto positionFromOrigin = position.scale(m_uvScaleFactor);
 
 	auto u = positionFromOrigin.x();
 	auto v = positionFromOrigin.z();
@@ -47,5 +42,5 @@ Color PlaneObject::colorAt(const Vector& position, const Vector& normal) const
 	u -= std::floor(u);
 	v -= std::floor(v);
 
-	return m_texture->colorAt(u, v);
+	return Vector(u, v, 0);
 }

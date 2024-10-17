@@ -3,7 +3,11 @@
 #include "Engine/Ray.hpp"
 #include "Engine/Vector.hpp"
 
-#include <algorithm>
+ReflectiveMaterial::ReflectiveMaterial(std::shared_ptr<Texture> texture)
+	: Material(std::move(texture))
+{
+
+}
 
 Ray ReflectiveMaterial::scatter(const Ray& sourceRay, const Vector& hitPosition, const Vector& hitNormal)
 {

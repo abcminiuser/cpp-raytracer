@@ -1,8 +1,6 @@
 #include "Engine/Object/BoxObject.hpp"
 
-#include "Engine/Material.hpp"
 #include "Engine/Ray.hpp"
-#include "Engine/Texture.hpp"
 #include "Engine/Vector.hpp"
 
 #include <algorithm>
@@ -18,8 +16,8 @@ namespace
 	constexpr auto kBackNormal		= StandardVectors::kUnitZ;
 }
 
-BoxObject::BoxObject(const Vector& position, const Vector& rotation, const Vector& size, std::shared_ptr<Texture> texture, std::shared_ptr<Material> material)
-	: Object(position, rotation, std::move(texture), std::move(material))
+BoxObject::BoxObject(const Vector& position, const Vector& rotation, std::shared_ptr<Material> material, const Vector& size)
+	: Object(position, rotation, std::move(material))
 	, m_size(size)
 {
 
@@ -54,10 +52,10 @@ double BoxObject::intersectWith(const Ray& ray) const
 	return tMin;
 }
 
-void BoxObject::getIntersectionProperties(const Vector& position, Vector& normal, Color& color) const
+void BoxObject::getIntersectionProperties(const Vector& position, Vector& normal, Vector& uv) const
 {
 	normal	= normalAt(position);
-	color	= colorAt(position, normal);
+	uv		= uvAt(position, normal);
 }
 
 Vector BoxObject::normalAt(const Vector& position) const
@@ -76,11 +74,8 @@ Vector BoxObject::normalAt(const Vector& position) const
 		return kBackNormal; // Back face
 }
 
-Color BoxObject::colorAt(const Vector& position, const Vector& normal) const
+Vector BoxObject::uvAt(const Vector& position, const Vector& normal) const
 {
-	if (! m_texture)
-		return Palette::kBlack;
-
 	constexpr double kStepU = (1.0 / 4);
 	constexpr double kStepV = (1.0 / 3);
 
@@ -121,5 +116,5 @@ Color BoxObject::colorAt(const Vector& position, const Vector& normal) const
 		v = kStepV * (1 + dLower.y());
 	}
 
-	return m_texture->colorAt(u, v);
+	return Vector(u, v, 0);
 }

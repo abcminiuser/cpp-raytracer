@@ -88,11 +88,12 @@ Scene ExampleScene::Build()
 
 	scene.objects.push_back(
 		std::make_unique<PlaneObject>(
+			/* Material: */					std::make_shared<DiffuseMaterial>(
+				/* Texture: */				MakeImageTexture("Assets/Brick.jpg")
+			),
 			/* Normal: */					StandardVectors::kUnitY,
 			/* Distance to Normal: */		-1,
-			/* Texture: */					MakeImageTexture("Assets/Brick.jpg"),
-			/* Texture Scaling: */			1 / 3.0,
-			/* Material: */					std::make_shared<DiffuseMaterial>()
+			/* Texture Scaling: */			1 / 3.0
 		)
 	);
 
@@ -100,90 +101,100 @@ Scene ExampleScene::Build()
 		std::make_unique<SphereObject>(
 			/* Position: */					Vector(-4, 0, 4),
 			/* Rotation: */					Vector(0, 0, 0),
-			/* Radius: */					1,
-			/* Texture: */					std::make_shared<SolidTexture>(Palette::kWhite),
-			/* Material: */					std::make_shared<DiffuseMaterial>()
+			/* Material: */					std::make_shared<DiffuseMaterial>(
+				/* Texture: */				std::make_shared<SolidTexture>(Palette::kWhite)
+			),
+			/* Radius: */					1
 		)
 	);
 	scene.objects.push_back(
 		std::make_unique<SphereObject>(
 			/* Position: */					Vector(-2, 0, 2),
 			/* Rotation: */					Vector(0, std::numbers::pi / 8, std::numbers::pi / 8),
-			/* Radius: */					1,
-			/* Texture */					std::make_shared<CheckerboardTexture>(Palette::kMagenta, Palette::kYellow, 8),
-			/* Material: */					std::make_shared<DiffuseMaterial>()
+			/* Material: */					std::make_shared<DiffuseMaterial>(
+				/* Texture: */				std::make_shared<CheckerboardTexture>(Palette::kMagenta, Palette::kYellow, 8)
+			),
+			/* Radius: */					1
 		)
 	);
 	scene.objects.push_back(
 		std::make_unique<SphereObject>(
 			/* Position: */					Vector( 0, 0, 0),
 			/* Rotation: */					Vector(0, 0, 0),
-			/* Radius: */					1,
-			/* Texture: */					std::make_shared<SolidTexture>(Palette::kRed),
-			/* Material: */					std::make_shared<DiffuseMaterial>()
+			/* Material: */					std::make_shared<DiffuseMaterial>(
+				/* Texture: */				std::make_shared<SolidTexture>(Palette::kRed)
+			),
+			/* Radius: */					1
 		)
 	);
 	scene.objects.push_back(
 		std::make_unique<SphereObject>(
 			/* Position: */					Vector( 2, 0, 2),
 			/* Rotation: */					Vector(0, 0, 0),
-			/* Radius: */					1,
-			/* Texture: */					std::make_shared<SolidTexture>(Palette::kGreen),
-			/* Material: */					std::make_shared<DiffuseMaterial>()
+			/* Material: */					std::make_shared<DiffuseMaterial>(
+				/* Texture: */				std::make_shared<SolidTexture>(Palette::kGreen)
+			),
+			/* Radius: */					1
 		)
 	);
 	scene.objects.push_back(
 		std::make_unique<SphereObject>(
 			/* Position: */					Vector( 4, 0, 4),
 			/* Rotation: */					Vector(0, 0, 0),
-			/* Radius: */					1,
-			/* Texture: */					std::make_shared<SolidTexture>(Palette::kBlue),
-			/* Material: */					std::make_shared<DiffuseMaterial>()
+			/* Material: */					std::make_shared<DiffuseMaterial>(
+				/* Texture: */				std::make_shared<SolidTexture>(Palette::kBlue)
+			),
+			/* Radius: */					1
 		)
 	);
 	scene.objects.push_back(
 		std::make_unique<SphereObject>(
 			/* Position: */					Vector(6, 0, 0),
 			/* Rotation: */					Vector(0, 0, 0),
-			/* Radius: */					1,
-			/* Texture: */					std::make_shared<SolidTexture>(Palette::kWhite),
-			/* Material: */					std::make_shared<DiffuseMaterial>()
+			/* Material: */					std::make_shared<DiffuseMaterial>(
+				/* Texture: */				std::make_shared<SolidTexture>(Palette::kWhite)
+			),
+			/* Radius: */					1
 		)
 	);
 	scene.objects.push_back(
 		std::make_unique<SphereObject>(
 			/* Position: */					Vector(-6, 0, 0),
 			/* Rotation: */					Vector(0, 0, 0),
-			/* Radius: */					1,
-			/* Texture: */					MakeImageTexture("Assets/Marble.jpg"),
-			/* Material: */					std::make_shared<DiffuseMaterial>()
+			/* Material: */					std::make_shared<DiffuseMaterial>(
+				/* Texture: */				MakeImageTexture("Assets/Marble.jpg")
+			),
+			/* Radius: */					1
 		)
 	);
 	scene.objects.push_back(
 		std::make_unique<SphereObject>(
 			/* Position: */					Vector(-3, 0, -3),
 			/* Rotation: */					Vector(0, 0, 0),
-			/* Radius: */					1,
-			/* Texture: */					std::make_shared<SolidTexture>(Palette::kWhite),
-			/* Material: */					std::make_shared<DiffuseMaterial>()
+			/* Material: */					std::make_shared<DiffuseMaterial>(
+				/* Texture: */				std::make_shared<SolidTexture>(Palette::kWhite)
+			),
+			/* Radius: */					1
 		)
 	);
 	scene.objects.push_back(
 		std::make_unique<BoxObject>(
 			/* Position: */					Vector(0, 0, 6),
 			/* Rotation: */					Vector(0, 0, 0),
-			/* Size: */						Vector(2, 2, 2),
-			/* Texture: */					std::make_shared<SolidTexture>(Palette::kWhite),
-			/* Material: */					std::make_shared<ReflectiveMaterial>()
+			/* Material: */					std::make_shared<ReflectiveMaterial>(
+				/* Texture: */				std::make_shared<SolidTexture>(Palette::kWhite)
+			),
+			/* Size: */						Vector(2, 2, 2)
 		)
 	);
 	scene.objects.push_back(
 		std::make_unique<BoxObject>(
 			/* Position: */					Vector(1, 0, -4),
 			/* Rotation: */					Vector(0, std::numbers::pi / 4, 0),
-			/* Size: */						Vector(1, 1, 1),
-			/* Texture: */					MakeImageTexture("Assets/Cube.png"),
-			/* Material: */					std::make_shared<DiffuseMaterial>()
+			/* Material: */					std::make_shared<DiffuseMaterial>(
+				/* Texture: */				MakeImageTexture("Assets/Cube.png")
+			),
+			/* Size: */						Vector(1, 1, 1)
 		)
 	);
 
@@ -191,9 +202,10 @@ Scene ExampleScene::Build()
 		std::make_unique<MeshObject>(
 			/* Position: */					Vector(8, 0, 8),
 			/* Rotation: */					Vector(0, std::numbers::pi / 4, 0),
-			/* Mesh: */						MakeObjectMesh("Assets/Teapot.obj", 1.0),
-			/* Texture: */					std::make_shared<SolidTexture>(Palette::kWhite),
-			/* Material: */					std::make_shared<ReflectiveMaterial>()
+			/* Material: */					std::make_shared<ReflectiveMaterial>(
+				/* Texture: */				std::make_shared<SolidTexture>(Palette::kWhite)
+			),
+			/* Mesh: */						MakeObjectMesh("Assets/Teapot.obj", 1.0)
 		)
 	);
 

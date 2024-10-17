@@ -7,9 +7,8 @@
 #include <cassert>
 #include <limits>
 
-Object::Object(const Vector& position, const Vector& rotation, std::shared_ptr<Texture> texture, std::shared_ptr<Material> material)
-	: m_texture(std::move(texture))
-	, m_material(std::move(material))
+Object::Object(const Vector& position, const Vector& rotation, std::shared_ptr<Material> material)
+	: m_material(std::move(material))
 	, m_position(position)
 	, m_hasRotation(rotation != Vector())
 	, m_rotationMatrix(MatrixUtils::RotationMatrix(rotation))
@@ -29,23 +28,18 @@ double Object::intersect(const Ray& ray) const
 	return closestIntersectionDistance;
 }
 
-Color Object::illuminate(const Scene& scene, const Vector& position, const Ray& ray, uint32_t rayDepth) const
+Color Object::illuminate(const Scene& scene, const Ray& ray, const Vector& position, uint32_t rayDepth) const
 {
 	const Vector positionObjectSpace = rotate(position.subtract(m_position), m_rotationMatrix);
 
 	Vector	normalObjectSpace;
-	Color	objectColor;
-	getIntersectionProperties(positionObjectSpace, normalObjectSpace, objectColor);
+	Vector	uv;
+	getIntersectionProperties(positionObjectSpace, normalObjectSpace, uv);
 	assert(normalObjectSpace.length() - 1 <= std::numeric_limits<double>::epsilon());
 
-	if (! scene.lighting)
-		return objectColor;
+	const auto normalWorldSpace = rotate(normalObjectSpace, m_rotationMatrixInverse).unit();
 
-	const auto normal = rotate(normalObjectSpace, m_rotationMatrixInverse).unit();
-
-	Ray		scatterRay			= m_material->scatter(ray, position, normal);
-	Color	collectedLightColor = scatterRay.trace(scene, rayDepth + 1);
-	return objectColor.multiply(collectedLightColor);
+	return m_material->illuminate(scene, ray, position, normalWorldSpace, uv, rayDepth);
 }
 
 Vector Object::rotate(const Vector& vector, const Matrix<3, 3>& rotation) const

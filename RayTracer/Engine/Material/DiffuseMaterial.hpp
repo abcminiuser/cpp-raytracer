@@ -3,9 +3,17 @@
 #include "Engine/Material.hpp"
 #include "Engine/Ray.hpp"
 
+#include <memory>
+
+class Texture;
+
 class DiffuseMaterial
 	: public Material
 {
+public:
+			DiffuseMaterial(std::shared_ptr<Texture> texture);
+			~DiffuseMaterial() = default;
+
 // Material i/f:
 public:
 	Ray		scatter(const Ray& sourceRay, const Vector& hitPosition, const Vector& hitNormal) override;

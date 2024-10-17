@@ -10,7 +10,6 @@
 
 class Material;
 class Ray;
-class Texture;
 
 struct Scene;
 
@@ -20,28 +19,27 @@ public:
 	static inline constexpr double kNoIntersection			= std::numeric_limits<double>::infinity();
 	static inline constexpr double kComparisonThreshold		= std::numeric_limits<double>::epsilon() * 1000;
 
-								Object(const Vector& position, const Vector& rotation, std::shared_ptr<Texture> texture, std::shared_ptr<Material> material);
-	virtual						~Object() = default;
+									Object(const Vector& position, const Vector& rotation, std::shared_ptr<Material> material);
+	virtual							~Object() = default;
 
-	double						intersect(const Ray& ray) const;
-	Color						illuminate(const Scene& scene, const Vector& position, const Ray& ray, uint32_t rayDepth) const;
-
-protected:
-	virtual double				intersectWith(const Ray& ray) const = 0;
-	virtual void				getIntersectionProperties(const Vector& position, Vector& normal, Color& color) const = 0;
-
-private:
-	Matrix<3, 3>				makeRotationMatrix(const Vector& rotation) const;
-	Vector						rotate(const Vector& vector, const Matrix<3, 3>& rotation) const;
+	double							intersect(const Ray& ray) const;
+	Color							illuminate(const Scene& scene, const Ray& ray, const Vector& position, uint32_t rayDepth) const;
 
 protected:
-	std::shared_ptr<Texture>	m_texture;
-	std::shared_ptr<Material>	m_material;
+	virtual double					intersectWith(const Ray& ray) const = 0;
+	virtual void					getIntersectionProperties(const Vector& position, Vector& normal, Vector& uv) const = 0;
 
 private:
-	Vector						m_position;
+	Matrix<3, 3>					makeRotationMatrix(const Vector& rotation) const;
+	Vector							rotate(const Vector& vector, const Matrix<3, 3>& rotation) const;
 
-	bool						m_hasRotation = false;
-	Matrix<3, 3>				m_rotationMatrix;
-	Matrix<3, 3>				m_rotationMatrixInverse;
+protected:
+	const std::shared_ptr<Material>	m_material;
+
+private:
+	Vector							m_position;
+
+	bool							m_hasRotation = false;
+	Matrix<3, 3>					m_rotationMatrix;
+	Matrix<3, 3>					m_rotationMatrixInverse;
 };

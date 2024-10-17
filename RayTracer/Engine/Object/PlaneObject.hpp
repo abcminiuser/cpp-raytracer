@@ -1,11 +1,10 @@
 #pragma once
 
-#include "Engine/Material.hpp"
 #include "Engine/Object.hpp"
 
 #include <memory>
 
-class Texture;
+class Material;
 
 struct Vector;
 
@@ -13,18 +12,18 @@ class PlaneObject
 	: public Object
 {
 public:
-				PlaneObject(const Vector& normal, double distance, std::shared_ptr<Texture> texture, double textureScaleFactor, std::shared_ptr<Material> material);
+				PlaneObject(std::shared_ptr<Material> material, const Vector& normal, double distance, double uvScaleFactor);
 				~PlaneObject() override = default;
 
 // Object i/f:
 protected:
 	double		intersectWith(const Ray& ray) const override;
-	void		getIntersectionProperties(const Vector& position, Vector& normal, Color& color) const override;
+	void		getIntersectionProperties(const Vector& position, Vector& normal, Vector& uv) const override;
 
 private:
-	Color		colorAt(const Vector& position, const Vector& normal) const;
+	Vector		uvAt(const Vector& position, const Vector& normal) const;
 
 private:
-	double		m_textureScaleFactor;
 	Vector		m_normal;
+	double		m_uvScaleFactor;
 };

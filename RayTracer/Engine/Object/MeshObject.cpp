@@ -1,14 +1,12 @@
 #include "Engine/Object/MeshObject.hpp"
-#include "Engine/Object/BoxObject.hpp"
 
 #include "Engine/Ray.hpp"
-#include "Engine/Texture.hpp"
 #include "Engine/Vector.hpp"
 
 #include <stdexcept>
 
-MeshObject::MeshObject(const Vector& position, const Vector& rotation, std::shared_ptr<Mesh> mesh, std::shared_ptr<Texture> texture, std::shared_ptr<Material> material)
-	: Object(position, rotation, std::move(texture), std::move(material))
+MeshObject::MeshObject(const Vector& position, const Vector& rotation, std::shared_ptr<Material> material, std::shared_ptr<Mesh> mesh)
+	: Object(position, rotation, std::move(material))
 	, m_mesh(std::move(mesh))
 {
 	if (! m_mesh)
@@ -73,7 +71,7 @@ double MeshObject::intersectWith(const Ray& ray) const
 	return distance;
 }
 
-void MeshObject::getIntersectionProperties(const Vector& position, Vector& normal, Color& color) const
+void MeshObject::getIntersectionProperties(const Vector& position, Vector& normal, Vector& uv) const
 {
 	bool found = false;
 
@@ -115,7 +113,7 @@ void MeshObject::getIntersectionProperties(const Vector& position, Vector& norma
 				const Vector mix = interpolate(position, v0, v1, v2);
 
 				normal	= normalAt(v0, v1, v2, mix);
-				color	= colorAt(v0, v1, v2, mix);
+				uv		= uvAt(v0, v1, v2, mix);
 
 				found = true;
 				return;
@@ -125,7 +123,7 @@ void MeshObject::getIntersectionProperties(const Vector& position, Vector& norma
 	if (! found)
 	{
 		normal	= StandardVectors::kUnitZ;
-		color	= Palette::kBlack;
+		uv		= Vector();
 	}
 }
 
@@ -134,13 +132,9 @@ Vector MeshObject::normalAt(const Vertex& v0, const Vertex& v1, const Vertex v2,
 	return v0.normal.scale(mix.x()).add(v1.normal.scale(mix.y())).add(v2.normal.scale(mix.z())).unit();
 }
 
-Color MeshObject::colorAt(const Vertex& v0, const Vertex& v1, const Vertex v2, const Vector& mix) const
+Vector MeshObject::uvAt(const Vertex& v0, const Vertex& v1, const Vertex v2, const Vector& mix) const
 {
-	if (! m_texture)
-		return Palette::kBlack;
-
-	const auto uv = v0.texture.scale(mix.x()).add(v1.texture.scale(mix.y())).add(v2.texture.scale(mix.z()));
-	return m_texture->colorAt(uv.x(), uv.y());
+	return v0.texture.scale(mix.x()).add(v1.texture.scale(mix.y())).add(v2.texture.scale(mix.z()));
 }
 
 double MeshObject::intersectWith(const Ray& ray, const Vertex& v0, const Vertex& v1, const Vertex v2) const

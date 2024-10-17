@@ -22,6 +22,12 @@ namespace
 	}
 }
 
+DiffuseMaterial::DiffuseMaterial(std::shared_ptr<Texture> texture)
+	: Material(std::move(texture))
+{
+
+}
+
 Ray DiffuseMaterial::scatter(const Ray& sourceRay, const Vector& hitPosition, const Vector& hitNormal)
 {
 	// Find a random unit vector in the same hemisphere as our surface normal. Easiest to

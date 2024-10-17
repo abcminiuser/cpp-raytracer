@@ -1,16 +1,14 @@
 #include "Engine/Object/SphereObject.hpp"
 
-#include "Engine/Material.hpp"
 #include "Engine/Ray.hpp"
-#include "Engine/Texture.hpp"
 #include "Engine/Vector.hpp"
 
 #include <algorithm>
 #include <cmath>
 #include <numbers>
 
-SphereObject::SphereObject(const Vector& position, const Vector& rotation, double radius, std::shared_ptr<Texture> texture, std::shared_ptr<Material> material)
-	: Object(position, rotation, std::move(texture), std::move(material))
+SphereObject::SphereObject(const Vector& position, const Vector& rotation, std::shared_ptr<Material> material, double radius)
+	: Object(position, rotation, std::move(material))
 	, m_diameter(radius * radius)
 {
 
@@ -45,19 +43,16 @@ double SphereObject::intersectWith(const Ray& ray) const
 	}
 }
 
-void SphereObject::getIntersectionProperties(const Vector& position, Vector& normal, Color& color) const
+void SphereObject::getIntersectionProperties(const Vector& position, Vector& normal, Vector& uv) const
 {
 	normal	= position.unit();
-	color	= colorAt(position, normal);
+	uv		= uvAt(position, normal);
 }
 
-Color SphereObject::colorAt(const Vector& position, const Vector& normal) const
+Vector SphereObject::uvAt(const Vector& position, const Vector& normal) const
 {
-	if (! m_texture)
-		return Palette::kBlack;
-
 	double u = .5 + std::atan2(normal.z(), normal.x()) / (2 * std::numbers::pi);
 	double v = .5 + std::asin(normal.y()) / std::numbers::pi;
 
-	return m_texture->colorAt(u, v);
+	return Vector(u, v, 0);
 }
