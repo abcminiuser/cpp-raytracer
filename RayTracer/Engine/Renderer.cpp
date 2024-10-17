@@ -177,8 +177,8 @@ void Renderer::renderLines(size_t startLine, size_t endLine)
 
 			for (size_t i = 0; i < m_scene.sampledPerPixel; i++)
 			{
-				static std::mt19937 generator;
-				static std::uniform_real_distribution<double> distribution(-1.0, 1.0);
+				thread_local std::mt19937 generator;
+				thread_local std::uniform_real_distribution<double> distribution(-1.0, 1.0);
 
 				const double cameraY = ((y + distribution(generator)) * ySampleOffset) - .5;
 				const double cameraX = ((x + distribution(generator)) * xSampleOffset) - .5;

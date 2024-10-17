@@ -8,10 +8,10 @@
 
 namespace
 {
-	Vector		RandomUnitVector()
+	Vector RandomUnitVector()
 	{
-	    static std::mt19937 generator;
-		static std::uniform_real_distribution<double> distribution(-1.0, 1.0);
+	    thread_local std::mt19937 generator;
+		thread_local std::uniform_real_distribution<double> distribution(-1.0, 1.0);
 
 	    for (;;)
 	    {
