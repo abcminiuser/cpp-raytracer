@@ -12,7 +12,7 @@
 
 namespace
 {
-	constexpr uint32_t	kUpdateFps	= 30;
+	constexpr auto kCoarsePreviewModeExitDelay = std::chrono::milliseconds(500);
 }
 
 Viewer::Viewer(Renderer& renderer, size_t width, size_t height)
@@ -21,7 +21,6 @@ Viewer::Viewer(Renderer& renderer, size_t width, size_t height)
 {
 	m_icon.loadFromFile("Assets/Icon.png");
 
-	m_window.setFramerateLimit(kUpdateFps);
 	m_window.setIcon(m_icon.getSize().x, m_icon.getSize().y, m_icon.getPixelsPtr());
 
 	m_texture.create(m_window.getSize().x, m_window.getSize().y);
@@ -56,8 +55,9 @@ void Viewer::view(Scene scene)
 {
 	enum class RenderType { CoarsePreview, Preview, Full };
 
-	RenderType nextRenderType = RenderType::CoarsePreview;
+	RenderType nextRenderType = RenderType::Preview;
 	RenderType previousRenderType = RenderType::Preview;
+	std::chrono::steady_clock::time_point lastCoarsePreviewTime = {};
 	bool wasRendering = false;
 	bool infoTextUpdatePending = true;
 	bool sceneUpdatePending = true;
@@ -185,17 +185,14 @@ void Viewer::view(Scene scene)
 			switch (nextRenderType)
 			{
 				case RenderType::CoarsePreview:
-					scene.lighting = false; // Geometry only
 					scene.maxRayDepth = 1;
 					scene.samplesPerPixel = 1;
 					break;
 				case RenderType::Preview:
-					scene.lighting = true;
 					scene.maxRayDepth = 5;
 					scene.samplesPerPixel = 1;
 					break;
 				case RenderType::Full:
-					scene.lighting = true;
 					scene.maxRayDepth = 10;
 					scene.samplesPerPixel = 150;
 					break;
@@ -226,26 +223,32 @@ void Viewer::view(Scene scene)
 		{
 			wasRendering = isRendering;
 
-			if (! isRendering)
-			{
-				switch (previousRenderType)
-				{
-					case RenderType::CoarsePreview:
-						nextRenderType = RenderType::Preview;
-						sceneUpdatePending = true;
-						break;
-
-					case RenderType::Preview:
-						nextRenderType = RenderType::Full;
-						sceneUpdatePending = true;
-						break;
-
-					case RenderType::Full:
-						break;
-				}
-			}
+			if (previousRenderType == RenderType::CoarsePreview)
+				lastCoarsePreviewTime = std::chrono::steady_clock::now();
 
 			infoTextUpdatePending = true;
+		}
+
+		if (! isRendering)
+		{
+			switch (previousRenderType)
+			{
+				case RenderType::CoarsePreview:
+					// Delay trransition out of coarse preview mode so we don't hammer the system
+					// with repeated higher quality renders that get quickly abandoned.
+					if (std::chrono::steady_clock::now() - lastCoarsePreviewTime >= kCoarsePreviewModeExitDelay)
+						nextRenderType = RenderType::Preview;
+					break;
+
+				case RenderType::Preview:
+					nextRenderType = RenderType::Full;
+					break;
+
+				case RenderType::Full:
+					break;
+			}
+
+			sceneUpdatePending = nextRenderType != previousRenderType;
 		}
 
 		if (lastRenderPercent != m_renderer.renderPercentage())

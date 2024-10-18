@@ -15,7 +15,6 @@ public:
 	Color									background;
 	std::vector<std::shared_ptr<Object>>	objects;
 
-	uint8_t									maxRayDepth = 25;
-	uint8_t									samplesPerPixel = 25;
-	bool									lighting = true;
+	uint32_t								maxRayDepth = 25;
+	uint32_t								samplesPerPixel = 25;
 };
