@@ -10,7 +10,7 @@
 namespace
 {
 	constexpr size_t	kMaxLinesToRenderPerChunk	= 10;
-	constexpr size_t	kCoarsePreviewLineSpacing	= 8;
+	constexpr size_t	kCoarsePreviewSpacing		= 4;
 }
 
 Renderer::Renderer(size_t width, size_t height, size_t numRenderThreads)
@@ -176,21 +176,29 @@ void Renderer::renderLines(size_t startLine, size_t endLine)
 
 	for (size_t y = startLine; y < endLine; y++)
 	{
-		if (m_coarsePreview && (y % kCoarsePreviewLineSpacing != 0))
+		if (m_renderState.load() != RenderState::Run)
+			break;
+
+		if (m_coarsePreview && (y % kCoarsePreviewSpacing != 0))
 		{
 			// If we're doing a coarse preview render, we only render every few lines to save time.
 			currentPixel += m_width;
 			continue;
 		}
 
-		if (m_renderState.load() != RenderState::Run)
-			break;
-
 		for (size_t x = 0; x < m_width; x++)
 		{
+			if (m_coarsePreview && (x % kCoarsePreviewSpacing != 0))
+			{
+				// If we're doing a coarse preview render, we only render every few pixels in a line to save time.
+				currentPixel++;
+				continue;
+			}
+
 			Color sampleColor;
 
-			for (size_t i = 0; i < m_scene.samplesPerPixel; i++)
+			// Do multiple samples of the current point, and average the results.
+			for (size_t sample = 0; sample < m_scene.samplesPerPixel; sample++)
 			{
 				const double cameraY = ((y + distribution(generator)) * ySampleOffset) - .5;
 				const double cameraX = ((x + distribution(generator)) * xSampleOffset) - .5;

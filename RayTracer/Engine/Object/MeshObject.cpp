@@ -10,7 +10,7 @@ MeshObject::MeshObject(const Vector& position, const Vector& rotation, std::shar
 	, m_mesh(std::move(mesh))
 {
 	if (! m_mesh)
-		throw std::runtime_error("Mesh object create with no associated mesh.");
+		throw std::runtime_error("Mesh object created with no associated mesh.");
 }
 
 double MeshObject::intersectWith(const Ray& ray) const
