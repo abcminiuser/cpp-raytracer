@@ -62,6 +62,7 @@ void Viewer::view(Scene scene)
 	bool infoTextUpdatePending = true;
 	bool sceneUpdatePending = true;
 	uint8_t lastRenderPercent = 0;
+	std::string extraInfoMessage;
 
 	while (m_window.isOpen())
 	{
@@ -86,7 +87,11 @@ void Viewer::view(Scene scene)
 
 						std::string fileName = "Render Output " + std::string(timestampBuffer) + ".jpg";
 						if (m_texture.copyToImage().saveToFile(fileName))
-							printf("Saved image to '%s'.\n", fileName.c_str());
+							extraInfoMessage = "Saved image to '" + fileName + "'";
+						else
+							extraInfoMessage = "Failed to save image to '" + fileName + "'";
+
+						infoTextUpdatePending = true;
 
 						break;
 					}
@@ -241,6 +246,12 @@ void Viewer::view(Scene scene)
 				infoMessage += std::string("Rendering In Progress (" + std::string(previousRenderType != RenderType::Full ? "Preview" : "Full") + " - " + std::to_string(m_renderer.renderPercentage()) + "%)");
 			else
 				infoMessage += std::string("Rendering Completed (") + std::to_string(m_renderer.renderTime().count()) + " ms)";
+
+			if (! extraInfoMessage.empty())
+			{
+				infoMessage += "\n\n" + extraInfoMessage;
+				extraInfoMessage.clear();
+			}
 
 			m_infoText.setString(infoMessage);
 
