@@ -41,7 +41,7 @@ Viewer::Viewer(Renderer& renderer, size_t width, size_t height)
 	instructionsMessage += "(Enter) Save Image to File\n";
 	instructionsMessage += "(Backspace) Restart Render\n";
 	instructionsMessage += "(W/A/S/D, R/F) Move Camera\n";
-	instructionsMessage += "(I/J/K/L) Rotate Camera\n";
+	instructionsMessage += "(I/J/K/L, U/O) Rotate Camera\n";
 
 	m_instructionsText.setFont(m_font);
 	m_instructionsText.setCharacterSize(16);
@@ -148,6 +148,24 @@ void Viewer::view(Scene scene)
 							};
 
 						scene.camera.setDirection(cameraRotateAmount.at(event.key.code).multiply(scene.camera.direction()).toVector().unit());
+
+						nextRenderType = RenderType::CoarsePreview;
+						sceneUpdatePending = true;
+						break;
+					}
+
+					case sf::Keyboard::Key::U:
+					case sf::Keyboard::Key::O:
+					{
+						constexpr auto kRotateDelta = std::numbers::pi / 360.0;
+
+						static const std::map<sf::Keyboard::Key, Matrix<3, 3>> cameraRotateAmount
+							{
+								{ sf::Keyboard::Key::U, MatrixUtils::RotationMatrix(Vector(kRotateDelta, 0, 0)) },
+								{ sf::Keyboard::Key::O, MatrixUtils::RotationMatrix(Vector(-kRotateDelta, 0, 0)) },
+							};
+
+						scene.camera.setOrientation(cameraRotateAmount.at(event.key.code).multiply(scene.camera.orientation()).toVector().unit());
 
 						nextRenderType = RenderType::CoarsePreview;
 						sceneUpdatePending = true;

@@ -176,7 +176,7 @@ Scene ExampleScene::Build()
 			/* Rotation: */					Vector(0, 0, 0),
 			/* Material: */					std::make_shared<ReflectiveMaterial>(
 				/* Texture: */				MakeImageTexture("Assets/Wood.jpg"),
-		                               0.5
+				/* Polish: */				0.5
 			),
 			/* Radius: */					1
 		)
