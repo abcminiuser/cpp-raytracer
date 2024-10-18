@@ -10,7 +10,7 @@ LightMaterial::LightMaterial(std::shared_ptr<Texture> texture)
 
 }
 
-Color LightMaterial::emit(const Vector& uv)
+Color LightMaterial::emit(const Vector& incident, const Vector& position, const Vector& normal, const Vector& uv)
 {
 	return m_texture->colorAt(uv.x(), uv.y());
 }

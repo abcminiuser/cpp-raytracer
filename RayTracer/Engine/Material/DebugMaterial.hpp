@@ -7,14 +7,23 @@
 
 class Texture;
 
-class LightMaterial final
+class DebugMaterial final
 	: public Material
 {
 public:
-							LightMaterial(std::shared_ptr<Texture> texture);
-							~LightMaterial() = default;
+	enum class Type
+	{
+		Normal,
+		UV
+	};
+
+							DebugMaterial(Type type);
+							~DebugMaterial() = default;
 
 // Material i/f:
 public:
 	Color					emit(const Vector& incident, const Vector& position, const Vector& normal, const Vector& uv) override;
+
+private:
+	Type					m_type;
 };

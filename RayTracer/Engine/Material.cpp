@@ -16,7 +16,7 @@ Color Material::illuminate(const Scene& scene, const Ray& sourceRay, const Vecto
 	if (! scene.lighting)
 		return m_texture->colorAt(uv.x(), uv.y());
 
-	Color finalColor = emit(uv);
+	Color finalColor = emit(sourceRay.direction(), position, normal, uv);
 
 	Color attenuation;
 	if (auto scatterRay = scatter(sourceRay.direction(), position, normal, uv, attenuation))

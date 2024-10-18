@@ -2,6 +2,7 @@
 
 #include "Engine/Mesh.hpp"
 #include "Engine/Scene.hpp"
+#include "Engine/Material/DebugMaterial.hpp"
 #include "Engine/Material/DielectricMaterial.hpp"
 #include "Engine/Material/DiffuseMaterial.hpp"
 #include "Engine/Material/LightMaterial.hpp"
