@@ -8,7 +8,7 @@
 
 class Texture;
 
-class DiffuseMaterial
+class DiffuseMaterial final
 	: public Material
 {
 public:

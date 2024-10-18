@@ -8,7 +8,7 @@ class Material;
 
 struct Vector;
 
-class SphereObject
+class SphereObject final
 	: public Object
 {
 public:

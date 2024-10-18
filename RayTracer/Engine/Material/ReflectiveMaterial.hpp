@@ -8,7 +8,7 @@
 
 class Texture;
 
-class ReflectiveMaterial
+class ReflectiveMaterial final
 	: public Material
 {
 public:

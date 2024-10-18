@@ -8,7 +8,7 @@ class Material;
 
 struct Vector;
 
-class BoxObject
+class BoxObject final
 	: public Object
 {
 public:

@@ -5,7 +5,7 @@
 
 #include <stdint.h>
 
-class CheckerboardTexture
+class CheckerboardTexture final
 	: public Texture
 {
 public:

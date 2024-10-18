@@ -8,7 +8,7 @@
 
 class Texture;
 
-class LightMaterial
+class LightMaterial final
 	: public Material
 {
 public:

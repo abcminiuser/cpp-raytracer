@@ -3,7 +3,7 @@
 #include "Engine/Color.hpp"
 #include "Engine/Texture.hpp"
 
-class SolidTexture
+class SolidTexture final
 	: public Texture
 {
 public:

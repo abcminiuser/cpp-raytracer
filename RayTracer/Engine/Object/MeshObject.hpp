@@ -9,7 +9,7 @@ class Material;
 
 struct Vector;
 
-class MeshObject
+class MeshObject final
 	: public Object
 {
 public:

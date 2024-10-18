@@ -8,7 +8,7 @@ class Material;
 
 struct Vector;
 
-class PlaneObject
+class PlaneObject final
 	: public Object
 {
 public:

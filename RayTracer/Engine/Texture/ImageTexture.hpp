@@ -7,7 +7,7 @@
 #include <stddef.h>
 #include <vector>
 
-class ImageTexture
+class ImageTexture final
 	: public Texture
 {
 public:
