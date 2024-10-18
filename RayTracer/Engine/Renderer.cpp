@@ -2,7 +2,6 @@
 
 #include "Engine/Camera.hpp"
 #include "Engine/Color.hpp"
-#include "Engine/Random.hpp"
 #include "Engine/Vector.hpp"
 
 #include <algorithm>
@@ -192,20 +191,10 @@ void Renderer::renderLines(size_t startLine, size_t endLine)
 				continue;
 			}
 
-			Color sampleColor;
+			const double cameraY = (y * ySampleOffset) - .5;
+			const double cameraX = (x * xSampleOffset) - .5;
 
-			// Do multiple samples of the current point, and average the results.
-			for (size_t sample = 0; sample < m_scene.samplesPerPixel; sample++)
-			{
-				const double cameraY = ((y + Random::SignedNormal()) * ySampleOffset) - .5;
-				const double cameraX = ((x + Random::SignedNormal()) * xSampleOffset) - .5;
-
-				sampleColor = sampleColor.add(m_scene.camera.trace(m_scene, cameraX, cameraY));
-			}
-
-			sampleColor = sampleColor.scale(1.0 / m_scene.samplesPerPixel);
-
-			*(currentPixel++) = sampleColor.toPackedRGBA();
+			*(currentPixel++) = m_scene.camera.trace(m_scene, cameraX, cameraY).toPackedRGBA();
 		}
 	}
 }
