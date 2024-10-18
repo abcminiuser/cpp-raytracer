@@ -1,6 +1,7 @@
 #include "DielectricMaterial.hpp"
 
 #include "Engine/Ray.hpp"
+#include "Engine/Texture.hpp"
 #include "Engine/Vector.hpp"
 
 #include <cmath>
@@ -25,19 +26,19 @@ namespace
 	}
 }
 
-DielectricMaterial::DielectricMaterial(double refractionIndex)
-	: Material(nullptr)
+DielectricMaterial::DielectricMaterial(std::shared_ptr<Texture> texture, double refractionIndex)
+	: Material(std::move(texture))
 	, m_refractionIndex(refractionIndex)
 {
 
 }
 
-std::optional<Ray> DielectricMaterial::scatter(const Ray& sourceRay, const Vector& hitPosition, const Vector& hitNormal, const Vector& uv, Color& attenuation)
+std::optional<Ray> DielectricMaterial::scatter(const Vector& incident, const Vector& position, const Vector& normal, const Vector& uv, Color& attenuation)
 {
-	auto refractionDirection = Refract(sourceRay.direction(), hitNormal, kAirRefractionIndex, m_refractionIndex);
+	auto refractionDirection = Refract(incident, normal, kAirRefractionIndex, m_refractionIndex);
 	if (! refractionDirection)
 		return std::nullopt;
 
-	attenuation = Palette::kWhite;
-	return Ray(hitPosition, refractionDirection.value());
+	attenuation = m_texture->colorAt(uv.x(), uv.y());
+	return Ray(position, refractionDirection.value());
 }

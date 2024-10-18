@@ -11,7 +11,7 @@ Material::Material(std::shared_ptr<Texture> texture)
 
 }
 
-Color Material::illuminate(const Scene& scene, const Ray& sourceRay, const Vector& hitPosition, const Vector& hitNormal, const Vector& uv, uint32_t rayDepthRemaining)
+Color Material::illuminate(const Scene& scene, const Ray& sourceRay, const Vector& position, const Vector& normal, const Vector& uv, uint32_t rayDepthRemaining)
 {
 	if (! scene.lighting)
 		return m_texture->colorAt(uv.x(), uv.y());
@@ -19,7 +19,7 @@ Color Material::illuminate(const Scene& scene, const Ray& sourceRay, const Vecto
 	Color finalColor = emit(uv);
 
 	Color attenuation;
-	if (auto scatterRay = scatter(sourceRay, hitPosition, hitNormal, uv, attenuation))
+	if (auto scatterRay = scatter(sourceRay.direction(), position, normal, uv, attenuation))
 		finalColor = finalColor.add(attenuation.multiply(scatterRay->trace(scene, rayDepthRemaining)));
 
 	return finalColor;

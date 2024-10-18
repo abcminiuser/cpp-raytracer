@@ -19,19 +19,19 @@ ReflectiveMaterial::ReflectiveMaterial(std::shared_ptr<Texture> texture, double 
 
 }
 
-std::optional<Ray> ReflectiveMaterial::scatter(const Ray& sourceRay, const Vector& hitPosition, const Vector& hitNormal, const Vector& uv, Color& attenuation)
+std::optional<Ray> ReflectiveMaterial::scatter(const Vector& incident, const Vector& position, const Vector& normal, const Vector& uv, Color& attenuation)
 {
 	// Reflect the incidence ray along the surface normal.
-	auto reflectionDirection = Reflect(sourceRay.direction(), hitNormal).unit();
+	auto reflectionDirection = Reflect(incident, normal).unit();
 
 	// Perturb the reflected ray randomly, based on how (un-)polished this material is.
 	if (m_scuff)
 		reflectionDirection = reflectionDirection.add(VectorUtils::RandomUnitVector().scale(m_scuff)).unit();
 
 	// If the perturbed ray is now pointing into the surface, absorb it.
-	if (reflectionDirection.dotProduct(hitNormal) < 0)
+	if (reflectionDirection.dotProduct(normal) < 0)
 		return std::nullopt;
 
 	attenuation = m_texture->colorAt(uv.x(), uv.y());
-	return Ray(hitPosition, reflectionDirection);
+	return Ray(position, reflectionDirection);
 }

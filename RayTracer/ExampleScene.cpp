@@ -194,6 +194,7 @@ Scene ExampleScene::Build()
 			/* Position: */					Vector(-3, 0, -3),
 			/* Rotation: */					Vector(0, 0, 0),
 			/* Material: */					std::make_shared<DielectricMaterial>(
+				/* Texture: */				std::make_shared<SolidTexture>(Palette::kWhite),
 				/* Refraction Index: */		2.2
 			),
 			/* Radius: */					1

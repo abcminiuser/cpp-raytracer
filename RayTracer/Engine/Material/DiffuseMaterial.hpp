@@ -17,5 +17,5 @@ public:
 
 // Material i/f:
 public:
-	std::optional<Ray>		scatter(const Ray& sourceRay, const Vector& hitPosition, const Vector& hitNormal, const Vector& uv, Color& albedo) override;
+	std::optional<Ray>		scatter(const Vector& incident, const Vector& position, const Vector& normal, const Vector& uv, Color& albedo) override;
 };

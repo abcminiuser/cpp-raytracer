@@ -12,12 +12,12 @@ class DielectricMaterial final
 	: public Material
 {
 public:
-							DielectricMaterial(double refractionIndex);
+							DielectricMaterial(std::shared_ptr<Texture> texture, double refractionIndex);
 							~DielectricMaterial() = default;
 
 // Material i/f:
 public:
-	std::optional<Ray>		scatter(const Ray& sourceRay, const Vector& hitPosition, const Vector& hitNormal, const Vector& uv, Color& albedo) override;
+	std::optional<Ray>		scatter(const Vector& incident, const Vector& position, const Vector& normal, const Vector& uv, Color& albedo) override;
 
 private:
 	double					m_refractionIndex;
