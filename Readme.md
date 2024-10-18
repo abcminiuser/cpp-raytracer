@@ -14,6 +14,10 @@ Originally written while I was sick at home, after being inspired by
 Javascript ray tracer, which also has a great accompanying
 [online handbook](https://ursatile.github.io/jsray/) available.
 
+Later improved with a better lighting model after reading the absolutely
+wonderful [Raytracing in One Weekend](https://raytracing.github.io/) free book
+series by Steve Hollasch.
+
 ![Example Scene Rendering](Output.jpg)
 
 ## Building
