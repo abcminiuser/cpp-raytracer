@@ -174,8 +174,9 @@ Scene ExampleScene::Build()
 		std::make_unique<SphereObject>(
 			/* Position: */					Vector(6, 0, 0),
 			/* Rotation: */					Vector(0, 0, 0),
-			/* Material: */					std::make_shared<DiffuseMaterial>(
-				/* Texture: */				std::make_shared<SolidTexture>(Palette::kWhite)
+			/* Material: */					std::make_shared<ReflectiveMaterial>(
+				/* Texture: */				MakeImageTexture("Assets/Wood.jpg"),
+		                               0.5
 			),
 			/* Radius: */					1
 		)
