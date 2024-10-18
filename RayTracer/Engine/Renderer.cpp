@@ -1,11 +1,11 @@
 #include "Engine/Renderer.hpp"
 
-#include "Engine/Color.hpp"
-#include "Engine/Vector.hpp"
 #include "Engine/Camera.hpp"
+#include "Engine/Color.hpp"
+#include "Engine/Random.hpp"
+#include "Engine/Vector.hpp"
 
 #include <algorithm>
-#include <random>
 
 namespace
 {
@@ -171,9 +171,6 @@ void Renderer::renderLines(size_t startLine, size_t endLine)
 	const double xSampleOffset = 1.0 / m_width;
 	const double ySampleOffset = 1.0 / m_height;
 
-	thread_local std::mt19937 generator;
-	thread_local std::uniform_real_distribution<double> distribution(-1.0, 1.0);
-
 	for (size_t y = startLine; y < endLine; y++)
 	{
 		if (m_renderState.load() != RenderState::Run)
@@ -200,8 +197,8 @@ void Renderer::renderLines(size_t startLine, size_t endLine)
 			// Do multiple samples of the current point, and average the results.
 			for (size_t sample = 0; sample < m_scene.samplesPerPixel; sample++)
 			{
-				const double cameraY = ((y + distribution(generator)) * ySampleOffset) - .5;
-				const double cameraX = ((x + distribution(generator)) * xSampleOffset) - .5;
+				const double cameraY = ((y + Random::SignedNormal()) * ySampleOffset) - .5;
+				const double cameraX = ((x + Random::SignedNormal()) * xSampleOffset) - .5;
 
 				sampleColor = sampleColor.add(m_scene.camera.trace(m_scene, cameraX, cameraY));
 			}

@@ -1,8 +1,9 @@
 #pragma once
 
+#include "Engine/Random.hpp"
+
 #include <algorithm>
 #include <cmath>
-#include <random>
 #include <string>
 #include <tuple>
 
@@ -156,12 +157,9 @@ namespace VectorUtils
 
 	static inline Vector RandomUnitVector()
 	{
-	    thread_local std::mt19937 generator;
-		thread_local std::uniform_real_distribution<double> distribution(-1.0, 1.0);
-
 	    for (;;)
 	    {
-			auto v = Vector(distribution(generator), distribution(generator), distribution(generator));
+			auto v = Vector(Random::SignedNormal(), Random::SignedNormal(), Random::SignedNormal());
 			if (v.lengthSquared() > 1e-10 && v.lengthSquared() <= 1)
 				return v.unit();
 		}
