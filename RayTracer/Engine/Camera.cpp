@@ -10,11 +10,13 @@ Camera::Camera()
 }
 
 Camera::Camera(const Vector& position, const Vector& target, double viewWidth, double viewHeight)
-	: m_viewWidth(viewWidth)
+	: m_position(position)
+	, m_direction(target.subtract(position).unit())
+	, m_orientation(StandardVectors::kUnitY)
+	, m_viewWidth(viewWidth)
 	, m_viewHeight(viewHeight)
 {
-	setPosition(position);
-	setDirection(target.subtract(position).unit());
+	update();
 }
 
 Color Camera::trace(const Scene& scene, double x, double y) const
@@ -28,12 +30,23 @@ Color Camera::trace(const Scene& scene, double x, double y) const
 void Camera::setPosition(const Vector& position)
 {
 	m_position = position;
+	update();
 }
 
 void Camera::setDirection(const Vector& direction)
 {
 	m_direction = direction;
+	update();
+}
 
-	m_right = StandardVectors::kUnitY.crossProduct(m_direction).unit().scale(m_viewWidth / 2);
+void Camera::setOrientation(const Vector& orientation)
+{
+	m_orientation = orientation;
+	update();
+}
+
+void Camera::update()
+{
+	m_right = m_orientation.crossProduct(m_direction).unit().scale(m_viewWidth / 2);
 	m_down = m_right.crossProduct(m_direction).unit().scale(-m_viewHeight / 2).invert();
 }
