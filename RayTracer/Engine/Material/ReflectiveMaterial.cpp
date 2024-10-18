@@ -1,6 +1,7 @@
 #include "ReflectiveMaterial.hpp"
 
 #include "Engine/Ray.hpp"
+#include "Engine/Texture.hpp"
 #include "Engine/Vector.hpp"
 
 namespace
@@ -18,7 +19,7 @@ ReflectiveMaterial::ReflectiveMaterial(std::shared_ptr<Texture> texture, double 
 
 }
 
-std::optional<Ray> ReflectiveMaterial::scatter(const Ray& sourceRay, const Vector& hitPosition, const Vector& hitNormal)
+std::optional<Ray> ReflectiveMaterial::scatter(const Ray& sourceRay, const Vector& hitPosition, const Vector& hitNormal, const Vector& uv, Color& attenuation)
 {
 	// Reflect the incidence ray along the surface normal.
 	auto reflectionDirection = Reflect(sourceRay.direction(), hitNormal).unit();
@@ -31,5 +32,6 @@ std::optional<Ray> ReflectiveMaterial::scatter(const Ray& sourceRay, const Vecto
 	if (reflectionDirection.dotProduct(hitNormal) < 0)
 		return std::nullopt;
 
+	attenuation = m_texture->colorAt(uv.x(), uv.y());
 	return Ray(hitPosition, reflectionDirection);
 }

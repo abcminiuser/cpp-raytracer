@@ -21,7 +21,7 @@ public:
 
 public:
 	virtual Color					emit(const Vector& uv)		{ return Palette::kBlack; }
-	virtual std::optional<Ray>		scatter(const Ray& sourceRay, const Vector& hitPosition, const Vector& hitNormal)						{ return std::nullopt; }
+	virtual std::optional<Ray>		scatter(const Ray& sourceRay, const Vector& hitPosition, const Vector& hitNormal, const Vector& uv, Color& attenuation)	{ return std::nullopt; }
 
 protected:
 	const std::shared_ptr<Texture>	m_texture;

@@ -2,6 +2,7 @@
 
 #include "Engine/Mesh.hpp"
 #include "Engine/Scene.hpp"
+#include "Engine/Material/DielectricMaterial.hpp"
 #include "Engine/Material/DiffuseMaterial.hpp"
 #include "Engine/Material/LightMaterial.hpp"
 #include "Engine/Material/ReflectiveMaterial.hpp"
@@ -192,8 +193,8 @@ Scene ExampleScene::Build()
 		std::make_unique<SphereObject>(
 			/* Position: */					Vector(-3, 0, -3),
 			/* Rotation: */					Vector(0, 0, 0),
-			/* Material: */					std::make_shared<DiffuseMaterial>(
-				/* Texture: */				std::make_shared<SolidTexture>(Palette::kWhite)
+			/* Material: */					std::make_shared<DielectricMaterial>(
+				/* Refraction Index: */		2.2
 			),
 			/* Radius: */					1
 		)

@@ -15,6 +15,7 @@ add_executable (RayTracer
     "Engine/Color.cpp"
     "Engine/Mesh.cpp"
     "Engine/Material.cpp"
+    "Engine/Material/DielectricMaterial.cpp"
     "Engine/Material/DiffuseMaterial.cpp"
     "Engine/Material/LightMaterial.cpp"
     "Engine/Material/ReflectiveMaterial.cpp"

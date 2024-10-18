@@ -1,6 +1,7 @@
 #include "DiffuseMaterial.hpp"
 
 #include "Engine/Ray.hpp"
+#include "Engine/Texture.hpp"
 #include "Engine/Vector.hpp"
 
 DiffuseMaterial::DiffuseMaterial(std::shared_ptr<Texture> texture)
@@ -9,7 +10,7 @@ DiffuseMaterial::DiffuseMaterial(std::shared_ptr<Texture> texture)
 
 }
 
-std::optional<Ray> DiffuseMaterial::scatter(const Ray& sourceRay, const Vector& hitPosition, const Vector& hitNormal)
+std::optional<Ray> DiffuseMaterial::scatter(const Ray& sourceRay, const Vector& hitPosition, const Vector& hitNormal, const Vector& uv, Color& attenuation)
 {
 	// Find a random unit vector in the same hemisphere as our surface normal. Easiest to
 	// first generate a random unit vector, then invert it if it landed on the wrong side.
@@ -20,6 +21,7 @@ std::optional<Ray> DiffuseMaterial::scatter(const Ray& sourceRay, const Vector& 
 	if (randomHemisphereDirection.lengthSquared() < 1e-10)
 		randomHemisphereDirection = hitNormal;
 
-	// Lambertian diffusion; always scatter with fixed attenuation.
+	// Lambertian diffusion; always scatter.
+	attenuation = m_texture->colorAt(uv.x(), uv.y());
 	return Ray(hitPosition, hitNormal.add(randomHemisphereDirection).unit());
 }

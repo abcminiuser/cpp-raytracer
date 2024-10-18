@@ -14,7 +14,8 @@ Object::Object(const Vector& position, const Vector& rotation, std::shared_ptr<M
 	, m_rotationMatrix(MatrixUtils::RotationMatrix(rotation))
 	, m_rotationMatrixInverse(MatrixUtils::RotationMatrix(rotation.invert()))
 {
-	assert(m_material);
+	if (! m_material)
+		throw std::runtime_error("Object created with no associated material");
 }
 
 double Object::intersect(const Ray& ray) const

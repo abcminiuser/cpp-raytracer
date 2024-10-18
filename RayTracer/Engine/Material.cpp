@@ -3,13 +3,12 @@
 #include "Engine/Ray.hpp"
 #include "Engine/Scene.hpp"
 #include "Engine/Texture.hpp"
-
-#include <cassert>
+#include "Engine/Texture/CheckerboardTexture.hpp"
 
 Material::Material(std::shared_ptr<Texture> texture)
-	: m_texture(std::move(texture))
+	: m_texture(texture ? std::move(texture) : std::make_shared<CheckerboardTexture>(Palette::kWhite, Palette::kWhite.scale(.5), 10))
 {
-	assert(m_texture);
+
 }
 
 Color Material::illuminate(const Scene& scene, const Ray& sourceRay, const Vector& hitPosition, const Vector& hitNormal, const Vector& uv, uint32_t rayDepthRemaining)
@@ -19,9 +18,9 @@ Color Material::illuminate(const Scene& scene, const Ray& sourceRay, const Vecto
 
 	Color finalColor = emit(uv);
 
-	auto scatterRay = scatter(sourceRay, hitPosition, hitNormal);
-	if (scatterRay)
-		finalColor = finalColor.add(m_texture->colorAt(uv.x(), uv.y()).multiply(scatterRay->trace(scene, rayDepthRemaining)));
+	Color attenuation;
+	if (auto scatterRay = scatter(sourceRay, hitPosition, hitNormal, uv, attenuation))
+		finalColor = finalColor.add(attenuation.multiply(scatterRay->trace(scene, rayDepthRemaining)));
 
 	return finalColor;
 }

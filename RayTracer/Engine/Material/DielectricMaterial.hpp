@@ -8,14 +8,17 @@
 
 class Texture;
 
-class DiffuseMaterial final
+class DielectricMaterial final
 	: public Material
 {
 public:
-							DiffuseMaterial(std::shared_ptr<Texture> texture);
-							~DiffuseMaterial() = default;
+							DielectricMaterial(double refractionIndex);
+							~DielectricMaterial() = default;
 
 // Material i/f:
 public:
 	std::optional<Ray>		scatter(const Ray& sourceRay, const Vector& hitPosition, const Vector& hitNormal, const Vector& uv, Color& albedo) override;
+
+private:
+	double					m_refractionIndex;
 };
