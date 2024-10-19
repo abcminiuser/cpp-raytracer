@@ -85,7 +85,7 @@ scene:
         type: Diffuse
         texture:
           type: Solid
-          color: Green
+          color: Blue
 
    # Blue sphere in "V" group of spheres
     - type: Sphere
@@ -159,7 +159,7 @@ scene:
   # Teapot
     - type: Mesh
       position: Vector(8, 0, 8)
-      rotation: Vector(0, 45, 0)
+      rotation: VectorDegrees(0, 45, 0)
       size: Vector(1, 1, 1)
       path: "Assets/Teapot.obj"
       scale: 1.0
