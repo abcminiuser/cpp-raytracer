@@ -252,7 +252,7 @@ namespace
 	std::shared_ptr<Material> ParseDielectricMaterial(const fkyaml::node& node)
 	{
 		std::shared_ptr<Texture> texture = ParseTexture(node["texture"]);
-		double refractionIndex = ParseDouble(node, "refrectionIndex").value_or(1.0);
+		double refractionIndex = ParseDouble(node, "refractionIndex").value_or(1.0);
 
 		return std::make_shared<DielectricMaterial>(std::move(texture), refractionIndex);
 	}
@@ -274,7 +274,7 @@ namespace
 	std::shared_ptr<Material> ParseReflectiveMaterial(const fkyaml::node& node)
 	{
 		std::shared_ptr<Texture> texture = ParseTexture(node["texture"]);
-		double polish = ParseDouble(node, "refrectionIndex").value_or(1.0);
+		double polish = ParseDouble(node, "polish").value_or(1.0);
 
 		return std::make_shared<ReflectiveMaterial>(std::move(texture), polish);
 	}
