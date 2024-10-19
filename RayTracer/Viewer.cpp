@@ -41,6 +41,7 @@ Viewer::Viewer(Renderer& renderer, size_t width, size_t height)
 	instructionsMessage += "(Backspace) Reload scene\n";
 	instructionsMessage += "(Enter) Save Image to File\n";
 	instructionsMessage += "(Space) Restart Render\n";
+	instructionsMessage += "(Delete) Cancel Render\n";
 	instructionsMessage += "(W/A/S/D, R/F) Move Camera\n";
 	instructionsMessage += "(I/J/K/L, U/O) Rotate Camera\n";
 
@@ -141,6 +142,19 @@ void Viewer::view(const std::string& path)
 
 						nextRenderType = RenderType::CoarsePreview;
 						sceneUpdatePending = true;
+						break;
+					}
+
+					case sf::Keyboard::Key::Delete:
+					{
+						m_renderer.stopRender();
+
+						if (wasRendering)
+						{
+							extraInfoMessage = "Render cancelled prematurely by user.";
+							infoTextUpdatePending = true;
+						}
+
 						break;
 					}
 

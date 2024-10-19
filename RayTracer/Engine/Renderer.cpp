@@ -121,6 +121,8 @@ void Renderer::stopRender()
 	m_renderStateCondition.notify_all();
 	lock.lock();
 
+	m_renderEndTime = std::chrono::steady_clock::now();
+
 	m_renderStateCondition.wait(lock, [&] { return m_busyThreads == 0; });
 }
 
