@@ -73,7 +73,7 @@ namespace
 		return std::make_shared<ImageTexture>(dimensions.x, dimensions.y, reinterpret_cast<const uint32_t*>(pixels), multiplier);
 	}
 
-	std::shared_ptr<Mesh> MakeObjectMesh(const std::string& path, double scale)
+	std::shared_ptr<Mesh> MaskObjectMesh(const std::string& path, double scale)
 	{
 		objl::Loader objLoader;
 		if (! objLoader.LoadFile(path))
@@ -120,9 +120,9 @@ namespace
 		static const std::regex normColorRegex("Color\\(" "([^\\,]+)" "," "([^\\,]+)" "," "([^\\)]+)" "\\)");
 		if (std::smatch matches; std::regex_search(value, matches, normColorRegex))
 		{
-			const auto r = DoubleFromString(matches[1]);
-			const auto g = DoubleFromString(matches[2]);
-			const auto b = DoubleFromString(matches[3]);
+			auto r = DoubleFromString(matches[1]);
+			auto g = DoubleFromString(matches[2]);
+			auto b = DoubleFromString(matches[3]);
 
 			return Color(r, g, b);
 		}
@@ -130,9 +130,9 @@ namespace
 		static const std::regex componentColorRegex("Color8Bit\\(" "([^\\,]+)" "," "([^\\,]+)" "," "([^\\)]+)" "\\)");
 		if (std::smatch matches; std::regex_search(value, matches, componentColorRegex))
 		{
-			const auto r = std::clamp(std::stoi(matches[1]), 0, 255);
-			const auto g = std::clamp(std::stoi(matches[2]), 0, 255);
-			const auto b = std::clamp(std::stoi(matches[3]), 0, 255);
+			auto r = std::clamp<double>(DoubleFromString(matches[1]), 0, 255);
+			auto g = std::clamp<double>(DoubleFromString(matches[2]), 0, 255);
+			auto b = std::clamp<double>(DoubleFromString(matches[3]), 0, 255);
 
 			return Color::FromComponentRGB(static_cast<uint8_t>(r), static_cast<uint8_t>(g), static_cast<uint8_t>(b));
 		}
@@ -164,9 +164,9 @@ namespace
 		static const std::regex vectorRegex("Vector\\(" "([^\\,]+)" "," "([^\\,]+)" "," "([^\\)]+)" "\\)");
 		if (std::smatch matches; std::regex_search(value, matches, vectorRegex))
 		{
-			const auto x = DoubleFromString(matches[1]);
-			const auto y = DoubleFromString(matches[2]);
-			const auto z = DoubleFromString(matches[3]);
+			auto x = DoubleFromString(matches[1]);
+			auto y = DoubleFromString(matches[2]);
+			auto z = DoubleFromString(matches[3]);
 
 			return Vector(x, y, z);
 		}
@@ -174,9 +174,9 @@ namespace
 		static const std::regex degreesVectorRegex("VectorDegrees\\(" "([^\\,]+)" "," "([^\\,]+)" "," "([^\\)]+)" "\\)");
 		if (std::smatch matches; std::regex_search(value, matches, degreesVectorRegex))
 		{
-			const auto x = DoubleFromString(matches[1]) * (std::numbers::pi / 180);
-			const auto y = DoubleFromString(matches[2]) * (std::numbers::pi / 180);
-			const auto z = DoubleFromString(matches[3]) * (std::numbers::pi / 180);
+			auto x = DoubleFromString(matches[1]) * (std::numbers::pi / 180);
+			auto y = DoubleFromString(matches[2]) * (std::numbers::pi / 180);
+			auto z = DoubleFromString(matches[3]) * (std::numbers::pi / 180);
 
 			return Vector(x, y, z);
 		}
@@ -215,36 +215,36 @@ namespace
 		if (! node.contains(property))
 			return std::nullopt;
 
-		auto cameraNode = node.at(property);
+		const auto cameraNode = node.at(property);
 
-		Vector position = ParseVector(cameraNode, "position").value_or(StandardVectors::kOrigin);
-		Vector target = ParseVector(cameraNode, "target").value_or(StandardVectors::kUnitZ);
-		double viewWidth = ParseDouble(cameraNode, "width").value_or(4.0);
-		double viewHeight = ParseDouble(cameraNode, "height").value_or(9.0 / 4.0);
+		auto position			= ParseVector(cameraNode, "position").value_or(StandardVectors::kOrigin);
+		auto target				= ParseVector(cameraNode, "target").value_or(StandardVectors::kUnitZ);
+		auto viewWidth			= ParseDouble(cameraNode, "width").value_or(4.0);
+		auto viewHeight			= ParseDouble(cameraNode, "height").value_or(9.0 / 4.0);
 
 		return Camera(position, target, viewWidth, viewHeight);
 	}
 
 	std::shared_ptr<Texture> ParseCheckerboardTexture(const fkyaml::node& node)
 	{
-		Color color1 = ParseColor(node, "color1").value_or(Palette::kMagenta);
-		Color color2 = ParseColor(node, "color2").value_or(Palette::kYellow);
-		double rowsCols = ParseDouble(node, "rowsCols").value_or(2);
+		auto color1				= ParseColor(node, "color1").value_or(Palette::kMagenta);
+		auto color2				= ParseColor(node, "color2").value_or(Palette::kYellow);
+		auto rowsCols			= ParseDouble(node, "rowsCols").value_or(2);
 
 		return std::make_shared<CheckerboardTexture>(color1, color2, static_cast<uint8_t>(rowsCols));
 	}
 
 	std::shared_ptr<Texture> ParseImageTexture(const fkyaml::node& node)
 	{
-		std::string path = node.at("path").get_value<std::string>();
-		Color multiplier = ParseColor(node, "multiplier").value_or(Palette::kWhite);
+		auto path				= node.at("path").get_value<std::string>();
+		auto multiplier			= ParseColor(node, "multiplier").value_or(Palette::kWhite);
 
 		return MakeImageTexture(path, multiplier);
 	}
 
 	std::shared_ptr<Texture> ParseSolidTexture(const fkyaml::node& node)
 	{
-		Color color = ParseColor(node, "color").value_or(Palette::kWhite);
+		auto color				= ParseColor(node, "color").value_or(Palette::kWhite);
 
 		return std::make_shared<SolidTexture>(color);
 	}
@@ -277,30 +277,30 @@ namespace
 
 	std::shared_ptr<Material> ParseDielectricMaterial(const fkyaml::node& node)
 	{
-		std::shared_ptr<Texture> texture = ParseTexture(node["texture"]);
-		double refractionIndex = ParseDouble(node, "refractionIndex").value_or(1.0);
+		auto texture			= ParseTexture(node["texture"]);
+		auto refractionIndex	= ParseDouble(node, "refractionIndex").value_or(1.0);
 
 		return std::make_shared<DielectricMaterial>(std::move(texture), refractionIndex);
 	}
 
 	std::shared_ptr<Material> ParseDiffuseMaterial(const fkyaml::node& node)
 	{
-		std::shared_ptr<Texture> texture = ParseTexture(node["texture"]);
+		auto texture			= ParseTexture(node["texture"]);
 
 		return std::make_shared<DiffuseMaterial>(std::move(texture));
 	}
 
 	std::shared_ptr<Material> ParseLightMaterial(const fkyaml::node& node)
 	{
-		std::shared_ptr<Texture> texture = ParseTexture(node["texture"]);
+		auto texture 			= ParseTexture(node["texture"]);
 
 		return std::make_shared<LightMaterial>(std::move(texture));
 	}
 
 	std::shared_ptr<Material> ParseReflectiveMaterial(const fkyaml::node& node)
 	{
-		std::shared_ptr<Texture> texture = ParseTexture(node["texture"]);
-		double polish = ParseDouble(node, "polish").value_or(1.0);
+		auto texture			= ParseTexture(node["texture"]);
+		auto polish				= ParseDouble(node, "polish").value_or(1.0);
 
 		return std::make_shared<ReflectiveMaterial>(std::move(texture), polish);
 	}
@@ -325,41 +325,41 @@ namespace
 
 	std::shared_ptr<Object> ParseBoxObject(const fkyaml::node& node)
 	{
-		Vector position = ParseVector(node, "position").value_or(StandardVectors::kOrigin);
-		Vector rotation = ParseVector(node, "rotation").value_or(Vector(0, 0, 0));
-		std::shared_ptr<Material> material = ParseMaterial(node["material"]);
-		Vector size = ParseVector(node, "size").value_or(Vector(1, 1, 1));
+		auto position			= ParseVector(node, "position").value_or(StandardVectors::kOrigin);
+		auto rotation			= ParseVector(node, "rotation").value_or(Vector(0, 0, 0));
+		auto material			= ParseMaterial(node["material"]);
+		auto size				= ParseVector(node, "size").value_or(Vector(1, 1, 1));
 
 		return std::make_shared<BoxObject>(position, rotation, std::move(material), size);
 	}
 
 	std::shared_ptr<Object> ParsePlaneObject(const fkyaml::node& node)
 	{
-		std::shared_ptr<Material> material = ParseMaterial(node["material"]);
-		Vector normal = ParseVector(node, "normal").value_or(StandardVectors::kUnitY);
-		double distance = ParseDouble(node, "distance").value_or(0.0);
-		double uvScaleFactor = ParseDouble(node, "scale").value_or(1.0);
+		auto material			= ParseMaterial(node["material"]);
+		auto normal				= ParseVector(node, "normal").value_or(StandardVectors::kUnitY);
+		auto distance			= ParseDouble(node, "distance").value_or(0.0);
+		auto uvScaleFactor		= ParseDouble(node, "scale").value_or(1.0);
 
 		return std::make_shared<PlaneObject>(std::move(material), normal, distance, uvScaleFactor);
 	}
 
 	std::shared_ptr<Object> ParseMeshObject(const fkyaml::node& node)
 	{
-		Vector position = ParseVector(node, "position").value_or(StandardVectors::kOrigin);
-		Vector rotation = ParseVector(node, "rotation").value_or(Vector(0, 0, 0));
-		std::shared_ptr<Material> material = ParseMaterial(node["material"]);
-		std::string path = node["path"].get_value<std::string>();
-		double scaleFactor = ParseDouble(node, "scale").value_or(1.0);
+		auto position			= ParseVector(node, "position").value_or(StandardVectors::kOrigin);
+		auto rotation			= ParseVector(node, "rotation").value_or(Vector(0, 0, 0));
+		auto material			= ParseMaterial(node["material"]);
+		auto path				= node["path"].get_value<std::string>();
+		auto scaleFactor		= ParseDouble(node, "scale").value_or(1.0);
 
-		return std::make_shared<MeshObject>(position, rotation, std::move(material), MakeObjectMesh(path, scaleFactor));
+		return std::make_shared<MeshObject>(position, rotation, std::move(material), MaskObjectMesh(path, scaleFactor));
 	}
 
 	std::shared_ptr<Object> ParseSphereObject(const fkyaml::node& node)
 	{
-		Vector position = ParseVector(node, "position").value_or(StandardVectors::kOrigin);
-		Vector rotation = ParseVector(node, "rotation").value_or(Vector(0, 0, 0));
-		std::shared_ptr<Material> material = ParseMaterial(node["material"]);
-		double radius = ParseDouble(node, "radius").value_or(1.0);
+		auto position			= ParseVector(node, "position").value_or(StandardVectors::kOrigin);
+		auto rotation			= ParseVector(node, "rotation").value_or(Vector(0, 0, 0));
+		auto material			= ParseMaterial(node["material"]);
+		auto radius				= ParseDouble(node, "radius").value_or(1.0);
 
 		return std::make_shared<SphereObject>(position, rotation, std::move(material), radius);
 	}
@@ -369,7 +369,7 @@ namespace
 		if (! node.contains(property))
 			return {};
 
-		auto objectsNode = node.at(property);
+		const auto objectsNode = node.at(property);
 
 		std::vector<std::shared_ptr<Object>> objects;
 
@@ -395,8 +395,6 @@ namespace
 
 Scene SceneLoader::Load(const std::string& path)
 {
-	Scene scene;
-
 	std::ifstream config(path);
 	if (! config)
 		throw std::runtime_error("Failed to read scene YAML file '" + path + "'");
@@ -404,9 +402,11 @@ Scene SceneLoader::Load(const std::string& path)
 	fkyaml::node rootNode = fkyaml::node::deserialize(config);
 	fkyaml::node sceneNode = rootNode.at("scene");
 
-	scene.background = ParseColor(sceneNode, "background").value_or(Palette::kBlack);
-	scene.camera = ParseCamera(sceneNode, "camera").value_or(Camera());
-	scene.objects = ParseObjects(sceneNode, "objects");
-
-	return scene;
+	return
+		Scene
+		{
+			.background = ParseColor(sceneNode, "background").value_or(Palette::kBlack),
+			.camera = ParseCamera(sceneNode, "camera").value_or(Camera()),
+			.objects = ParseObjects(sceneNode, "objects")
+		};
 }
