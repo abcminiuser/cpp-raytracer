@@ -173,6 +173,6 @@ namespace StandardVectors
 	static inline constexpr auto kUnitY = Vector(0, 1, 0);
 	static inline constexpr auto kUnitZ = Vector(0, 0, 1);
 
-	static inline constexpr auto kMin = Vector(std::numeric_limits<double>::min(), std::numeric_limits<double>::min(), std::numeric_limits<double>::min());
+	static inline constexpr auto kMin = Vector(std::numeric_limits<double>::lowest(), std::numeric_limits<double>::lowest(), std::numeric_limits<double>::lowest());
 	static inline constexpr auto kMax = Vector(std::numeric_limits<double>::max(), std::numeric_limits<double>::max(), std::numeric_limits<double>::max());
 }
