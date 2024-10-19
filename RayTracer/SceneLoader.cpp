@@ -92,9 +92,12 @@ namespace
 		return std::make_shared<Mesh>(std::move(vertices), std::move(triangles));
 	}
 
-	Color ParseColor(std::string value)
+	std::optional<Color> ParseColor(const fkyaml::node& node, const std::string& property)
 	{
-		value = TrimWhitespace(value);
+		if (! node.contains(property))
+			return std::nullopt;
+
+		std::string value = TrimWhitespace(node[property].get_value<std::string>());
 
 		static const std::regex normColorRegex("Color\\(" "([^\\,]+)" "," "([^\\,]+)" "," "([^\\)]+)" "\\)");
 		if (std::smatch matches; std::regex_search(value, matches, normColorRegex))
@@ -133,17 +136,12 @@ namespace
 		throw std::runtime_error("Unknown color type '" + value + "' specified in scene YAML file");
 	}
 
-	Color TryParseColor(const fkyaml::node& node, const std::string& property, Color missingValue)
+	std::optional<Vector> ParseVector(const fkyaml::node& node, const std::string& property)
 	{
 		if (! node.contains(property))
-			return missingValue;
+			return std::nullopt;
 
-		return ParseColor(node[property].get_value<std::string>());
-	}
-
-	Vector ParseVector(std::string value)
-	{
-		value = TrimWhitespace(value);
+		std::string value = TrimWhitespace(node[property].get_value<std::string>());
 
 		static const std::regex vectorRegex("Vector\\(" "([^\\,]+)" "," "([^\\,]+)" "," "([^\\)]+)" "\\)");
 		if (std::smatch matches; std::regex_search(value, matches, vectorRegex))
@@ -179,58 +177,55 @@ namespace
 		throw std::runtime_error("Unknown vector type '" + value + "' specified in scene YAML file");
 	}
 
-	Vector TryParseVector(const fkyaml::node& node, const std::string& property, Vector missingValue)
+ 	std::optional<double> ParseDouble(const fkyaml::node& node, const std::string& property)
 	{
-		if (! node.contains(property))
-			return missingValue;
-
-		return ParseVector(node[property].get_value<std::string>());
-	}
-
-	double TryParseDouble(const fkyaml::node& node, const std::string& property, double missingValue)
-	{
-		if (! node.contains(property))
-			return missingValue;
+        if (! node.contains(property))
+            return std::nullopt;
 
 		return node[property].is_float_number() ? node[property].get_value<double>() : node[property].get_value<int64_t>();
 	}
 
-	Camera ParseCamera(const fkyaml::node& node)
+	std::optional<Camera> ParseCamera(const fkyaml::node& node, const std::string& property)
 	{
-		Vector position = TryParseVector(node, "position", StandardVectors::kOrigin);
-		Vector target = TryParseVector(node, "target", StandardVectors::kUnitZ);
-		double viewWidth = TryParseDouble(node, "width", 4.0);
-		double viewHeight = TryParseDouble(node, "height", 9.0 / 4.0);
+		if (! node.contains(property))
+			return std::nullopt;
+
+		auto cameraNode = node.at(property);
+
+		Vector position = ParseVector(cameraNode, "position").value_or(StandardVectors::kOrigin);
+		Vector target = ParseVector(cameraNode, "target").value_or(StandardVectors::kUnitZ);
+		double viewWidth = ParseDouble(cameraNode, "width").value_or(4.0);
+		double viewHeight = ParseDouble(cameraNode, "height").value_or(9.0 / 4.0);
 
 		return Camera(position, target, viewWidth, viewHeight);
 	}
 
 	std::shared_ptr<Texture> ParseCheckerboardTexture(const fkyaml::node& node)
 	{
-		Color color1 = TryParseColor(node, "color1", Palette::kMagenta);
-		Color color2 = TryParseColor(node, "color2", Palette::kYellow);
-		double rowsCols = TryParseDouble(node, "rowsCols", 2);
+		Color color1 = ParseColor(node, "color1").value_or(Palette::kMagenta);
+		Color color2 = ParseColor(node, "color2").value_or(Palette::kYellow);
+		double rowsCols = ParseDouble(node, "rowsCols").value_or(2);
 
 		return std::make_shared<CheckerboardTexture>(color1, color2, static_cast<uint8_t>(rowsCols));
 	}
 
 	std::shared_ptr<Texture> ParseImageTexture(const fkyaml::node& node)
 	{
-		std::string path = node["path"].get_value<std::string>();
+		std::string path = node.at("path").get_value<std::string>();
 
 		return MakeImageTexture(path);
 	}
 
 	std::shared_ptr<Texture> ParseSolidTexture(const fkyaml::node& node)
 	{
-		Color color = TryParseColor(node, "color", Palette::kWhite);
+		Color color = ParseColor(node, "color").value_or(Palette::kWhite);
 
 		return std::make_shared<SolidTexture>(color);
 	}
 
 	std::shared_ptr<Texture> ParseTexture(const fkyaml::node& node)
 	{
-		const auto type = node["type"].get_value<std::string>();
+		const auto type = node.at("type").get_value<std::string>();
 
 		if (type == "Checkerboard")
 			return ParseCheckerboardTexture(node);
@@ -244,7 +239,7 @@ namespace
 
 	std::shared_ptr<Material> ParseDebugMaterial(const fkyaml::node& node)
 	{
-		const auto mode = node["mode"].get_value<std::string>();
+		const auto mode = node.at("mode").get_value<std::string>();
 
 		if (mode == "Normal")
 			return std::make_shared<DebugMaterial>(DebugMaterial::Mode::Normal);
@@ -257,7 +252,7 @@ namespace
 	std::shared_ptr<Material> ParseDielectricMaterial(const fkyaml::node& node)
 	{
 		std::shared_ptr<Texture> texture = ParseTexture(node["texture"]);
-		double refractionIndex = TryParseDouble(node, "refrectionIndex", 1.0);
+		double refractionIndex = ParseDouble(node, "refrectionIndex").value_or(1.0);
 
 		return std::make_shared<DielectricMaterial>(std::move(texture), refractionIndex);
 	}
@@ -279,14 +274,14 @@ namespace
 	std::shared_ptr<Material> ParseReflectiveMaterial(const fkyaml::node& node)
 	{
 		std::shared_ptr<Texture> texture = ParseTexture(node["texture"]);
-		double polish = TryParseDouble(node, "refrectionIndex", 1.0);
+		double polish = ParseDouble(node, "refrectionIndex").value_or(1.0);
 
 		return std::make_shared<ReflectiveMaterial>(std::move(texture), polish);
 	}
 
 	std::shared_ptr<Material> ParseMaterial(const fkyaml::node& node)
 	{
-		const auto type = node["type"].get_value<std::string>();
+		const auto type = node.at("type").get_value<std::string>();
 
 		if (type == "Debug")
 			return ParseDebugMaterial(node);
@@ -304,10 +299,10 @@ namespace
 
 	std::shared_ptr<Object> ParseBoxObject(const fkyaml::node& node)
 	{
-		Vector position = TryParseVector(node, "position", StandardVectors::kOrigin);
-		Vector rotation = TryParseVector(node, "rotation", Vector(0, 0, 0));
+		Vector position = ParseVector(node, "position").value_or(StandardVectors::kOrigin);
+		Vector rotation = ParseVector(node, "rotation").value_or(Vector(0, 0, 0));
 		std::shared_ptr<Material> material = ParseMaterial(node["material"]);
-		Vector size = TryParseVector(node, "size", Vector(1, 1, 1));
+		Vector size = ParseVector(node, "size").value_or(Vector(1, 1, 1));
 
 		return std::make_shared<BoxObject>(position, rotation, std::move(material), size);
 	}
@@ -315,41 +310,46 @@ namespace
 	std::shared_ptr<Object> ParsePlaneObject(const fkyaml::node& node)
 	{
 		std::shared_ptr<Material> material = ParseMaterial(node["material"]);
-		Vector normal = TryParseVector(node, "normal", StandardVectors::kUnitY);
-		double distance = TryParseDouble(node, "distance", 0.0);
-		double uvScaleFactor = TryParseDouble(node, "scale", 1.0);
+		Vector normal = ParseVector(node, "normal").value_or(StandardVectors::kUnitY);
+		double distance = ParseDouble(node, "distance").value_or(0.0);
+		double uvScaleFactor = ParseDouble(node, "scale").value_or(1.0);
 
 		return std::make_shared<PlaneObject>(std::move(material), normal, distance, uvScaleFactor);
 	}
 
 	std::shared_ptr<Object> ParseMeshObject(const fkyaml::node& node)
 	{
-		Vector position = TryParseVector(node, "position", StandardVectors::kOrigin);
-		Vector rotation = TryParseVector(node, "rotation", Vector(0, 0, 0));
+		Vector position = ParseVector(node, "position").value_or(StandardVectors::kOrigin);
+		Vector rotation = ParseVector(node, "rotation").value_or(Vector(0, 0, 0));
 		std::shared_ptr<Material> material = ParseMaterial(node["material"]);
 		std::string path = node["path"].get_value<std::string>();
-		double scaleFactor = TryParseDouble(node, "scale", 1.0);
+		double scaleFactor = ParseDouble(node, "scale").value_or(1.0);
 
 		return std::make_shared<MeshObject>(position, rotation, std::move(material), MakeObjectMesh(path, scaleFactor));
 	}
 
 	std::shared_ptr<Object> ParseSphereObject(const fkyaml::node& node)
 	{
-		Vector position = TryParseVector(node, "position", StandardVectors::kOrigin);
-		Vector rotation = TryParseVector(node, "rotation", Vector(0, 0, 0));
+		Vector position = ParseVector(node, "position").value_or(StandardVectors::kOrigin);
+		Vector rotation = ParseVector(node, "rotation").value_or(Vector(0, 0, 0));
 		std::shared_ptr<Material> material = ParseMaterial(node["material"]);
-		double radius = TryParseDouble(node, "radius", 1.0);
+		double radius = ParseDouble(node, "radius").value_or(1.0);
 
 		return std::make_shared<SphereObject>(position, rotation, std::move(material), radius);
 	}
 
-	std::vector<std::shared_ptr<Object>> ParseObjects(const fkyaml::node& node)
+	std::vector<std::shared_ptr<Object>> ParseObjects(const fkyaml::node& node, const std::string& property)
 	{
+		if (! node.contains(property))
+			return {};
+
+		auto objectsNode = node.at(property);
+
 		std::vector<std::shared_ptr<Object>> objects;
 
-		for (const auto& yamlObject : node)
+		for (const auto& yamlObject : objectsNode)
 		{
-			const auto type = yamlObject["type"].get_value<std::string>();
+			const auto type = yamlObject.at("type").get_value<std::string>();
 
 			if (type == "Box")
 				objects.push_back(ParseBoxObject(yamlObject));
@@ -375,20 +375,12 @@ Scene SceneLoader::Load(const std::string& path)
 	if (! config)
 		throw std::runtime_error("Failed to read scene YAML file '" + path + "'");
 
-	fkyaml::node yamlRoot = fkyaml::node::deserialize(config);
+	fkyaml::node rootNode = fkyaml::node::deserialize(config);
+	fkyaml::node sceneNode = rootNode.at("scene");
 
-	if (! yamlRoot.contains("scene"))
-		throw std::runtime_error("No scene root node in scene YAML file '" + path + "'");
-
-	fkyaml::node yamlScene = yamlRoot["scene"];
-
-	scene.background = TryParseColor(yamlScene, "background", Palette::kBlack);
-
-	if (yamlScene.contains("camera"))
-		scene.camera = ParseCamera(yamlScene["camera"]);
-
-	if (yamlScene.contains("objects"))
-		scene.objects = ParseObjects(yamlScene["objects"]);
+	scene.background = ParseColor(sceneNode, "background").value_or(Palette::kBlack);
+	scene.camera = ParseCamera(sceneNode, "camera").value_or(Camera());
+	scene.objects = ParseObjects(sceneNode, "objects");
 
 	return scene;
 }
