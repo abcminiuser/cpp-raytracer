@@ -7,6 +7,21 @@ if (MSVC)
     set (SFML_STATIC_LIBRARIES TRUE)
 endif ()
 
+find_program (CPPCHECK_BIN NAMES cppcheck)
+if (CPPCHECK_BIN)
+	set (CMAKE_CXX_CPPCHECK ${CPPCHECK_BIN})
+
+    list (APPEND CMAKE_CXX_CPPCHECK
+        "--enable=warning"
+        "--force"
+        "--inline-suppr"
+        "--quiet"
+        "--std=c++20"
+    )
+
+    message ("Using cppcheck configuration: ${CMAKE_CXX_CPPCHECK}")
+endif ()
+
 find_package (SFML CONFIG REQUIRED COMPONENTS graphics)
 
 add_executable (RayTracer
