@@ -27,7 +27,7 @@ double BoxObject::intersectWith(const Ray& ray) const
 {
 	// https://en.wikipedia.org/wiki/Slab_method
 
-	const auto t1 = Vector(0, 0, 0).subtract(ray.position()).multiply(ray.directionInverse());
+	const auto t1 = ray.position().invert().multiply(ray.directionInverse());
 	const auto t2 = m_size.subtract(ray.position()).multiply(ray.directionInverse());
 
 	const Vector minPoint = VectorUtils::MinPoint(t1, t2);

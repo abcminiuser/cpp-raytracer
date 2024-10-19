@@ -26,6 +26,7 @@
 
 #include <fkYAML/node.hpp>
 
+#include <charconv>
 #include <fstream>
 #include <map>
 #include <numbers>
@@ -43,6 +44,19 @@ namespace
 
 		if (auto pos = value.find_last_not_of(" \t"); pos != std::string::npos)
 			value = value.substr(0, pos + 1);
+
+		return value;
+	}
+
+	double DoubleFromString(std::string str)
+	{
+		str = TrimWhitespace(str);
+
+		double value;
+		const auto [ptr, ec] = std::from_chars(str.data(), str.data() + str.size(), value);
+
+		if (ec != std::errc() || ptr != (str.data() + str.size()))
+			throw std::runtime_error("Failed to parse double '" + str + "' in scene YAML file");
 
 		return value;
 	}
@@ -106,9 +120,9 @@ namespace
 		static const std::regex normColorRegex("Color\\(" "([^\\,]+)" "," "([^\\,]+)" "," "([^\\)]+)" "\\)");
 		if (std::smatch matches; std::regex_search(value, matches, normColorRegex))
 		{
-			const auto r = std::stod(matches[1]);
-			const auto g = std::stod(matches[2]);
-			const auto b = std::stod(matches[3]);
+			const auto r = DoubleFromString(matches[1]);
+			const auto g = DoubleFromString(matches[2]);
+			const auto b = DoubleFromString(matches[3]);
 
 			return Color(r, g, b);
 		}
@@ -150,9 +164,9 @@ namespace
 		static const std::regex vectorRegex("Vector\\(" "([^\\,]+)" "," "([^\\,]+)" "," "([^\\)]+)" "\\)");
 		if (std::smatch matches; std::regex_search(value, matches, vectorRegex))
 		{
-			const auto x = std::stod(matches[1]);
-			const auto y = std::stod(matches[2]);
-			const auto z = std::stod(matches[3]);
+			const auto x = DoubleFromString(matches[1]);
+			const auto y = DoubleFromString(matches[2]);
+			const auto z = DoubleFromString(matches[3]);
 
 			return Vector(x, y, z);
 		}
@@ -160,9 +174,9 @@ namespace
 		static const std::regex degreesVectorRegex("VectorDegrees\\(" "([^\\,]+)" "," "([^\\,]+)" "," "([^\\)]+)" "\\)");
 		if (std::smatch matches; std::regex_search(value, matches, degreesVectorRegex))
 		{
-			const auto x = std::stod(matches[1]) * (std::numbers::pi / 180);
-			const auto y = std::stod(matches[2]) * (std::numbers::pi / 180);
-			const auto z = std::stod(matches[3]) * (std::numbers::pi / 180);
+			const auto x = DoubleFromString(matches[1]) * (std::numbers::pi / 180);
+			const auto y = DoubleFromString(matches[2]) * (std::numbers::pi / 180);
+			const auto z = DoubleFromString(matches[3]) * (std::numbers::pi / 180);
 
 			return Vector(x, y, z);
 		}
@@ -181,12 +195,19 @@ namespace
 		throw std::runtime_error("Unknown vector type '" + value + "' specified in scene YAML file");
 	}
 
- 	std::optional<double> ParseDouble(const fkyaml::node& node, const std::string& property)
+	std::optional<double> ParseDouble(const fkyaml::node& node, const std::string& property)
 	{
-        if (! node.contains(property))
-            return std::nullopt;
+		if (! node.contains(property))
+			return std::nullopt;
 
-		return node[property].is_float_number() ? node[property].get_value<double>() : node[property].get_value<int64_t>();
+		const auto& valueNode = node[property];
+
+		if (valueNode.is_float_number())
+			return valueNode.get_value<double>();
+		else if (valueNode.is_integer())
+			return static_cast<double>(valueNode.get_value<int64_t>());
+		else
+			return DoubleFromString(valueNode.get_value<std::string>());
 	}
 
 	std::optional<Camera> ParseCamera(const fkyaml::node& node, const std::string& property)
