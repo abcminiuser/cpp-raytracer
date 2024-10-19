@@ -4,21 +4,21 @@
 #include "Engine/Texture.hpp"
 #include "Engine/Vector.hpp"
 
-DebugMaterial::DebugMaterial(Type type)
+DebugMaterial::DebugMaterial(Mode mode)
 	: Material(nullptr)
-	, m_type(type)
+	, m_mode(mode)
 {
 
 }
 
 Color DebugMaterial::emit(const Vector& incident, const Vector& position, const Vector& normal, const Vector& uv)
 {
-	switch (m_type)
+	switch (m_mode)
 	{
-		case Type::Normal:
+		case Mode::Normal:
 			return Color(normal.x(), normal.y(), normal.z());
 
-		case Type::UV:
+		case Mode::UV:
 			return Color(uv.x(), uv.y(), 0);
 	}
 

@@ -11,13 +11,13 @@ class DebugMaterial final
 	: public Material
 {
 public:
-	enum class Type
+	enum class Mode
 	{
 		Normal,
 		UV
 	};
 
-							DebugMaterial(Type type);
+							DebugMaterial(Mode mode);
 							~DebugMaterial() = default;
 
 // Material i/f:
@@ -25,5 +25,5 @@ public:
 	Color					emit(const Vector& incident, const Vector& position, const Vector& normal, const Vector& uv) override;
 
 private:
-	Type					m_type;
+	Mode					m_mode;
 };

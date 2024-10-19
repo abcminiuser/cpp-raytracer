@@ -55,7 +55,7 @@ scene:
    # Checkerboard sphere in "V" group of spheres
     - type: Sphere
       position: Vector(-2, 0, 2)
-      rotation: Vector(0.3925, 0.3925, 0.3925)
+      rotation: VectorDegrees(15, 15, 15)
       radius: 1.0
       material:
         type: Diffuse
@@ -148,7 +148,7 @@ scene:
   # Front cube with example texture
     - type: Box
       position: Vector(1, 0, -4)
-      rotation: Vector(0, 0.785, 0)
+      rotation: VectorDegrees(0, 45, 0)
       size: Vector(1, 1, 1)
       material:
         type: Diffuse
@@ -159,7 +159,7 @@ scene:
   # Teapot
     - type: Mesh
       position: Vector(8, 0, 8)
-      rotation: Vector(0, 0.785, 0)
+      rotation: Vector(0, 45, 0)
       size: Vector(1, 1, 1)
       path: "Assets/Teapot.obj"
       scale: 1.0

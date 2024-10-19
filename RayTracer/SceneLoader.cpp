@@ -106,7 +106,7 @@ namespace
 			return Color(r, g, b);
 		}
 
-		static const std::regex componentColorRegex("ComponentColor\\(" "([^\\,]+)" "," "([^\\,]+)" "," "([^\\)]+)" "\\)");
+		static const std::regex componentColorRegex("Color8Bit\\(" "([^\\,]+)" "," "([^\\,]+)" "," "([^\\)]+)" "\\)");
 		if (std::smatch matches; std::regex_search(value, matches, componentColorRegex))
 		{
 			const auto r = std::clamp(std::stoi(matches[1]), 0, 255);
@@ -130,7 +130,7 @@ namespace
 		if (kKnownNames.contains(value))
 			return kKnownNames.at(value);
 
-		return Color(0, 0, 0);
+		throw std::runtime_error("Unknown color type '" + value + "' specified in scene YAML file");
 	}
 
 	Color TryParseColor(const fkyaml::node& node, const std::string& property, Color missingValue)
@@ -145,8 +145,8 @@ namespace
 	{
 		value = TrimWhitespace(value);
 
-		static const std::regex normColorRegex("Vector\\(" "([^\\,]+)" "," "([^\\,]+)" "," "([^\\)]+)" "\\)");
-		if (std::smatch matches; std::regex_search(value, matches, normColorRegex))
+		static const std::regex vectorRegex("Vector\\(" "([^\\,]+)" "," "([^\\,]+)" "," "([^\\)]+)" "\\)");
+		if (std::smatch matches; std::regex_search(value, matches, vectorRegex))
 		{
 			const auto x = std::stod(matches[1]);
 			const auto y = std::stod(matches[2]);
@@ -155,7 +155,28 @@ namespace
 			return Vector(x, y, z);
 		}
 
-		return Vector(0, 0, 0);
+		static const std::regex degreesVectorRegex("VectorDegrees\\(" "([^\\,]+)" "," "([^\\,]+)" "," "([^\\)]+)" "\\)");
+		if (std::smatch matches; std::regex_search(value, matches, degreesVectorRegex))
+		{
+			const auto x = std::stod(matches[1]) * (std::numbers::pi / 180);
+			const auto y = std::stod(matches[2]) * (std::numbers::pi / 180);
+			const auto z = std::stod(matches[3]) * (std::numbers::pi / 180);
+
+			return Vector(x, y, z);
+		}
+
+		static const std::map<std::string, Vector> kKnownNames
+			{
+				{ "Zero", Vector(0, 0, 0) },
+				{ "Origin", StandardVectors::kOrigin },
+				{ "UnitX", StandardVectors::kUnitX },
+				{ "UnitY", StandardVectors::kUnitY },
+				{ "UnitZ", StandardVectors::kUnitZ },
+			};
+		if (kKnownNames.contains(value))
+			return kKnownNames.at(value);
+
+		throw std::runtime_error("Unknown vector type '" + value + "' specified in scene YAML file");
 	}
 
 	Vector TryParseVector(const fkyaml::node& node, const std::string& property, Vector missingValue)
@@ -223,14 +244,14 @@ namespace
 
 	std::shared_ptr<Material> ParseDebugMaterial(const fkyaml::node& node)
 	{
-		const auto type = node["type"].get_value<std::string>();
+		const auto mode = node["mode"].get_value<std::string>();
 
-		if (type == "Normal")
-			return std::make_shared<DebugMaterial>(DebugMaterial::Type::Normal);
-		else if (type == "UV")
-			return std::make_shared<DebugMaterial>(DebugMaterial::Type::UV);
+		if (mode == "Normal")
+			return std::make_shared<DebugMaterial>(DebugMaterial::Mode::Normal);
+		else if (mode == "UV")
+			return std::make_shared<DebugMaterial>(DebugMaterial::Mode::UV);
 		else
-			throw std::runtime_error("Unknown debug material type '" + type + "' specified in scene YAML file");
+			throw std::runtime_error("Unknown debug material mode '" + mode + "' specified in scene YAML file");
 	}
 
 	std::shared_ptr<Material> ParseDielectricMaterial(const fkyaml::node& node)
