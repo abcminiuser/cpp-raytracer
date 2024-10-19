@@ -11,8 +11,8 @@
 struct Scene
 {
 public:
-	Camera									camera;
 	Color									background;
+	Camera									camera;
 	std::vector<std::shared_ptr<Object>>	objects;
 
 	uint32_t								maxRayDepth = 25;

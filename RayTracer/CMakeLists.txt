@@ -23,6 +23,7 @@ if (CPPCHECK_BIN)
 endif ()
 
 find_package (SFML CONFIG REQUIRED COMPONENTS graphics)
+find_package (fkYAML CONFIG REQUIRED HINTS ${CMAKE_SOURCE_DIR}/Vendor/fkyaml-0.3.13/package/share/cmake/fkYAML)
 
 add_executable (RayTracer
 	"Engine/Renderer.cpp"
@@ -45,23 +46,27 @@ add_executable (RayTracer
     "Engine/Texture/SolidTexture.cpp"
     "Engine/Ray.cpp"
     "Engine/Vector.cpp"
-    "ExampleScene.cpp"
     "Main.cpp"
+    "SceneLoader.cpp"
     "Viewer.cpp"
     "$<$<BOOL:WINDOWS>:WindowsResources.rc>"
 )
 
-target_include_directories (RayTracer PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${VENDOR_BASE_DIR}/OBJ-Loader/Source)
-target_link_libraries (RayTracer PRIVATE sfml-graphics)
+target_include_directories (RayTracer PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries (RayTracer PRIVATE
+	sfml-graphics
+	fkYAML::fkYAML
+	objloader::objloader
+)
 target_compile_features (RayTracer PUBLIC cxx_std_20)
 
 set_property(TARGET RayTracer PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
 
 if (MSVC)
-    target_compile_options (RayTracer PUBLIC /W4 /WX /wd4100 /fp:fast /arch:AVX2)
+    target_compile_options (RayTracer PUBLIC /W4 /WX /wd4100 /arch:AVX2)
     target_compile_definitions (RayTracer PUBLIC _CRT_SECURE_NO_WARNINGS)
 else ()
-    target_compile_options (RayTracer PUBLIC -Wall -Wextra -pedantic -Werror -Wno-unused-parameter -Wshadow -Wdouble-promotion -fno-math-errno -fno-trapping-math)
+    target_compile_options (RayTracer PUBLIC -Wall -Wextra -pedantic -Werror -Wno-unused-parameter -Wshadow -Wdouble-promotion)
 endif ()
 
 add_custom_command (TARGET RayTracer POST_BUILD

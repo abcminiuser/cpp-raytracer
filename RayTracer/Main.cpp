@@ -1,7 +1,7 @@
 ﻿#include "Engine/Renderer.hpp"
 
 #include "Viewer.hpp"
-#include "ExampleScene.hpp"
+#include "SceneLoader.hpp"
 
 namespace
 {
@@ -14,6 +14,6 @@ int main(int argc, char* argv[])
 	Renderer renderer(kWidth, kHeight, std::thread::hardware_concurrency());
 	Viewer viewer(renderer, kWidth, kHeight);
 
-	auto scene = ExampleScene::Build();
+	auto scene = SceneLoader::Load("Assets/Scene.yaml");
 	viewer.view(std::move(scene));
 }

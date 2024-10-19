@@ -262,6 +262,7 @@ void Viewer::view(Scene scene)
 			std::string infoMessage;
 			infoMessage += "Camera Position:  " + scene.camera.position().string() + "\n";
 			infoMessage += "Camera Direction: " + scene.camera.direction().string() + "\n";
+			infoMessage += "Camera Orientation: " + scene.camera.orientation().string() + "\n";
 
 			if (isRendering)
 				infoMessage += std::string("Rendering In Progress (" + std::string(previousRenderType != RenderType::Full ? "Preview" : "Full") + " - " + std::to_string(m_renderer.renderPercentage()) + "%)");

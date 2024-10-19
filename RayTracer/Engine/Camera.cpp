@@ -45,13 +45,13 @@ void Camera::setPosition(const Vector& position)
 
 void Camera::setDirection(const Vector& direction)
 {
-	m_direction = direction;
+	m_direction = direction.unit();
 	update();
 }
 
 void Camera::setOrientation(const Vector& orientation)
 {
-	m_orientation = orientation;
+	m_orientation = orientation.unit();
 	update();
 }
 

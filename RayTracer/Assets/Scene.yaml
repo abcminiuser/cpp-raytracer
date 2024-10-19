@@ -1,0 +1,171 @@
+scene:
+  background: Color(.1, .1, .1)
+
+  camera:
+    position: Vector(0, 4, -8)
+    target: Vector(0, 0, 0)
+    width: 4.5
+    height: 2.5
+
+  objects:
+    # Big illuminating rectangle behind the camera
+    - type: Box
+      position: Vector(-1e20, -1e20, -50)
+      rotation: Vector(0, 0, 0)
+      size: Vector(2e20, 2e20, 1)
+      material:
+        type: Light
+        texture:
+          type: Solid
+          color: Color(.85, .85, .85)
+
+    # Orange light ball to the left behind the camera
+    - type: Sphere
+      position: Vector(-6, 3, -5)
+      rotation: Vector(0, 0, 0)
+      radius: 1.0
+      material:
+        type: Light
+        texture:
+          type: Solid
+          color: Color(1.4, 0.7, 0)
+
+    # Floor plane
+    - type: Plane
+      normal: Vector(0, 1, 0)
+      distance: -1
+      scale: 0.3
+      material:
+        type: Diffuse
+        texture:
+          type: Image
+          path: "Assets/Brick.jpg"
+
+    # White sphere in "V" group of spheres
+    - type: Sphere
+      position: Vector(-4, 0, 4)
+      rotation: Vector(0, 0, 0)
+      radius: 1.0
+      material:
+        type: Diffuse
+        texture:
+          type: Solid
+          color: White
+
+   # Checkerboard sphere in "V" group of spheres
+    - type: Sphere
+      position: Vector(-2, 0, 2)
+      rotation: Vector(0.3925, 0.3925, 0.3925)
+      radius: 1.0
+      material:
+        type: Diffuse
+        texture:
+          type: Checkerboard
+          color1: Magenta
+          color2: Yellow
+          rowsCols: 8
+
+   # Red sphere in "V" group of spheres
+    - type: Sphere
+      position: Vector(0, 0, 0)
+      rotation: Vector(0, 0, 0)
+      radius: 1.0
+      material:
+        type: Diffuse
+        texture:
+          type: Solid
+          color: Red
+
+   # Green sphere in "V" group of spheres
+    - type: Sphere
+      position: Vector(2, 0, 2)
+      rotation: Vector(0, 0, 0)
+      radius: 1.0
+      material:
+        type: Diffuse
+        texture:
+          type: Solid
+          color: Green
+
+   # Blue sphere in "V" group of spheres
+    - type: Sphere
+      position: Vector(4, 0, 4)
+      rotation: Vector(0, 0, 0)
+      radius: 1.0
+      material:
+        type: Diffuse
+        texture:
+          type: Solid
+          color: Green
+
+   # Wooden slightly reflective sphere on right
+    - type: Sphere
+      position: Vector(6, 0, 0)
+      rotation: Vector(0, 0, 0)
+      radius: 1.0
+      material:
+        type: Reflective
+        polish: 0.5
+        texture:
+          type: Image
+          path: "Assets/Wood.jpg"
+
+   # Marble sphere on left
+    - type: Sphere
+      position: Vector(-6, 0, 0)
+      rotation: Vector(0, 0, 0)
+      radius: 1.0
+      material:
+        type: Diffuse
+        texture:
+          type: Image
+          path: "Assets/Marble.jpg"
+
+   # Glass sphere on front-left
+    - type: Sphere
+      position: Vector(-3, 0, -3)
+      rotation: Vector(0, 0, 0)
+      radius: 1.0
+      material:
+        type: Dielectric
+        refractionIndex: 2.2
+        texture:
+          type: Solid
+          color: White
+
+  # Rear reflective cube
+    - type: Box
+      position: Vector(0, 0, 6)
+      rotation: Vector(0, 0, 0)
+      size: Vector(2, 2, 2)
+      polish: 1.0
+      material:
+        type: Reflective
+        texture:
+          type: Solid
+          color: White
+
+  # Front cube with example texture
+    - type: Box
+      position: Vector(1, 0, -4)
+      rotation: Vector(0, 0.785, 0)
+      size: Vector(1, 1, 1)
+      material:
+        type: Diffuse
+        texture:
+          type: Image
+          path: "Assets/Cube.png"
+
+  # Teapot
+    - type: Mesh
+      position: Vector(8, 0, 8)
+      rotation: Vector(0, 0.785, 0)
+      size: Vector(1, 1, 1)
+      path: "Assets/Teapot.obj"
+      scale: 1.0
+      material:
+        type: Reflective
+        polish: 0.99
+        texture:
+          type: Solid
+          color: White
