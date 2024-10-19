@@ -47,7 +47,7 @@ namespace
 		return value;
 	}
 
-	std::shared_ptr<ImageTexture> MakeImageTexture(const std::string& path, Color multiplier = Color(1, 1, 1))
+	std::shared_ptr<ImageTexture> MakeImageTexture(const std::string& path, const Color& multiplier)
 	{
 		sf::Image imageTexture;
 		if (! imageTexture.loadFromFile(path))
@@ -59,7 +59,7 @@ namespace
 		return std::make_shared<ImageTexture>(dimensions.x, dimensions.y, reinterpret_cast<const uint32_t*>(pixels), multiplier);
 	}
 
-	std::shared_ptr<Mesh> MakeObjectMesh(const std::string& path, double scale = 1.0)
+	std::shared_ptr<Mesh> MakeObjectMesh(const std::string& path, double scale)
 	{
 		objl::Loader objLoader;
 		if (! objLoader.LoadFile(path))
@@ -216,8 +216,9 @@ namespace
 	std::shared_ptr<Texture> ParseImageTexture(const fkyaml::node& node)
 	{
 		std::string path = node.at("path").get_value<std::string>();
+		Color multiplier = ParseColor(node, "multiplier").value_or(Palette::kWhite);
 
-		return MakeImageTexture(path);
+		return MakeImageTexture(path, multiplier);
 	}
 
 	std::shared_ptr<Texture> ParseSolidTexture(const fkyaml::node& node)

@@ -2,6 +2,7 @@
 
 #include "Engine/Texture.hpp"
 
+#include <algorithm>
 #include <cmath>
 #include <stdexcept>
 
