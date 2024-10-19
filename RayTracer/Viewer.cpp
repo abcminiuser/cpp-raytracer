@@ -2,7 +2,6 @@
 #include "SceneLoader.hpp"
 
 #include "Engine/Matrix.hpp"
-#include "Engine/Renderer.hpp"
 #include "Engine/Scene.hpp"
 
 #include <chrono>
@@ -16,8 +15,8 @@ namespace
 	constexpr auto kCoarsePreviewModeExitDelay = std::chrono::milliseconds(500);
 }
 
-Viewer::Viewer(Renderer& renderer, size_t width, size_t height)
-	: m_renderer(renderer)
+Viewer::Viewer(size_t width, size_t height)
+	: m_renderer(width, height, std::thread::hardware_concurrency())
 	, m_window(sf::VideoMode(static_cast<uint32_t>(width), static_cast<uint32_t>(height)), "Ray Tracer", sf::Style::Titlebar | sf::Style::Close)
 {
 	m_icon.loadFromFile("Assets/Icon.png");
@@ -131,7 +130,6 @@ void Viewer::view(const std::string& path)
 							extraInfoMessage = "Failed to save image to '" + fileName + "'";
 
 						infoTextUpdatePending = true;
-
 						break;
 					}
 

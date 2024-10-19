@@ -1,20 +1,24 @@
 #include "SceneLoader.hpp"
 
 #include "Engine/Color.hpp"
-#include "Engine/Mesh.hpp"
-#include "Engine/Scene.hpp"
+#include "Engine/Material.hpp"
 #include "Engine/Material/DebugMaterial.hpp"
 #include "Engine/Material/DielectricMaterial.hpp"
 #include "Engine/Material/DiffuseMaterial.hpp"
 #include "Engine/Material/LightMaterial.hpp"
 #include "Engine/Material/ReflectiveMaterial.hpp"
+#include "Engine/Mesh.hpp"
+#include "Engine/Object.hpp"
 #include "Engine/Object/BoxObject.hpp"
-#include "Engine/Object/PlaneObject.hpp"
 #include "Engine/Object/MeshObject.hpp"
+#include "Engine/Object/PlaneObject.hpp"
 #include "Engine/Object/SphereObject.hpp"
-#include "Engine/Texture/SolidTexture.hpp"
+#include "Engine/Scene.hpp"
+#include "Engine/Texture.hpp"
 #include "Engine/Texture/CheckerboardTexture.hpp"
 #include "Engine/Texture/ImageTexture.hpp"
+#include "Engine/Texture/SolidTexture.hpp"
+#include "Engine/Vector.hpp"
 
 #include <SFML/Graphics.hpp>
 

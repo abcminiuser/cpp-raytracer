@@ -1,20 +1,20 @@
 ﻿#pragma once
 
+#include "Engine/Renderer.hpp"
+
 #include <string>
 
 #include <SFML/Graphics.hpp>
 
-class Renderer;
-
 class Viewer
 {
 public:
-						Viewer(Renderer& renderer, size_t width, size_t height);
+						Viewer(size_t width, size_t height);
 
 	void				view(const std::string& path);
 
 private:
-	Renderer&			m_renderer;
+	Renderer			m_renderer;
 
 	sf::Image			m_icon;
 	sf::RenderWindow	m_window;
