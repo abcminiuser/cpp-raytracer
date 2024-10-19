@@ -1,4 +1,5 @@
 ﻿#include "Viewer.hpp"
+#include "SceneLoader.hpp"
 
 #include "Engine/Matrix.hpp"
 #include "Engine/Renderer.hpp"
@@ -37,8 +38,9 @@ Viewer::Viewer(Renderer& renderer, size_t width, size_t height)
 	m_infoText.move(10, 10);
 
 	std::string instructionsMessage;
+	instructionsMessage += "(Backspace) Reload scene\n";
 	instructionsMessage += "(Enter) Save Image to File\n";
-	instructionsMessage += "(Backspace) Restart Render\n";
+	instructionsMessage += "(Space) Restart Render\n";
 	instructionsMessage += "(W/A/S/D, R/F) Move Camera\n";
 	instructionsMessage += "(I/J/K/L, U/O) Rotate Camera\n";
 
@@ -51,7 +53,7 @@ Viewer::Viewer(Renderer& renderer, size_t width, size_t height)
 	m_instructionsText.move(width - m_instructionsText.getGlobalBounds().width - 10, 10);
 }
 
-void Viewer::view(Scene scene)
+void Viewer::view(const std::string& path)
 {
 	enum class RenderType { CoarsePreview, Preview, Full };
 
@@ -59,10 +61,25 @@ void Viewer::view(Scene scene)
 	RenderType previousRenderType = RenderType::Preview;
 	std::chrono::steady_clock::time_point lastCoarsePreviewTime = {};
 	bool wasRendering = false;
-	bool infoTextUpdatePending = true;
-	bool sceneUpdatePending = true;
+	bool infoTextUpdatePending = false;
+	bool sceneUpdatePending = false;
 	uint8_t lastRenderPercent = 0;
 	std::string extraInfoMessage;
+
+	Scene scene;
+
+	try
+	{
+		scene = SceneLoader::Load(path);
+		sceneUpdatePending = true;
+	}
+	catch (const std::exception& e)
+	{
+		extraInfoMessage = std::string("Failed to parse scene file: ") + e.what();
+		infoTextUpdatePending = true;
+	}
+
+	m_window.setTitle("Ray Tracer - '" + path + "'");
 
 	while (m_window.isOpen())
 	{
@@ -77,6 +94,27 @@ void Viewer::view(Scene scene)
 			{
 				switch (event.key.code)
 				{
+					case sf::Keyboard::Key::Backspace:
+					{
+						m_renderer.stopRender();
+						m_renderer.clear();
+
+						try
+						{
+							scene = SceneLoader::Load(path);
+
+							nextRenderType = RenderType::CoarsePreview;
+							sceneUpdatePending = true;
+						}
+						catch (const std::exception& e)
+						{
+							extraInfoMessage = std::string("Failed to parse scene file: ") + e.what();
+							infoTextUpdatePending = true;
+						}
+
+						break;
+					}
+
 					case sf::Keyboard::Key::Enter:
 					{
 						const auto now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
@@ -96,12 +134,12 @@ void Viewer::view(Scene scene)
 						break;
 					}
 
-					case sf::Keyboard::Key::Backspace:
+					case sf::Keyboard::Key::Space:
 					{
 						m_renderer.stopRender();
 						m_renderer.clear();
 
-						nextRenderType = RenderType::Full;
+						nextRenderType = RenderType::CoarsePreview;
 						sceneUpdatePending = true;
 						break;
 					}

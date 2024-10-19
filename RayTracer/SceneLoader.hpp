@@ -2,9 +2,9 @@
 
 #include "Engine/Scene.hpp"
 
-#include <filesystem>
+#include <string>
 
 namespace SceneLoader
 {
-	Scene	Load(const std::filesystem::path& path);
+	Scene	Load(const std::string& path);
 }

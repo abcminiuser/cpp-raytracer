@@ -346,18 +346,18 @@ namespace
 	}
 }
 
-Scene SceneLoader::Load(const std::filesystem::path& path)
+Scene SceneLoader::Load(const std::string& path)
 {
 	Scene scene;
 
 	std::ifstream config(path);
 	if (! config)
-		throw std::runtime_error("Failed to read scene YAML file '" + path.string() + "'");
+		throw std::runtime_error("Failed to read scene YAML file '" + path + "'");
 
 	fkyaml::node yamlRoot = fkyaml::node::deserialize(config);
 
 	if (! yamlRoot.contains("scene"))
-		throw std::runtime_error("No scene root node in scene YAML file '" + path.string() + "'");
+		throw std::runtime_error("No scene root node in scene YAML file '" + path + "'");
 
 	fkyaml::node yamlScene = yamlRoot["scene"];
 

@@ -1,17 +1,17 @@
 ﻿#pragma once
 
+#include <string>
+
 #include <SFML/Graphics.hpp>
 
 class Renderer;
-
-struct Scene;
 
 class Viewer
 {
 public:
 						Viewer(Renderer& renderer, size_t width, size_t height);
 
-	void				view(Scene scene);
+	void				view(const std::string& path);
 
 private:
 	Renderer&			m_renderer;
