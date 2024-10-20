@@ -12,7 +12,7 @@ class DiffuseMaterial final
 	: public Material
 {
 public:
-							DiffuseMaterial(std::shared_ptr<Texture> texture);
+							DiffuseMaterial(std::shared_ptr<Texture> texture, std::shared_ptr<Texture> normals);
 							~DiffuseMaterial() = default;
 
 // Material i/f:

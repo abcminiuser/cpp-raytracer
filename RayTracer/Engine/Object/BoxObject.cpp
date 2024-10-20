@@ -52,26 +52,46 @@ double BoxObject::intersectWith(const Ray& ray) const
 	return tMin;
 }
 
-void BoxObject::getIntersectionProperties(const Vector& position, Vector& normal, Vector& uv) const
-{
-	normal	= normalAt(position);
-	uv		= uvAt(position, normal);
-}
-
-Vector BoxObject::normalAt(const Vector& position) const
+void BoxObject::getIntersectionProperties(const Vector& position, Vector& normal, Vector& tangent, Vector& bitangent, Vector& uv) const
 {
 	if (std::abs(position.z()) < kComparisonThreshold)
-		return kFrontNormal; // Front face
+	{
+		normal		= kFrontNormal; // Front face
+		tangent		= StandardVectors::kUnitY;
+		bitangent	= StandardVectors::kUnitX;
+	}
 	else if (std::abs(position.x()) < kComparisonThreshold)
-		return kLeftNormal; // Left face
+	{
+		normal		= kLeftNormal; // Left face
+		tangent		= StandardVectors::kUnitY;
+		bitangent	= StandardVectors::kUnitZ.invert();
+	}
 	else if (std::abs(position.y()) < kComparisonThreshold)
-		return kTopNormal; // Top face
+	{
+		normal		= kTopNormal; // Top face
+		tangent		= StandardVectors::kUnitZ;
+		bitangent	= StandardVectors::kUnitX;
+	}
 	else if (std::abs(position.y() - m_size.y()) < kComparisonThreshold)
-		return kBottomNormal; // Bottom face
+	{
+		normal		= kBottomNormal; // Bottom face
+		tangent		= StandardVectors::kUnitZ.invert();
+		bitangent	= StandardVectors::kUnitX;
+	}
 	else if (std::abs(position.x() - m_size.x()) < kComparisonThreshold)
-		return kRightNormal; // Right face
+	{
+		normal		= kRightNormal; // Right face
+		tangent		= StandardVectors::kUnitY;
+		bitangent	= StandardVectors::kUnitZ;
+	}
 	else
-		return kBackNormal; // Back face
+	{
+		normal		= kBackNormal; // Back face
+		tangent		= StandardVectors::kUnitY;
+		bitangent	= StandardVectors::kUnitX.invert();
+	}
+
+	uv = uvAt(position, normal);
 }
 
 Vector BoxObject::uvAt(const Vector& position, const Vector& normal) const

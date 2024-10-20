@@ -27,7 +27,7 @@ public:
 
 protected:
 	virtual double					intersectWith(const Ray& ray) const = 0;
-	virtual void					getIntersectionProperties(const Vector& position, Vector& normal, Vector& uv) const = 0;
+	virtual void					getIntersectionProperties(const Vector& position, Vector& normal, Vector& tangent, Vector& bitangent, Vector& uv) const = 0;
 
 private:
 	Matrix<3, 3>					makeRotationMatrix(const Vector& rotation) const;

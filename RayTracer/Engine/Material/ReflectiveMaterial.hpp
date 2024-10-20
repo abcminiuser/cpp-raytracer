@@ -12,7 +12,7 @@ class ReflectiveMaterial final
 	: public Material
 {
 public:
-							ReflectiveMaterial(std::shared_ptr<Texture> texture, double polish);
+							ReflectiveMaterial(std::shared_ptr<Texture> texture, std::shared_ptr<Texture> normals, double polish);
 							~ReflectiveMaterial() = default;
 
 // Material i/f:

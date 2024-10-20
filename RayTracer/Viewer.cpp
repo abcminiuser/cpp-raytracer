@@ -22,6 +22,7 @@ Viewer::Viewer(size_t width, size_t height)
 	m_icon.loadFromFile("Assets/Icon.png");
 
 	m_window.setIcon(m_icon.getSize().x, m_icon.getSize().y, m_icon.getPixelsPtr());
+	m_window.setFramerateLimit(60);
 
 	m_texture.create(m_window.getSize().x, m_window.getSize().y);
 

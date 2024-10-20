@@ -34,9 +34,14 @@ Color Object::illuminate(const Scene& scene, const Ray& ray, const Vector& posit
 	const Vector positionObjectSpace = rotate(position.subtract(m_position), m_rotationMatrix);
 
 	Vector	normalObjectSpace;
+	Vector	tangent;
+	Vector	bitangent;
 	Vector	uv;
-	getIntersectionProperties(positionObjectSpace, normalObjectSpace, uv);
+	getIntersectionProperties(positionObjectSpace, normalObjectSpace, tangent, bitangent, uv);
 	assert(normalObjectSpace.length() - 1 <= std::numeric_limits<double>::epsilon());
+
+	// Remap the object's normal using the texture normal map if present
+	normalObjectSpace = m_material->mapNormal(normalObjectSpace, tangent, bitangent, uv);
 
 	const Vector normalWorldSpace = rotate(normalObjectSpace, m_rotationMatrixInverse).unit();
 

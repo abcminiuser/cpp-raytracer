@@ -12,8 +12,8 @@ namespace
 	}
 }
 
-ReflectiveMaterial::ReflectiveMaterial(std::shared_ptr<Texture> texture, double polish)
-	: Material(std::move(texture))
+ReflectiveMaterial::ReflectiveMaterial(std::shared_ptr<Texture> texture, std::shared_ptr<Texture> normals, double polish)
+	: Material(std::move(texture), std::move(normals))
 	, m_scuff(std::clamp(1 - polish, 0.0, 1.0))
 {
 

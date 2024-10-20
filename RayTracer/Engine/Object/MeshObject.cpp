@@ -71,7 +71,7 @@ double MeshObject::intersectWith(const Ray& ray) const
 	return distance;
 }
 
-void MeshObject::getIntersectionProperties(const Vector& position, Vector& normal, Vector& uv) const
+void MeshObject::getIntersectionProperties(const Vector& position, Vector& normal, Vector& tangent, Vector& bitangent, Vector& uv) const
 {
 	bool found = false;
 
@@ -112,8 +112,10 @@ void MeshObject::getIntersectionProperties(const Vector& position, Vector& norma
 
 				const Vector mix = interpolate(position, v0, v1, v2);
 
-				normal	= normalAt(v0, v1, v2, mix);
-				uv		= uvAt(v0, v1, v2, mix);
+				normal		= normalAt(v0, v1, v2, mix);
+				tangent		= v1.position.subtract(v0.position);
+				bitangent	= v2.position.subtract(v1.position);
+				uv			= uvAt(v0, v1, v2, mix);
 
 				found = true;
 				return;
@@ -122,8 +124,10 @@ void MeshObject::getIntersectionProperties(const Vector& position, Vector& norma
 
 	if (! found)
 	{
-		normal	= StandardVectors::kUnitZ;
-		uv		= Vector();
+		normal		= StandardVectors::kUnitZ;
+		tangent		= StandardVectors::kUnitY;
+		bitangent	= StandardVectors::kUnitX;
+		uv			= Vector();
 	}
 }
 

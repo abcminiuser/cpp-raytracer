@@ -1,15 +1,50 @@
 #include "Engine/Material.hpp"
 
+#include "Engine/Matrix.hpp"
 #include "Engine/Ray.hpp"
 #include "Engine/Scene.hpp"
 #include "Engine/Texture.hpp"
 #include "Engine/Texture/CheckerboardTexture.hpp"
 
-Material::Material(std::shared_ptr<Texture> texture)
+Material::Material(std::shared_ptr<Texture> texture, std::shared_ptr<Texture> normals)
 	: m_texture(texture ? std::move(texture) : std::make_shared<CheckerboardTexture>(Texture::Interpolation::NearestNeighbor, Palette::kWhite, Palette::kWhite.scale(.5), 10))
+	, m_normals(std::move(normals))
 {
 
 }
+
+Vector Material::mapNormal(const Vector& normal, const Vector& tangent, const Vector& bitangent, const Vector& uv) const
+{
+	if (! m_normals)
+		return normal;
+
+	const auto mappedNormal = m_normals->sample(uv.x(), uv.y());
+
+	Matrix<3, 3> mappingMatrix
+		(
+			std::array
+			{
+				std::array{
+					tangent.x(),
+					bitangent.x(),
+					normal.x(),
+				},
+				std::array{
+					tangent.y(),
+					bitangent.y(),
+					normal.y(),
+				},
+				std::array{
+					tangent.z(),
+					bitangent.z(),
+					normal.z(),
+				}
+			}
+		);
+
+	return mappingMatrix.multiply(Vector(mappedNormal.red() * 2 - 1, mappedNormal.green() * 2 - 1, mappedNormal.blue() * 2 - 1)).toVector().unit();
+}
+
 
 Color Material::illuminate(const Scene& scene, const Ray& sourceRay, const Vector& position, const Vector& normal, const Vector& uv, uint32_t rayDepthRemaining)
 {

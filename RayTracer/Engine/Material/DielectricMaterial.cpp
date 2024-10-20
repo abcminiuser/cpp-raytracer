@@ -26,8 +26,8 @@ namespace
 	}
 }
 
-DielectricMaterial::DielectricMaterial(std::shared_ptr<Texture> texture, double refractionIndex)
-	: Material(std::move(texture))
+DielectricMaterial::DielectricMaterial(std::shared_ptr<Texture> texture, std::shared_ptr<Texture> normals, double refractionIndex)
+	: Material(std::move(texture), std::move(normals))
 	, m_refractionIndex(refractionIndex)
 {
 

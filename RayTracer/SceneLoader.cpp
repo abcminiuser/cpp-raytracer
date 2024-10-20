@@ -303,31 +303,35 @@ namespace
 	std::shared_ptr<Material> ParseDielectricMaterial(const fkyaml::node& node)
 	{
 		auto texture			= ParseTexture(node, "texture");
+		auto normals			= ParseTexture(node, "normals");
 		auto refractionIndex	= ParseDouble(node, "refractionIndex").value_or(1.0);
 
-		return std::make_shared<DielectricMaterial>(std::move(texture), refractionIndex);
+		return std::make_shared<DielectricMaterial>(std::move(texture), std::move(normals), refractionIndex);
 	}
 
 	std::shared_ptr<Material> ParseDiffuseMaterial(const fkyaml::node& node)
 	{
 		auto texture			= ParseTexture(node, "texture");
+		auto normals			= ParseTexture(node, "normals");
 
-		return std::make_shared<DiffuseMaterial>(std::move(texture));
+		return std::make_shared<DiffuseMaterial>(std::move(texture), std::move(normals));
 	}
 
 	std::shared_ptr<Material> ParseLightMaterial(const fkyaml::node& node)
 	{
 		auto texture			= ParseTexture(node, "texture");
+		auto normals			= ParseTexture(node, "normals");
 
-		return std::make_shared<LightMaterial>(std::move(texture));
+		return std::make_shared<LightMaterial>(std::move(texture), std::move(normals));
 	}
 
 	std::shared_ptr<Material> ParseReflectiveMaterial(const fkyaml::node& node)
 	{
 		auto texture			= ParseTexture(node, "texture");
+		auto normals			= ParseTexture(node, "normals");
 		auto polish				= ParseDouble(node, "polish").value_or(1.0);
 
-		return std::make_shared<ReflectiveMaterial>(std::move(texture), polish);
+		return std::make_shared<ReflectiveMaterial>(std::move(texture), std::move(normals), polish);
 	}
 
 	std::shared_ptr<Material> ParseMaterial(const fkyaml::node& node)

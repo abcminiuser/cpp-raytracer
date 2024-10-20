@@ -40,6 +40,9 @@ scene:
         texture:
           type: Image
           path: "Assets/Brick.jpg"
+        normals:
+          type: Image
+          path: "Assets/BrickNormals.jpg"
 
     # White sphere in "V" group of spheres
     - type: Sphere
@@ -112,6 +115,9 @@ scene:
         texture:
           type: Image
           path: "Assets/Wood.jpg"
+        normals:
+          type: Image
+          path: "Assets/WoodNormals.jpg"
 
     # Marble sphere on left
     - type: Sphere
@@ -123,6 +129,9 @@ scene:
         texture:
           type: Image
           path: "Assets/Marble.jpg"
+        normals:
+          type: Image
+          path: "Assets/MarbleNormals.jpg"
 
     # Glass sphere on front-left
     - type: Sphere
@@ -146,6 +155,9 @@ scene:
         texture:
           type: Image
           path: "Assets/Asphalt.jpg"
+        normals:
+          type: Image
+          path: "Assets/AsphaltNormals.jpg"
 
     # Front cube with example texture
     - type: Box

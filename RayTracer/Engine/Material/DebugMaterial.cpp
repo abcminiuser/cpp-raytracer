@@ -5,7 +5,7 @@
 #include "Engine/Vector.hpp"
 
 DebugMaterial::DebugMaterial(Mode mode)
-	: Material(nullptr)
+	: Material(nullptr, nullptr)
 	, m_mode(mode)
 {
 

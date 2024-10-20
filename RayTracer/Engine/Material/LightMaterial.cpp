@@ -4,8 +4,8 @@
 #include "Engine/Texture.hpp"
 #include "Engine/Vector.hpp"
 
-LightMaterial::LightMaterial(std::shared_ptr<Texture> texture)
-	: Material(std::move(texture))
+LightMaterial::LightMaterial(std::shared_ptr<Texture> texture, std::shared_ptr<Texture> normals)
+	: Material(std::move(texture), std::move(normals))
 {
 
 }

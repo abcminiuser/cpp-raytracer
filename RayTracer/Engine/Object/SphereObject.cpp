@@ -43,10 +43,12 @@ double SphereObject::intersectWith(const Ray& ray) const
 	}
 }
 
-void SphereObject::getIntersectionProperties(const Vector& position, Vector& normal, Vector& uv) const
+void SphereObject::getIntersectionProperties(const Vector& position, Vector& normal, Vector& tangent, Vector& bitangent, Vector& uv) const
 {
-	normal	= position.unit();
-	uv		= uvAt(position, normal);
+	normal		= position.unit();
+	tangent		= Vector(2 * std::numbers::pi * position.z(), 0, -2 * std::numbers::pi * position.x());
+	bitangent	= normal.crossProduct(tangent);
+	uv			= uvAt(position, normal);
 }
 
 Vector SphereObject::uvAt(const Vector& position, const Vector& normal) const

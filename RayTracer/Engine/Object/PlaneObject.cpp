@@ -26,10 +26,12 @@ double PlaneObject::intersectWith(const Ray& ray) const
 	return -b / angle;
 }
 
-void PlaneObject::getIntersectionProperties(const Vector& position, Vector& normal, Vector& uv) const
+void PlaneObject::getIntersectionProperties(const Vector& position, Vector& normal, Vector& tangent, Vector& bitangent, Vector& uv) const
 {
-	normal	= m_normal;
-	uv		= uvAt(position, normal);
+	normal		= m_normal;
+	tangent		= StandardVectors::kUnitX;
+	bitangent	= StandardVectors::kUnitZ;
+	uv			= uvAt(position, normal);
 }
 
 Vector PlaneObject::uvAt(const Vector& position, const Vector& normal) const

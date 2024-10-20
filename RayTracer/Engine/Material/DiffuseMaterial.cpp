@@ -4,8 +4,8 @@
 #include "Engine/Texture.hpp"
 #include "Engine/Vector.hpp"
 
-DiffuseMaterial::DiffuseMaterial(std::shared_ptr<Texture> texture)
-	: Material(std::move(texture))
+DiffuseMaterial::DiffuseMaterial(std::shared_ptr<Texture> texture, std::shared_ptr<Texture> normals)
+	: Material(std::move(texture), std::move(normals))
 {
 
 }
