@@ -56,7 +56,7 @@ target_include_directories (RayTracer PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries (RayTracer PRIVATE
 	sfml-graphics
 	fkYAML::fkYAML
-	objloader::objloader
+	objl::objl
 )
 target_compile_features (RayTracer PUBLIC cxx_std_20)
 

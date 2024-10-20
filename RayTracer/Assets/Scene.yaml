@@ -71,7 +71,8 @@ scene:
       rotation: Zero
       radius: 1.0
       material:
-        type: Diffuse
+        type: Reflective
+        polish: 0.90
         texture:
           type: Solid
           color: Red
@@ -82,7 +83,8 @@ scene:
       rotation: Zero
       radius: 1.0
       material:
-        type: Diffuse
+        type: Reflective
+        polish: 0.90
         texture:
           type: Solid
           color: Blue
@@ -93,7 +95,8 @@ scene:
       rotation: Zero
       radius: 1.0
       material:
-        type: Diffuse
+        type: Reflective
+        polish: 0.90
         texture:
           type: Solid
           color: Green
@@ -114,7 +117,7 @@ scene:
     - type: Sphere
       position: Vector(-6, 0, 0)
       rotation: Zero
-      radius: 1.0
+      radius: 1.2
       material:
         type: Diffuse
         texture:
@@ -133,17 +136,16 @@ scene:
           type: Solid
           color: White
 
-  # Rear reflective cube
+  # Asphalt box on back-right
     - type: Box
-      position: Vector(0, 0, 6)
+      position: Vector(8, 0, 8)
       rotation: Zero
-      size: Vector(2, 2, 2)
-      polish: 1.0
+      size: Vector(3, 2, 2)
       material:
-        type: Reflective
+        type: Diffuse
         texture:
-          type: Solid
-          color: White
+          type: Image
+          path: "Assets/Asphalt.jpg"
 
   # Front cube with example texture
     - type: Box
@@ -158,8 +160,8 @@ scene:
 
   # Teapot
     - type: Mesh
-      position: Vector(8, 0, 8)
-      rotation: VectorDegrees(0, 45, 0)
+      position: Vector(0, 0, 6)
+      rotation: VectorDegrees(0, 50, 0)
       size: Vector(1, 1, 1)
       path: "Assets/Teapot.obj"
       scale: 1.0

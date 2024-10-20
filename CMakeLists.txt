@@ -4,9 +4,9 @@ set (CMAKE_CONFIGURATION_TYPES Debug Release)
 
 project ("RayTracer")
 
-add_library(objloader INTERFACE)
-target_include_directories (objloader INTERFACE Vendor/OBJ-Loader/Source)
-add_library(objloader::objloader ALIAS objloader)
+add_library(objl INTERFACE)
+target_include_directories (objl INTERFACE Vendor/OBJ-Loader/Source)
+add_library(objl::objl ALIAS objl)
 
 add_subdirectory ("RayTracer")
 
