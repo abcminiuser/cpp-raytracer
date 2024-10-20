@@ -269,16 +269,21 @@ namespace
 		return std::make_shared<SolidTexture>(color);
 	}
 
-	std::shared_ptr<Texture> ParseTexture(const fkyaml::node& node)
+	std::shared_ptr<Texture> ParseTexture(const fkyaml::node& node, const std::string& property)
 	{
-		const auto type = node.at("type").get_value<std::string>();
+		if (! node.contains(property))
+			return nullptr;
+
+		const auto textureNode = node.at(property);
+
+		const auto type = textureNode.at("type").get_value<std::string>();
 
 		if (type == "Checkerboard")
-			return ParseCheckerboardTexture(node);
+			return ParseCheckerboardTexture(textureNode);
 		else if (type == "Image")
-			return ParseImageTexture(node);
+			return ParseImageTexture(textureNode);
 		else if (type == "Solid")
-			return ParseSolidTexture(node);
+			return ParseSolidTexture(textureNode);
 		else
 			throw std::runtime_error("Unknown texture type '" + type + "' specified in scene YAML file");
 	}
@@ -297,7 +302,7 @@ namespace
 
 	std::shared_ptr<Material> ParseDielectricMaterial(const fkyaml::node& node)
 	{
-		auto texture			= ParseTexture(node["texture"]);
+		auto texture			= ParseTexture(node, "texture");
 		auto refractionIndex	= ParseDouble(node, "refractionIndex").value_or(1.0);
 
 		return std::make_shared<DielectricMaterial>(std::move(texture), refractionIndex);
@@ -305,21 +310,21 @@ namespace
 
 	std::shared_ptr<Material> ParseDiffuseMaterial(const fkyaml::node& node)
 	{
-		auto texture			= ParseTexture(node["texture"]);
+		auto texture			= ParseTexture(node, "texture");
 
 		return std::make_shared<DiffuseMaterial>(std::move(texture));
 	}
 
 	std::shared_ptr<Material> ParseLightMaterial(const fkyaml::node& node)
 	{
-		auto texture 			= ParseTexture(node["texture"]);
+		auto texture			= ParseTexture(node, "texture");
 
 		return std::make_shared<LightMaterial>(std::move(texture));
 	}
 
 	std::shared_ptr<Material> ParseReflectiveMaterial(const fkyaml::node& node)
 	{
-		auto texture			= ParseTexture(node["texture"]);
+		auto texture			= ParseTexture(node, "texture");
 		auto polish				= ParseDouble(node, "polish").value_or(1.0);
 
 		return std::make_shared<ReflectiveMaterial>(std::move(texture), polish);
