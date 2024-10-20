@@ -18,9 +18,12 @@ Vector Material::mapNormal(const Vector& normal, const Vector& tangent, const Ve
 	if (! m_normals)
 		return normal;
 
-	const auto mappedNormal = m_normals->sample(uv.x(), uv.y());
+	// https://medium.com/@muhammedcan.erbudak/ray-tracing-from-scratch-texture-normal-bump-mapping-22ece96038bf
 
-	Matrix<3, 3> mappingMatrix
+	const auto mappedNormal = m_normals->sample(uv.x(), uv.y());
+	const auto mappedNormalVector = Vector(mappedNormal.red() * 2 - 1, mappedNormal.green() * 2 - 1, mappedNormal.blue() * 2 - 1);
+
+	const Matrix<3, 3> mappingMatrix
 		(
 			std::array
 			{
@@ -42,9 +45,8 @@ Vector Material::mapNormal(const Vector& normal, const Vector& tangent, const Ve
 			}
 		);
 
-	return mappingMatrix.multiply(Vector(mappedNormal.red() * 2 - 1, mappedNormal.green() * 2 - 1, mappedNormal.blue() * 2 - 1)).toVector().unit();
+	return mappingMatrix.multiply(mappedNormalVector).toVector().unit();
 }
-
 
 Color Material::illuminate(const Scene& scene, const Ray& sourceRay, const Vector& position, const Vector& normal, const Vector& uv, uint32_t rayDepthRemaining)
 {

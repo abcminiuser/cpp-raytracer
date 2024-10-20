@@ -113,8 +113,8 @@ void MeshObject::getIntersectionProperties(const Vector& position, Vector& norma
 				const Vector mix = interpolate(position, v0, v1, v2);
 
 				normal		= normalAt(v0, v1, v2, mix);
-				tangent		= v1.position.subtract(v0.position);
-				bitangent	= v2.position.subtract(v1.position);
+				tangent		= v1.position.subtract(v0.position).unit();
+				bitangent	= v2.position.subtract(v1.position).unit();
 				uv			= uvAt(v0, v1, v2, mix);
 
 				found = true;
