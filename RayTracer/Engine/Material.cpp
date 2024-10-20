@@ -14,7 +14,7 @@ Material::Material(std::shared_ptr<Texture> texture)
 Color Material::illuminate(const Scene& scene, const Ray& sourceRay, const Vector& position, const Vector& normal, const Vector& uv, uint32_t rayDepthRemaining)
 {
 	if (scene.maxRayDepth == 1)
-		return m_texture->colorAt(uv.x(), uv.y());
+		return m_texture->sample(uv.x(), uv.y());
 
 	Color finalColor = emit(sourceRay.direction(), position, normal, uv);
 

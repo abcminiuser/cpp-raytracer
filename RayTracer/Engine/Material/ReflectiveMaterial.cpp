@@ -32,6 +32,6 @@ std::optional<Ray> ReflectiveMaterial::scatter(const Vector& incident, const Vec
 	if (reflectionDirection.dotProduct(normal) < 0)
 		return std::nullopt;
 
-	attenuation = m_texture->colorAt(uv.x(), uv.y());
+	attenuation = m_texture->sample(uv.x(), uv.y());
 	return Ray(position, reflectionDirection);
 }

@@ -41,6 +41,7 @@ add_executable (RayTracer
     "Engine/Object/MeshObject.cpp"
     "Engine/Object/PlaneObject.cpp"
     "Engine/Object/SphereObject.cpp"
+    "Engine/Texture.cpp"
     "Engine/Texture/CheckerboardTexture.cpp"
     "Engine/Texture/ImageTexture.cpp"
     "Engine/Texture/SolidTexture.cpp"

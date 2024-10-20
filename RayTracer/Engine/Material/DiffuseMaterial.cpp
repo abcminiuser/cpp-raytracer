@@ -22,6 +22,6 @@ std::optional<Ray> DiffuseMaterial::scatter(const Vector& incident, const Vector
 		randomHemisphereDirection = normal;
 
 	// Lambertian diffusion; always scatter.
-	attenuation = m_texture->colorAt(uv.x(), uv.y());
+	attenuation = m_texture->sample(uv.x(), uv.y());
 	return Ray(position, normal.add(randomHemisphereDirection).unit());
 }
