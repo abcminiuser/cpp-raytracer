@@ -2,18 +2,25 @@
 
 #include "Engine/Texture.hpp"
 
-CheckerboardTexture::CheckerboardTexture(const Color& color1, const Color& color2, uint8_t rowsCols)
-	: m_color1(color1)
+namespace
+{
+	constexpr auto kVirtualTextureSize = 64;
+}
+
+CheckerboardTexture::CheckerboardTexture(Interpolation interpolation, const Color& color1, const Color& color2, uint8_t rowsCols)
+	: Texture(rowsCols * kVirtualTextureSize, rowsCols * kVirtualTextureSize, interpolation)
+	, m_color1(color1)
 	, m_color2(color2)
-	, m_rowsCols(rowsCols)
 {
 
 }
 
-Color CheckerboardTexture::colorAt(double u, double v) const
+Color CheckerboardTexture::colorAt(size_t x, size_t y) const
 {
-	const auto row = static_cast<uint8_t>(u * m_rowsCols);
-	const auto col = static_cast<uint8_t>(v * m_rowsCols);
+	// We use a larger (virtual) texture size, so that we don't end up with a
+	// blurry mess when interpolation is applied.
+	x /= kVirtualTextureSize;
+	y /= kVirtualTextureSize;
 
-	return ((row ^ col) & 1) ? m_color1 : m_color2;
+	return ((x ^ y) & 1) ? m_color1 : m_color2;
 }

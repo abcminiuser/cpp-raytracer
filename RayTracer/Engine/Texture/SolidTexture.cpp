@@ -3,12 +3,13 @@
 #include "Engine/Texture.hpp"
 
 SolidTexture::SolidTexture(const Color& color)
-	: m_color(color)
+	: Texture(1, 1, Interpolation::NearestNeighbor)
+	, m_color(color)
 {
 
 }
 
-Color SolidTexture::colorAt(double u, double v) const
+Color SolidTexture::colorAt(size_t x, size_t y) const
 {
 	return m_color;
 }

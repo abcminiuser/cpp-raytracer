@@ -6,7 +6,7 @@
 #include "Engine/Texture/CheckerboardTexture.hpp"
 
 Material::Material(std::shared_ptr<Texture> texture)
-	: m_texture(texture ? std::move(texture) : std::make_shared<CheckerboardTexture>(Palette::kWhite, Palette::kWhite.scale(.5), 10))
+	: m_texture(texture ? std::move(texture) : std::make_shared<CheckerboardTexture>(Texture::Interpolation::NearestNeighbor, Palette::kWhite, Palette::kWhite.scale(.5), 10))
 {
 
 }

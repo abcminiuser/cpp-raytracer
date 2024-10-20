@@ -5,20 +5,17 @@
 #include <cmath>
 #include <stdexcept>
 
-ImageTexture::ImageTexture(size_t width, size_t height, const uint32_t* pixels, Color multiplier)
-	: m_width(width)
-	, m_height(height)
+ImageTexture::ImageTexture(size_t width, size_t height, Interpolation interpolation, const uint32_t* pixels, Color multiplier)
+	: Texture(width, height, interpolation)
 	, m_pixels(&pixels[0], &pixels[width * height])
 	, m_multiplier(multiplier)
 {
-	if (! m_width || ! m_height || ! pixels)
+	if (! width || ! height || ! pixels)
 		throw std::runtime_error("Image texture create with invalid image parameters.");
 }
 
-Color ImageTexture::colorAt(double u, double v) const
+Color ImageTexture::colorAt(size_t x, size_t y) const
 {
-	size_t x = static_cast<size_t>(u * (m_width - 1));
-	size_t y = static_cast<size_t>((1 - v) * (m_height - 1));
-
+	y = (m_height - 1) - y;
 	return Color::FromPackedRGBA(m_pixels[(y * m_width) + x]).multiply(m_multiplier);
 }

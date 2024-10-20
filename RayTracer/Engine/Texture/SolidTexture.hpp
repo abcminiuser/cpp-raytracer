@@ -12,7 +12,7 @@ public:
 
 // Texture i/f:
 public:
-	Color	colorAt(double u, double v) const override;
+	Color	colorAt(size_t x, size_t y) const override;
 
 private:
 	Color	m_color;

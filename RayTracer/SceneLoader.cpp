@@ -61,7 +61,7 @@ namespace
 		return value;
 	}
 
-	std::shared_ptr<ImageTexture> MakeImageTexture(const std::string& path, const Color& multiplier)
+	std::shared_ptr<ImageTexture> MakeImageTexture(const std::string& path, Texture::Interpolation interpolation, const Color& multiplier)
 	{
 		sf::Image imageTexture;
 		if (! imageTexture.loadFromFile(path))
@@ -70,7 +70,7 @@ namespace
 		const auto	dimensions	= imageTexture.getSize();
 		const auto* pixels		= imageTexture.getPixelsPtr();
 
-		return std::make_shared<ImageTexture>(dimensions.x, dimensions.y, reinterpret_cast<const uint32_t*>(pixels), multiplier);
+		return std::make_shared<ImageTexture>(dimensions.x, dimensions.y, interpolation, reinterpret_cast<const uint32_t*>(pixels), multiplier);
 	}
 
 	std::shared_ptr<Mesh> MaskObjectMesh(const std::string& path, double scale)
@@ -195,6 +195,24 @@ namespace
 		throw std::runtime_error("Unknown vector type '" + value + "' specified in scene YAML file");
 	}
 
+	std::optional<Texture::Interpolation> ParseInterpolation(const fkyaml::node& node, const std::string& property)
+	{
+		if (! node.contains(property))
+			return std::nullopt;
+
+		std::string value = TrimWhitespace(node[property].get_value<std::string>());
+
+		static const std::map<std::string, Texture::Interpolation> kKnownNames
+			{
+				{ "NearestNeighbor", Texture::Interpolation::NearestNeighbor },
+				{ "Bilinear", Texture::Interpolation::Bilinear },
+			};
+		if (kKnownNames.contains(value))
+			return kKnownNames.at(value);
+
+		throw std::runtime_error("Unknown interpolation type '" + value + "' specified in scene YAML file");
+	}
+
 	std::optional<double> ParseDouble(const fkyaml::node& node, const std::string& property)
 	{
 		if (! node.contains(property))
@@ -230,16 +248,18 @@ namespace
 		auto color1				= ParseColor(node, "color1").value_or(Palette::kMagenta);
 		auto color2				= ParseColor(node, "color2").value_or(Palette::kYellow);
 		auto rowsCols			= ParseDouble(node, "rowsCols").value_or(2);
+		auto interpolation		= ParseInterpolation(node, "interpolation").value_or(Texture::Interpolation::Bilinear);
 
-		return std::make_shared<CheckerboardTexture>(color1, color2, static_cast<uint8_t>(rowsCols));
+		return std::make_shared<CheckerboardTexture>(interpolation, color1, color2, static_cast<uint8_t>(rowsCols));
 	}
 
 	std::shared_ptr<Texture> ParseImageTexture(const fkyaml::node& node)
 	{
 		auto path				= node.at("path").get_value<std::string>();
 		auto multiplier			= ParseColor(node, "multiplier").value_or(Palette::kWhite);
+		auto interpolation		= ParseInterpolation(node, "interpolation").value_or(Texture::Interpolation::Bilinear);
 
-		return MakeImageTexture(path, multiplier);
+		return MakeImageTexture(path, interpolation, multiplier);
 	}
 
 	std::shared_ptr<Texture> ParseSolidTexture(const fkyaml::node& node)

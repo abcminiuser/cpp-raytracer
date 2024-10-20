@@ -11,16 +11,14 @@ class ImageTexture final
 	: public Texture
 {
 public:
-							ImageTexture(size_t width, size_t height, const uint32_t* pixels, Color multiplier = Color(1, 1, 1));
+							ImageTexture(size_t width, size_t height, Interpolation interpolation, const uint32_t* pixels, Color multiplier = Color(1, 1, 1));
 							~ImageTexture() override = default;
 
 // Texture i/f:
 public:
-	Color					colorAt(double u, double v) const override;
+	Color					colorAt(size_t x, size_t y) const override;
 
 private:
-	size_t					m_width;
-	size_t					m_height;
 	std::vector<uint32_t>	m_pixels;
 	Color					m_multiplier;
 };
