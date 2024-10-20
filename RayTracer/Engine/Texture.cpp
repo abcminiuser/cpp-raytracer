@@ -1,6 +1,7 @@
 #include "Engine/Texture.hpp"
 
 #include <algorithm>
+#include <cassert>
 #include <cmath>
 
 Texture::Texture(size_t width, size_t height, Interpolation interpolation)
@@ -13,6 +14,22 @@ Texture::Texture(size_t width, size_t height, Interpolation interpolation)
 
 Color Texture::sample(double u, double v) const
 {
+	// Wrap U coordinate in both directions to be between [0, 1]
+    if (u < 0)
+        u -= -1 + std::ceil(u);
+	else
+		u -= std::floor(u);
+
+	// Wrap V coordinate in both directions to be between [0, 1]
+    if (v < 0)
+        v -= -1 + std::ceil(v);
+	else
+		v -= std::floor(v);
+
+	assert(u == std::clamp(u, 0.0, 1.0));
+	assert(v == std::clamp(v, 0.0, 1.0));
+
+	// Convert to pixel X/Y texture coordinate.
 	double x = (m_width - 1) * u;
 	double y = (m_height - 1) * v;
 

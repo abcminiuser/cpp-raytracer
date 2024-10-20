@@ -52,7 +52,7 @@ scene:
           type: Solid
           color: White
 
-   # Checkerboard sphere in "V" group of spheres
+    # Checkerboard sphere in "V" group of spheres
     - type: Sphere
       position: Vector(-2, 0, 2)
       rotation: VectorDegrees(15, 15, 15)
@@ -65,7 +65,7 @@ scene:
           color2: Yellow
           rowsCols: 8
 
-   # Red sphere in "V" group of spheres
+    # Red sphere in "V" group of spheres
     - type: Sphere
       position: Vector(0, 0, 0)
       rotation: Zero
@@ -77,7 +77,7 @@ scene:
           type: Solid
           color: Red
 
-   # Green sphere in "V" group of spheres
+    # Green sphere in "V" group of spheres
     - type: Sphere
       position: Vector(2, 0, 2)
       rotation: Zero
@@ -89,7 +89,7 @@ scene:
           type: Solid
           color: Blue
 
-   # Blue sphere in "V" group of spheres
+    # Blue sphere in "V" group of spheres
     - type: Sphere
       position: Vector(4, 0, 4)
       rotation: Zero
@@ -101,7 +101,7 @@ scene:
           type: Solid
           color: Green
 
-   # Wooden slightly reflective sphere on right
+    # Wooden slightly reflective sphere on right
     - type: Sphere
       position: Vector(6, 0, 0)
       rotation: Zero
@@ -113,7 +113,7 @@ scene:
           type: Image
           path: "Assets/Wood.jpg"
 
-   # Marble sphere on left
+    # Marble sphere on left
     - type: Sphere
       position: Vector(-6, 0, 0)
       rotation: Zero
@@ -124,7 +124,7 @@ scene:
           type: Image
           path: "Assets/Marble.jpg"
 
-   # Glass sphere on front-left
+    # Glass sphere on front-left
     - type: Sphere
       position: Vector(-3, 0, -3)
       rotation: Zero
@@ -136,7 +136,7 @@ scene:
           type: Solid
           color: White
 
-  # Asphalt box on back-right
+    # Asphalt box on back-right
     - type: Box
       position: Vector(8, 0, 8)
       rotation: Zero
@@ -147,7 +147,7 @@ scene:
           type: Image
           path: "Assets/Asphalt.jpg"
 
-  # Front cube with example texture
+    # Front cube with example texture
     - type: Box
       position: Vector(1, 0, -4)
       rotation: VectorDegrees(0, 45, 0)
@@ -158,7 +158,7 @@ scene:
           type: Image
           path: "Assets/Cube.png"
 
-  # Teapot
+    # Teapot
     - type: Mesh
       position: Vector(0, 0, 6)
       rotation: VectorDegrees(0, 50, 0)
