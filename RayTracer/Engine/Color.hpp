@@ -3,16 +3,9 @@
 #include <algorithm>
 #include <stdint.h>
 #include <string>
-#include <tuple>
 
-struct Color
+struct Color final
 {
-private:
-	constexpr auto			tied() const
-	{
-		return std::tie(m_red, m_green, m_blue);
-	}
-
 public:
 	static constexpr Color	FromComponentRGB(uint8_t r, uint8_t g, uint8_t b)
 	{
@@ -38,10 +31,7 @@ public:
 
 	}
 
-	constexpr bool			operator==(const Color& other) const
-	{
-		return tied() == other.tied();
-	}
+	constexpr bool			operator==(const Color& other) const = default;
 
 	constexpr Color&		operator+=(const Color& other)
 	{

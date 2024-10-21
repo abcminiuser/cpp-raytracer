@@ -5,16 +5,9 @@
 #include <algorithm>
 #include <cmath>
 #include <string>
-#include <tuple>
 
-struct Vector
+struct Vector final
 {
-private:
-	constexpr auto		tied() const
-	{
-		return std::tie(m_x, m_y, m_z);
-	}
-
 public:
 	constexpr			Vector() = default;
 
@@ -26,20 +19,7 @@ public:
 
 	}
 
-	constexpr			Vector(const Vector& other)
-		: m_x(other.m_x)
-		, m_y(other.m_y)
-		, m_z(other.m_z)
-	{
-
-	}
-
-	constexpr Vector&	operator=(const Vector& other) = default;
-
-	constexpr bool		operator==(const Vector& other) const
-	{
-		return tied() == other.tied();
-	}
+	constexpr bool		operator==(const Vector& other) const = default;
 
 	constexpr Vector&	operator+=(const Vector& other)
 	{
@@ -163,28 +143,22 @@ public:
 		return (m_x * other.m_x) + (m_y * other.m_y) + (m_z * other.m_z);
 	}
 
-	constexpr double	lengthSquared() const
-	{
-		if (! m_lengthSquared)
-			m_lengthSquared = (m_x * m_x) + (m_y * m_y) + (m_z * m_z);
-
-		return m_lengthSquared;
-	}
-
-	constexpr double	length() const
-	{
-		if (! m_length)
-			m_length = std::sqrt(lengthSquared());
-
-		return m_length;
-	}
-
 	constexpr Vector	inverted() const
 	{
 		return Vector(-m_x, -m_y, -m_z);
 	}
 
-	constexpr Vector	unit() const
+	constexpr double	lengthSquared() const
+	{
+		return (m_x * m_x) + (m_y * m_y) + (m_z * m_z);
+	}
+
+	double				length() const
+	{
+		return std::sqrt(lengthSquared());
+	}
+
+	Vector				unit() const
 	{
 		return *this / length();
 	}
@@ -199,10 +173,6 @@ private:
 	double				m_x = 0;
 	double				m_y = 0;
 	double				m_z = 0;
-
-private:
-	mutable double		m_lengthSquared = 0;
-	mutable double		m_length = 0;
 };
 
 namespace VectorUtils
@@ -225,12 +195,12 @@ namespace VectorUtils
 		);
 	}
 
-	static inline constexpr double	MinComponent(const Vector& v)
+	static inline constexpr double MinComponent(const Vector& v)
 	{
 		return std::min(std::min(v.x(), v.y()), v.z());
 	}
 
-	static inline constexpr double	MaxComponent(const Vector& v)
+	static inline constexpr double MaxComponent(const Vector& v)
 	{
 		return std::max(std::max(v.x(), v.y()), v.z());
 	}
