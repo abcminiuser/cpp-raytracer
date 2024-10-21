@@ -25,5 +25,7 @@ private:
 
 private:
 	Vector		m_normal;
+	Vector		m_tangent;
+	Vector		m_bitangent;
 	double		m_uvScaleFactor;
 };

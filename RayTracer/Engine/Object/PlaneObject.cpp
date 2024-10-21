@@ -8,7 +8,11 @@ PlaneObject::PlaneObject(std::shared_ptr<Material> material, const Vector& norma
 	, m_normal(normal)
 	, m_uvScaleFactor(uvScaleFactor)
 {
+	m_tangent = StandardVectors::kUnitX.crossProduct(normal).unit();
+	if (m_tangent.length() == 0)
+		m_tangent = StandardVectors::kUnitZ.crossProduct(normal).unit();
 
+	m_bitangent = m_normal.crossProduct(m_tangent);
 }
 
 double PlaneObject::intersectWith(const Ray& ray) const
@@ -29,8 +33,8 @@ double PlaneObject::intersectWith(const Ray& ray) const
 void PlaneObject::getIntersectionProperties(const Vector& position, Vector& normal, Vector& tangent, Vector& bitangent, Vector& uv) const
 {
 	normal		= m_normal;
-	tangent		= StandardVectors::kUnitX;
-	bitangent	= StandardVectors::kUnitZ;
+	tangent		= m_tangent;
+	bitangent	= m_bitangent;
 	uv			= uvAt(position, normal);
 }
 
@@ -38,11 +42,8 @@ Vector PlaneObject::uvAt(const Vector& position, const Vector& normal) const
 {
 	const auto positionFromOrigin = position * m_uvScaleFactor;
 
-	auto u = positionFromOrigin.x();
-	auto v = positionFromOrigin.z();
-
-	u -= std::floor(u);
-	v -= std::floor(v);
+	auto u = m_tangent.dotProduct(positionFromOrigin);
+	auto v = m_bitangent.dotProduct(positionFromOrigin);
 
 	return Vector(u, v, 0);
 }
