@@ -227,12 +227,12 @@ namespace VectorUtils
 
 	static inline constexpr double	MinComponent(const Vector& v)
 	{
-		return std::min({ v.x(), v.y(), v.z() });
+		return std::min(std::min(v.x(), v.y()), v.z());
 	}
 
 	static inline constexpr double	MaxComponent(const Vector& v)
 	{
-		return std::max({ v.x(), v.y(), v.z() });
+		return std::max(std::max(v.x(), v.y()), v.z());
 	}
 
 	static inline Vector RandomUnitVector()
