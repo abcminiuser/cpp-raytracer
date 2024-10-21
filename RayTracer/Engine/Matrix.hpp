@@ -23,17 +23,18 @@ public:
 
 	}
 
-	constexpr								Matrix(const Vector& vector)
-		requires (ROWS == 3 && COLS == 1)
-		: m_elements({ vector.x(), vector.y(), vector.z() })
-	{
-
-	}
-
-	constexpr Matrix<3, 1>					multiply(const Vector& vector) const
+	constexpr Vector						multiply(const Vector& vector) const
 		requires (ROWS == 3)
 	{
-		return multiply(Matrix<3, 1>(vector));
+		const double x = vector.x();
+		const double y = vector.y();
+		const double z = vector.z();
+
+		return Vector(
+			operator()(0, 0) * x + operator()(0, 1) * y + operator()(0, 2) * z,
+			operator()(1, 0) * x + operator()(1, 1) * y + operator()(1, 2) * z,
+			operator()(2, 0) * x + operator()(2, 1) * y + operator()(2, 2) * z
+		);
 	}
 
 	template <size_t OTHERCOLS>
@@ -61,12 +62,6 @@ public:
 	constexpr inline const double&			operator()(size_t row, size_t col) const
 	{
 		return m_elements[row * COLS + col];
-	}
-
-	constexpr Vector						toVector() const
-		requires (ROWS == 3 && COLS == 1)
-	{
-		return Vector(m_elements[0], m_elements[1], m_elements[2]);
 	}
 
 private:

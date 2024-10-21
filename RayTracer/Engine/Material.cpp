@@ -30,7 +30,7 @@ Vector Material::mapNormal(const Vector& normal, const Vector& tangent, const Ve
 			tangent.z(), bitangent.z(), normal.z()
 		});
 
-	return mappingMatrix.multiply(mappedNormalVector).toVector().unit();
+	return mappingMatrix.multiply(mappedNormalVector).unit();
 }
 
 Color Material::illuminate(const Scene& scene, const Ray& sourceRay, const Vector& position, const Vector& normal, const Vector& uv, uint32_t rayDepthRemaining)

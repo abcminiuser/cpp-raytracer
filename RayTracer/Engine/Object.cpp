@@ -50,5 +50,5 @@ Color Object::illuminate(const Scene& scene, const Ray& ray, const Vector& posit
 
 Vector Object::rotate(const Vector& vector, const Matrix<3, 3>& rotation) const
 {
-	return m_hasRotation ? rotation.multiply(vector).toVector() : vector;
+	return m_hasRotation ? rotation.multiply(vector) : vector;
 }

@@ -201,7 +201,7 @@ void Viewer::view(const std::string& path)
 								{ sf::Keyboard::Key::L, MatrixUtils::RotationMatrix(Vector(0, kRotateDelta, 0)) },
 							};
 
-						scene->camera.setDirection(cameraRotateAmount.at(event.key.code).multiply(scene->camera.direction()).toVector().unit());
+						scene->camera.setDirection(cameraRotateAmount.at(event.key.code).multiply(scene->camera.direction()).unit());
 
 						nextRenderType = RenderType::CoarsePreview;
 						sceneUpdatePending = true;
@@ -219,7 +219,7 @@ void Viewer::view(const std::string& path)
 								{ sf::Keyboard::Key::O, MatrixUtils::RotationMatrix(Vector(-kRotateDelta, 0, 0)) },
 							};
 
-						scene->camera.setOrientation(cameraRotateAmount.at(event.key.code).multiply(scene->camera.orientation()).toVector().unit());
+						scene->camera.setOrientation(cameraRotateAmount.at(event.key.code).multiply(scene->camera.orientation()).unit());
 
 						nextRenderType = RenderType::CoarsePreview;
 						sceneUpdatePending = true;
