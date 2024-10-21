@@ -61,7 +61,7 @@ namespace
 		return value;
 	}
 
-	std::shared_ptr<ImageTexture> MakeImageTexture(const std::string& path, Texture::Interpolation interpolation, const Color& multiplier)
+	std::shared_ptr<ImageTexture> MakeImageTexture(const std::string& path, const Color& multiplier, Texture::Interpolation interpolation)
 	{
 		sf::Image imageTexture;
 		if (! imageTexture.loadFromFile(path))
@@ -70,7 +70,7 @@ namespace
 		const auto	dimensions	= imageTexture.getSize();
 		const auto* pixels		= imageTexture.getPixelsPtr();
 
-		return std::make_shared<ImageTexture>(dimensions.x, dimensions.y, interpolation, reinterpret_cast<const uint32_t*>(pixels), multiplier);
+		return std::make_shared<ImageTexture>(dimensions.x, dimensions.y, multiplier, interpolation, reinterpret_cast<const uint32_t*>(pixels));
 	}
 
 	std::shared_ptr<Mesh> MaskObjectMesh(const std::string& path, double scale)
@@ -259,7 +259,7 @@ namespace
 		auto multiplier			= ParseColor(node, "multiplier").value_or(Palette::kWhite);
 		auto interpolation		= ParseInterpolation(node, "interpolation").value_or(Texture::Interpolation::Bilinear);
 
-		return MakeImageTexture(path, interpolation, multiplier);
+		return MakeImageTexture(path, multiplier, interpolation);
 	}
 
 	std::shared_ptr<Texture> ParseSolidTexture(const fkyaml::node& node)

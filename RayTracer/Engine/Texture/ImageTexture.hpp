@@ -11,7 +11,7 @@ class ImageTexture final
 	: public Texture
 {
 public:
-							ImageTexture(size_t width, size_t height, Interpolation interpolation, const uint32_t* pixels, Color multiplier = Color(1, 1, 1));
+							ImageTexture(size_t width, size_t height, const Color& multiplier, Interpolation interpolation, const uint32_t* pixels);
 							~ImageTexture() override = default;
 
 // Texture i/f:

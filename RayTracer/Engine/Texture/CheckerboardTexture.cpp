@@ -8,7 +8,7 @@ namespace
 }
 
 CheckerboardTexture::CheckerboardTexture(Interpolation interpolation, const Color& color1, const Color& color2, uint8_t rowsCols)
-	: Texture(rowsCols * kVirtualTextureSize, rowsCols * kVirtualTextureSize, interpolation)
+	: Texture(rowsCols * kVirtualTextureSize, rowsCols * kVirtualTextureSize, Palette::kWhite, interpolation)
 	, m_color1(color1)
 	, m_color2(color2)
 {

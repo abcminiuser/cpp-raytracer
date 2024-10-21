@@ -3,7 +3,7 @@
 #include "Engine/Texture.hpp"
 
 SolidTexture::SolidTexture(const Color& color)
-	: Texture(1, 1, Interpolation::NearestNeighbor)
+	: Texture(1, 1, Palette::kWhite, Interpolation::NearestNeighbor)
 	, m_color(color)
 {
 
