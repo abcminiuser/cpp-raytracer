@@ -43,9 +43,9 @@ public:
 
 		for (size_t i = 0; i < ROWS; i++)
 		{
-			for (size_t j = 0; j < OTHERCOLS; j++)
+			for (size_t k = 0; k < COLS; k++)
 			{
-				for (size_t k = 0; k < COLS; k++)
+				for (size_t j = 0; j < OTHERCOLS; j++)
 					result(i, j) += operator()(i, k) * other(k, j);
 			}
 		}
