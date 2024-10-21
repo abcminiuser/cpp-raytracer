@@ -22,8 +22,8 @@ double MeshObject::intersectWith(const Ray& ray) const
 		{
 			// Check if the ray intersects this node's bounding box.
 
-			const auto t1 = (lowerCorner - ray.position()) * ray.directionInverse();
-			const auto t2 = (upperCorner - ray.position()) * ray.directionInverse();
+			const Vector t1 = (lowerCorner - ray.position()) * ray.directionInverse();
+			const Vector t2 = (upperCorner - ray.position()) * ray.directionInverse();
 
 			const Vector minPoint = VectorUtils::MinPoint(t1, t2);
 			const Vector maxPoint = VectorUtils::MaxPoint(t1, t2);
@@ -60,9 +60,9 @@ double MeshObject::intersectWith(const Ray& ray) const
 			{
 				const auto& [p0, p1, p2] = triangle;
 
-				const auto& v0 = vertices[p0];
-				const auto& v1 = vertices[p1];
-				const auto& v2 = vertices[p2];
+				const Vertex& v0 = vertices[p0];
+				const Vertex& v1 = vertices[p1];
+				const Vertex& v2 = vertices[p2];
 
 				distance = std::min(distance, intersectWith(ray, v0, v1, v2));
 			}
@@ -103,9 +103,9 @@ void MeshObject::getIntersectionProperties(const Vector& position, Vector& norma
 			{
 				const auto& [p0, p1, p2] = triangle;
 
-				const auto& v0 = vertices[p0];
-				const auto& v1 = vertices[p1];
-				const auto& v2 = vertices[p2];
+				const Vertex& v0 = vertices[p0];
+				const Vertex& v1 = vertices[p1];
+				const Vertex& v2 = vertices[p2];
 
 				if (! pointOn(position, v0, v1, v2))
 					continue;
