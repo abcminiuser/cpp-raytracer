@@ -36,40 +36,117 @@ public:
 
 	constexpr Vector&	operator=(const Vector& other) = default;
 
-	constexpr double	lengthSquared() const
+	constexpr bool		operator==(const Vector& other) const
 	{
-		if (! m_lengthSquared)
-			m_lengthSquared = (m_x * m_x) + (m_y * m_y) + (m_z * m_z);
-
-		return m_lengthSquared;
+		return tied() == other.tied();
 	}
 
-	constexpr double	length() const
+	constexpr Vector&	operator+=(const Vector& other)
 	{
-		if (! m_length)
-			m_length = std::sqrt(lengthSquared());
+		m_x += other.m_x;
+		m_y += other.m_y;
+		m_z += other.m_z;
 
-		return m_length;
+		return *this;
 	}
 
-	constexpr Vector	add(const Vector& other) const
+	constexpr Vector&	operator-=(const Vector& other)
 	{
-		return Vector(m_x + other.m_x, m_y + other.m_y, m_z + other.m_z);
+		m_x -= other.m_x;
+		m_y -= other.m_y;
+		m_z -= other.m_z;
+
+		return *this;
 	}
 
-	constexpr Vector	subtract(const Vector& other) const
+	constexpr Vector&	operator*=(const Vector& other)
 	{
-		return Vector(m_x - other.m_x, m_y - other.m_y, m_z - other.m_z);
+		m_x *= other.m_x;
+		m_y *= other.m_y;
+		m_z *= other.m_z;
+
+		return *this;
 	}
 
-	constexpr Vector	multiply(const Vector& other) const
+	constexpr Vector&	operator*=(double factor)
 	{
-		return Vector(m_x * other.m_x, m_y * other.m_y, m_z * other.m_z);
+		m_x *= factor;
+		m_y *= factor;
+		m_z *= factor;
+
+		return *this;
 	}
 
-	constexpr Vector	divide(const Vector& other) const
+	constexpr Vector&	operator/=(const Vector& other)
 	{
-		return Vector(m_x / other.m_x, m_y / other.m_y, m_z / other.m_z);
+		m_x /= other.m_x;
+		m_y /= other.m_y;
+		m_z /= other.m_z;
+
+		return *this;
+	}
+
+	constexpr Vector&	operator/=(double factor)
+	{
+		m_x /= factor;
+		m_y /= factor;
+		m_z /= factor;
+
+		return *this;
+	}
+
+	constexpr Vector	operator+(const Vector& other) const
+	{
+		return Vector(
+			m_x + other.m_x,
+			m_y + other.m_y,
+			m_z + other.m_z
+		);
+	}
+
+	constexpr Vector	operator-(const Vector& other) const
+	{
+		return Vector(
+			m_x - other.m_x,
+			m_y - other.m_y,
+			m_z - other.m_z
+		);
+	}
+
+	constexpr Vector	operator*(const Vector& other) const
+	{
+		return Vector(
+			m_x * other.m_x,
+			m_y * other.m_y,
+			m_z * other.m_z
+		);
+	}
+
+	constexpr Vector	operator*(double factor) const
+	{
+		return Vector(
+			m_x * factor,
+			m_y * factor,
+			m_z * factor
+		);
+	}
+
+	constexpr Vector	operator/(const Vector& other) const
+	{
+		return Vector(
+			m_x / other.m_x,
+			m_y / other.m_y,
+			m_z / other.m_z
+		);
+	}
+
+	constexpr Vector	operator/(double factor) const
+	{
+		return Vector(
+			m_x / factor,
+			m_y / factor,
+			m_z / factor
+		);
 	}
 
 	constexpr Vector	crossProduct(const Vector& other) const
@@ -86,32 +163,35 @@ public:
 		return (m_x * other.m_x) + (m_y * other.m_y) + (m_z * other.m_z);
 	}
 
-	constexpr Vector	scale(double factor) const
+	constexpr double	lengthSquared() const
 	{
-		return Vector(m_x * factor, m_y * factor, m_z * factor);
+		if (! m_lengthSquared)
+			m_lengthSquared = (m_x * m_x) + (m_y * m_y) + (m_z * m_z);
+
+		return m_lengthSquared;
 	}
 
-	constexpr Vector	invert() const
+	constexpr double	length() const
+	{
+		if (! m_length)
+			m_length = std::sqrt(lengthSquared());
+
+		return m_length;
+	}
+
+	constexpr Vector	inverted() const
 	{
 		return Vector(-m_x, -m_y, -m_z);
 	}
 
 	constexpr Vector	unit() const
 	{
-		if (length() == 1.0)
-			return *this;
-
-		return scale(1 / length());
+		return *this / length();
 	}
 
 	constexpr double	x() const	{ return m_x; }
 	constexpr double	y() const	{ return m_y; }
 	constexpr double	z() const	{ return m_z; }
-
-	constexpr bool		operator==(const Vector& other) const
-	{
-		return tied() == other.tied();
-	}
 
 	std::string			string() const;
 

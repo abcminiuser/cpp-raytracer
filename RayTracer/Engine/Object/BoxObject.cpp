@@ -8,9 +8,9 @@
 
 namespace
 {
-	constexpr auto kFrontNormal		= StandardVectors::kUnitZ.invert();
-	constexpr auto kLeftNormal		= StandardVectors::kUnitX.invert();
-	constexpr auto kTopNormal		= StandardVectors::kUnitY.invert();
+	constexpr auto kFrontNormal		= StandardVectors::kUnitZ.inverted();
+	constexpr auto kLeftNormal		= StandardVectors::kUnitX.inverted();
+	constexpr auto kTopNormal		= StandardVectors::kUnitY.inverted();
 	constexpr auto kBottomNormal	= StandardVectors::kUnitY;
 	constexpr auto kRightNormal		= StandardVectors::kUnitX;
 	constexpr auto kBackNormal		= StandardVectors::kUnitZ;
@@ -27,8 +27,8 @@ double BoxObject::intersectWith(const Ray& ray) const
 {
 	// https://en.wikipedia.org/wiki/Slab_method
 
-	const auto t1 = ray.position().invert().multiply(ray.directionInverse());
-	const auto t2 = m_size.subtract(ray.position()).multiply(ray.directionInverse());
+	const auto t1 = ray.position().inverted() * ray.directionInverse();
+	const auto t2 = (m_size - ray.position()) * ray.directionInverse();
 
 	const Vector minPoint = VectorUtils::MinPoint(t1, t2);
 	const Vector maxPoint = VectorUtils::MaxPoint(t1, t2);
@@ -64,7 +64,7 @@ void BoxObject::getIntersectionProperties(const Vector& position, Vector& normal
 	{
 		normal		= kLeftNormal; // Left face
 		tangent		= StandardVectors::kUnitY;
-		bitangent	= StandardVectors::kUnitZ.invert();
+		bitangent	= StandardVectors::kUnitZ.inverted();
 	}
 	else if (std::abs(position.y()) < kComparisonThreshold)
 	{
@@ -75,7 +75,7 @@ void BoxObject::getIntersectionProperties(const Vector& position, Vector& normal
 	else if (std::abs(position.y() - m_size.y()) < kComparisonThreshold)
 	{
 		normal		= kBottomNormal; // Bottom face
-		tangent		= StandardVectors::kUnitZ.invert();
+		tangent		= StandardVectors::kUnitZ.inverted();
 		bitangent	= StandardVectors::kUnitX;
 	}
 	else if (std::abs(position.x() - m_size.x()) < kComparisonThreshold)
@@ -88,7 +88,7 @@ void BoxObject::getIntersectionProperties(const Vector& position, Vector& normal
 	{
 		normal		= kBackNormal; // Back face
 		tangent		= StandardVectors::kUnitY;
-		bitangent	= StandardVectors::kUnitX.invert();
+		bitangent	= StandardVectors::kUnitX.inverted();
 	}
 
 	uv = uvAt(position, normal);
@@ -99,8 +99,8 @@ Vector BoxObject::uvAt(const Vector& position, const Vector& normal) const
 	constexpr double kStepU = (1.0 / 4);
 	constexpr double kStepV = (1.0 / 3);
 
-	const auto dLower = position.divide(m_size);
-	const auto dUpper = m_size.subtract(position).divide(m_size);
+	const auto dLower = position / m_size;
+	const auto dUpper = (m_size - position) / m_size;
 
 	double u = 0;
 	double v = 0;

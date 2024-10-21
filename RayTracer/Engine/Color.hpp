@@ -38,6 +38,11 @@ public:
 
 	}
 
+	constexpr bool			operator==(const Color& other) const
+	{
+		return tied() == other.tied();
+	}
+
 	constexpr Color&		operator+=(const Color& other)
 	{
 		m_red += other.m_red;
@@ -146,10 +151,6 @@ public:
 		);
 	}
 
-	constexpr double		red() const 	{ return m_red; }
-	constexpr double		green() const 	{ return m_green; }
-	constexpr double		blue() const	{ return m_blue; }
-
 	constexpr uint32_t		toPackedRGBA() const
 	{
 		return
@@ -159,10 +160,9 @@ public:
 			static_cast<uint32_t>(std::clamp(m_red, 0.0, 1.0) * 255.0) << 0;
 	}
 
-	constexpr bool			operator==(const Color& other) const
-	{
-		return tied() == other.tied();
-	}
+	constexpr double		red() const 	{ return m_red; }
+	constexpr double		green() const 	{ return m_green; }
+	constexpr double		blue() const	{ return m_blue; }
 
 	std::string				string() const;
 

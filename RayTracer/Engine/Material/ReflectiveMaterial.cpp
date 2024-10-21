@@ -4,11 +4,13 @@
 #include "Engine/Texture.hpp"
 #include "Engine/Vector.hpp"
 
+#include <algorithm>
+
 namespace
 {
 	Vector Reflect(const Vector& incident, const Vector& normal)
 	{
-		return incident.subtract(normal.scale(2 * incident.dotProduct(normal)));
+		return incident - (normal * 2 * incident.dotProduct(normal));
 	}
 }
 
@@ -26,7 +28,7 @@ std::optional<Ray> ReflectiveMaterial::scatter(const Vector& incident, const Vec
 
 	// Perturb the reflected ray randomly, based on how (un-)polished this material is.
 	if (m_scuff)
-		reflectionDirection = reflectionDirection.add(VectorUtils::RandomUnitVector().scale(m_scuff)).unit();
+		reflectionDirection = (reflectionDirection + (VectorUtils::RandomUnitVector() * m_scuff)).unit();
 
 	// If the perturbed ray is now pointing into the surface, absorb it.
 	if (reflectionDirection.dotProduct(normal) < 0)

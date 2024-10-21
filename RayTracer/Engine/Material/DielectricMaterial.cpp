@@ -14,15 +14,15 @@ namespace
 	{
 		// https://graphics.stanford.edu/courses/cs148-10-summer/docs/2006--degreve--reflection_refraction.pdf
 
-		double n = n1 / n2;
-		double cosI = incident.dotProduct(normal);
-		double sinT2 = (n * n) * (1.0 - (cosI * cosI));
+		double n		= n1 / n2;
+		double cosI		= incident.dotProduct(normal);
+		double sinT2	= (n * n) * (1.0 - (cosI * cosI));
 
 		if (sinT2 > 1.0)
 			return std::nullopt;
 
-		double cosT = std::sqrt(1.0 - sinT2);
-		return incident.scale(n).add(normal.scale(n * cosI - cosT)).unit();
+		double cosT		= std::sqrt(1.0 - sinT2);
+		return (incident * n + normal * (n * cosI - cosT)).unit();
 	}
 }
 

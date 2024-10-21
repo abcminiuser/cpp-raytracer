@@ -30,8 +30,8 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<Triangle> triangles)
 	// each node, along with a list of triangles inside that bounding box
 	// and a pair of sub-nodes for more triangles that are inside the left
 	// or right side of the bounding box.
-	const auto position	= minPoint;
-	const auto size		= maxPoint.subtract(minPoint);
+	const Vector position	= minPoint;
+	const Vector size		= maxPoint - minPoint;
 	printf("Partitioning mesh %s size %s - %zu triangles\n", position.string().c_str(), size.string().c_str(), triangles.size());
 
 	partition(position, size, 0, std::move(triangles));
@@ -47,7 +47,7 @@ size_t Mesh::partition(const Vector& position, const Vector& size, uint32_t dept
 	auto* node = &m_elements.back();
 
 	node->lowerCorner	= position;
-	node->upperCorner	= position.add(size);
+	node->upperCorner	= position + size;
 
 	// Find all triangles that are within this node's bounding box.
 	node->triangles.reserve(triangles.size());
@@ -74,7 +74,7 @@ size_t Mesh::partition(const Vector& position, const Vector& size, uint32_t dept
 		return nodeIndex;
 
 	// If we matched too many triangles for this node, split it up into eight smaller cubes within our bounding box.
-	const auto partitionSize = size.scale(0.5);
+	const auto partitionSize = size * 0.5;
 
 	const auto oX = partitionSize.x();
 	const auto oY = partitionSize.y();
@@ -86,15 +86,15 @@ size_t Mesh::partition(const Vector& position, const Vector& size, uint32_t dept
 	// NOTE: Partitioning will invalidate our iterators (and out node pointer).
 	const std::array<size_t, 8> childrenIndexes
 		{
-			partition(position.add(Vector(0, 0, 0)), partitionSize, depth + 1, triangles),
-			partition(position.add(Vector(oX, 0, 0)), partitionSize, depth + 1, triangles),
-			partition(position.add(Vector(0, oY, 0)), partitionSize, depth + 1, triangles),
-			partition(position.add(Vector(0, 0, oZ)), partitionSize, depth + 1, triangles),
+			partition(position + Vector(0, 0, 0), partitionSize, depth + 1, triangles),
+			partition(position + Vector(oX, 0, 0), partitionSize, depth + 1, triangles),
+			partition(position + Vector(0, oY, 0), partitionSize, depth + 1, triangles),
+			partition(position + Vector(0, 0, oZ), partitionSize, depth + 1, triangles),
 
-			partition(position.add(Vector(oX, oY, 0)), partitionSize,  depth + 1, triangles),
-			partition(position.add(Vector(oX, 0, oZ)), partitionSize, depth + 1, triangles),
-			partition(position.add(Vector(0, oY, oZ)), partitionSize, depth + 1, triangles),
-			partition(position.add(Vector(oX, oY, oZ)), partitionSize, depth + 1, triangles)
+			partition(position + Vector(oX, oY, 0), partitionSize,  depth + 1, triangles),
+			partition(position + Vector(oX, 0, oZ), partitionSize, depth + 1, triangles),
+			partition(position + Vector(0, oY, oZ), partitionSize, depth + 1, triangles),
+			partition(position + Vector(oX, oY, oZ), partitionSize, depth + 1, triangles)
 		};
 
 	// Re-seat our node pointer into the list at the same position, which may have been reallocated.

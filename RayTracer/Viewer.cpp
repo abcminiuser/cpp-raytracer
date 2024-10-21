@@ -178,7 +178,7 @@ void Viewer::view(const std::string& path)
 								{ sf::Keyboard::Key::F, Vector(0, -kMoveDelta, 0) },
 							};
 
-						scene->camera.setPosition(scene->camera.position().add(cameraMoveAmount.at(event.key.code)));
+						scene->camera.setPosition(scene->camera.position() + cameraMoveAmount.at(event.key.code));
 
 						nextRenderType = RenderType::CoarsePreview;
 						sceneUpdatePending = true;

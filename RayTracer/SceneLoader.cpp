@@ -96,7 +96,7 @@ namespace
 				vertices.emplace_back(
 					Vertex
 					{
-						.position = Vector(double(v.Position.X), double(v.Position.Y), double(v.Position.Z)).scale(scale),
+						.position = Vector(double(v.Position.X), double(v.Position.Y), double(v.Position.Z)) * scale,
 						.normal = Vector(double(v.Normal.X), double(v.Normal.Y), double(v.Normal.Z)),
 						.texture = Vector(double(v.TextureCoordinate.X), double(v.TextureCoordinate.Y), 0.0)
 					}

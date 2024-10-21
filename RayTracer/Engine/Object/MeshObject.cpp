@@ -22,8 +22,8 @@ double MeshObject::intersectWith(const Ray& ray) const
 		{
 			// Check if the ray intersects this node's bounding box.
 
-			const auto t1 = lowerCorner.subtract(ray.position()).multiply(ray.directionInverse());
-			const auto t2 = upperCorner.subtract(ray.position()).multiply(ray.directionInverse());
+			const auto t1 = (lowerCorner - ray.position()) * ray.directionInverse();
+			const auto t2 = (upperCorner - ray.position()) * ray.directionInverse();
 
 			const Vector minPoint = VectorUtils::MinPoint(t1, t2);
 			const Vector maxPoint = VectorUtils::MaxPoint(t1, t2);
@@ -113,8 +113,8 @@ void MeshObject::getIntersectionProperties(const Vector& position, Vector& norma
 				const Vector mix = interpolate(position, v0, v1, v2);
 
 				normal		= normalAt(v0, v1, v2, mix);
-				tangent		= v1.position.subtract(v0.position).unit();
-				bitangent	= v2.position.subtract(v1.position).unit();
+				tangent		= (v1.position - v0.position).unit();
+				bitangent	= (v2.position - v1.position).unit();
 				uv			= uvAt(v0, v1, v2, mix);
 
 				found = true;
@@ -133,20 +133,20 @@ void MeshObject::getIntersectionProperties(const Vector& position, Vector& norma
 
 Vector MeshObject::normalAt(const Vertex& v0, const Vertex& v1, const Vertex v2, const Vector& mix) const
 {
-	return v0.normal.scale(mix.x()).add(v1.normal.scale(mix.y())).add(v2.normal.scale(mix.z())).unit();
+	return (v0.normal * mix.x() + v1.normal * mix.y() + v2.normal * mix.z()).unit();
 }
 
 Vector MeshObject::uvAt(const Vertex& v0, const Vertex& v1, const Vertex v2, const Vector& mix) const
 {
-	return v0.texture.scale(mix.x()).add(v1.texture.scale(mix.y())).add(v2.texture.scale(mix.z()));
+	return (v0.texture * mix.x() + v1.texture * mix.y() + v2.texture * mix.z());
 }
 
 double MeshObject::intersectWith(const Ray& ray, const Vertex& v0, const Vertex& v1, const Vertex v2) const
 {
 	// https://en.wikipedia.org/wiki/M%C3%B6ller%E2%80%93Trumbore_intersection_algorithm
 
-	const Vector edge1 = v1.position.subtract(v0.position);
-	const Vector edge2 = v2.position.subtract(v0.position);
+	const Vector edge1 = v1.position - v0.position;
+	const Vector edge2 = v2.position - v0.position;
 	const Vector rayCrossE2 = ray.direction().crossProduct(edge2);
 
 	const double det = edge1.dotProduct(rayCrossE2);
@@ -154,7 +154,7 @@ double MeshObject::intersectWith(const Ray& ray, const Vertex& v0, const Vertex&
 		return kNoIntersection;
 
 	const double invDet = 1.0 / det;
-	const Vector s = ray.position().subtract(v0.position);
+	const Vector s = ray.position() - v0.position;
 
 	const double u = invDet * s.dotProduct(rayCrossE2);
 	if (u < 0 || u > 1)
@@ -177,9 +177,9 @@ bool MeshObject::pointOn(const Vector& point, const Vertex& v0, const Vertex& v1
 {
 	// https://gdbooks.gitbooks.io/3dcollisions/content/Chapter4/point_in_triangle.html
 
-	const Vector a = v0.position.subtract(point);
-	const Vector b = v1.position.subtract(point);
-	const Vector c = v2.position.subtract(point);
+	const Vector a = v0.position - point;
+	const Vector b = v1.position - point;
+	const Vector c = v2.position - point;
 
 	const Vector u = b.crossProduct(c);
 	const Vector v = c.crossProduct(a);
@@ -198,9 +198,9 @@ Vector MeshObject::interpolate(const Vector& point, const Vertex& v0, const Vert
 {
 	// https://gamedev.stackexchange.com/questions/23743/whats-the-most-efficient-way-to-find-barycentric-coordinates
 
-	const Vector e0 = v1.position.subtract(v0.position);
-	const Vector e1 = v2.position.subtract(v0.position);
-	const Vector e2 = point.subtract(v0.position);
+	const Vector e0 = v1.position - v0.position;
+	const Vector e1 = v2.position - v0.position;
+	const Vector e2 = point - v0.position;
 
 	const double d00 = e0.dotProduct(e0);
 	const double d01 = e0.dotProduct(e1);

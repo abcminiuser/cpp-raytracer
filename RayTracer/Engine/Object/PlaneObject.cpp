@@ -4,7 +4,7 @@
 #include "Engine/Vector.hpp"
 
 PlaneObject::PlaneObject(std::shared_ptr<Material> material, const Vector& normal, double distance, double uvScaleFactor)
-	: Object(normal.scale(distance), Vector(), std::move(material))
+	: Object(normal * distance, Vector(), std::move(material))
 	, m_normal(normal)
 	, m_uvScaleFactor(uvScaleFactor)
 {
@@ -36,7 +36,7 @@ void PlaneObject::getIntersectionProperties(const Vector& position, Vector& norm
 
 Vector PlaneObject::uvAt(const Vector& position, const Vector& normal) const
 {
-	const auto positionFromOrigin = position.scale(m_uvScaleFactor);
+	const auto positionFromOrigin = position * m_uvScaleFactor;
 
 	auto u = positionFromOrigin.x();
 	auto v = positionFromOrigin.z();

@@ -11,7 +11,7 @@ Camera::Camera()
 
 Camera::Camera(const Vector& position, const Vector& target, double viewWidth, double viewHeight)
 	: m_position(position)
-	, m_direction(target.subtract(position).unit())
+	, m_direction((target - position).unit())
 	, m_orientation(StandardVectors::kUnitY)
 	, m_viewWidth(viewWidth)
 	, m_viewHeight(viewHeight)
@@ -21,10 +21,10 @@ Camera::Camera(const Vector& position, const Vector& target, double viewWidth, d
 
 Color Camera::trace(const Scene& scene, double x, double y) const
 {
-	const Vector rayX = m_right.scale(x);
-	const Vector rayY = m_down.scale(y);
+	const Vector rayX = m_right * x;
+	const Vector rayY = m_down * y;
 
-	const Vector rayDirection = m_direction.add(rayX).add(rayY).unit();
+	const Vector rayDirection = (m_direction + rayX + rayY).unit();
 
 	Color accumulatedSamples;
 
@@ -57,6 +57,6 @@ void Camera::setOrientation(const Vector& orientation)
 
 void Camera::update()
 {
-	m_right = m_orientation.crossProduct(m_direction).unit().scale(m_viewWidth / 2);
-	m_down = m_right.crossProduct(m_direction).unit().scale(-m_viewHeight / 2).invert();
+	m_right = m_orientation.crossProduct(m_direction).unit() * (m_viewWidth / 2);
+	m_down = (m_right.crossProduct(m_direction).unit() * (-m_viewHeight / 2)).inverted();
 }

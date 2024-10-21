@@ -16,12 +16,12 @@ std::optional<Ray> DiffuseMaterial::scatter(const Vector& incident, const Vector
 	// first generate a random unit vector, then invert it if it landed on the wrong side.
 	Vector randomHemisphereDirection = VectorUtils::RandomUnitVector();
 	if (randomHemisphereDirection.dotProduct(normal) < 0)
-		randomHemisphereDirection = randomHemisphereDirection.invert();
+		randomHemisphereDirection = randomHemisphereDirection.inverted();
 
 	if (randomHemisphereDirection.lengthSquared() < 1e-10)
 		randomHemisphereDirection = normal;
 
 	// Lambertian diffusion; always scatter.
 	attenuation = m_texture->sample(uv.x(), uv.y());
-	return Ray(position, normal.add(randomHemisphereDirection).unit());
+	return Ray(position, (normal + randomHemisphereDirection).unit());
 }

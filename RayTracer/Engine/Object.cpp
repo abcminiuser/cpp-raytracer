@@ -12,7 +12,7 @@ Object::Object(const Vector& position, const Vector& rotation, std::shared_ptr<M
 	, m_position(position)
 	, m_hasRotation(rotation != Vector())
 	, m_rotationMatrix(MatrixUtils::RotationMatrix(rotation))
-	, m_rotationMatrixInverse(MatrixUtils::RotationMatrix(rotation.invert()))
+	, m_rotationMatrixInverse(MatrixUtils::RotationMatrix(rotation.inverted()))
 {
 	if (! m_material)
 		throw std::runtime_error("Object created with no associated material");
@@ -20,7 +20,7 @@ Object::Object(const Vector& position, const Vector& rotation, std::shared_ptr<M
 
 double Object::intersect(const Ray& ray) const
 {
-	const Ray rayObjectSpace = Ray(rotate(ray.position().subtract(m_position), m_rotationMatrix), rotate(ray.direction(), m_rotationMatrix).unit());
+	const Ray rayObjectSpace = Ray(rotate(ray.position() - m_position, m_rotationMatrix), rotate(ray.direction(), m_rotationMatrix).unit());
 
 	const double closestIntersectionDistance = intersectWith(rayObjectSpace);
 	if (closestIntersectionDistance < kComparisonThreshold)
@@ -31,7 +31,7 @@ double Object::intersect(const Ray& ray) const
 
 Color Object::illuminate(const Scene& scene, const Ray& ray, const Vector& position, uint32_t rayDepthRemaining) const
 {
-	const Vector positionObjectSpace = rotate(position.subtract(m_position), m_rotationMatrix);
+	const Vector positionObjectSpace = rotate(position - m_position, m_rotationMatrix);
 
 	Vector	normalObjectSpace;
 	Vector	tangent;
