@@ -24,26 +24,11 @@ Vector Material::mapNormal(const Vector& normal, const Vector& tangent, const Ve
 	const auto mappedNormalVector = Vector(mappedNormal.red() * 2 - 1, mappedNormal.green() * 2 - 1, mappedNormal.blue() * 2 - 1);
 
 	const Matrix<3, 3> mappingMatrix
-		(
-			std::array
-			{
-				std::array{
-					tangent.x(),
-					bitangent.x(),
-					normal.x(),
-				},
-				std::array{
-					tangent.y(),
-					bitangent.y(),
-					normal.y(),
-				},
-				std::array{
-					tangent.z(),
-					bitangent.z(),
-					normal.z(),
-				}
-			}
-		);
+		({
+			tangent.x(), bitangent.x(), normal.x(),
+			tangent.y(), bitangent.y(), normal.y(),
+			tangent.z(), bitangent.z(), normal.z()
+		});
 
 	return mappingMatrix.multiply(mappedNormalVector).toVector().unit();
 }

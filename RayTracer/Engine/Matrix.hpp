@@ -4,30 +4,28 @@
 
 #include <array>
 #include <cmath>
+#include <concepts>
 #include <stdint.h>
 
 template <size_t ROWS, size_t COLS>
 class Matrix
 {
 public:
-	using ElementStorage = std::array<std::array<double, COLS>, ROWS>;
+	constexpr								Matrix()
+		: m_elements({})
+	{
 
-	constexpr								Matrix() = default;
+	}
 
-	constexpr								Matrix(const ElementStorage& values)
-		: m_elements(values)
+	constexpr								Matrix(std::convertible_to<double> auto&&... values)
+		: m_elements({ std::forward<decltype(values)>(values)... })
 	{
 
 	}
 
 	constexpr								Matrix(const Vector& vector)
 		requires (ROWS == 3 && COLS == 1)
-		: Matrix(std::array
-			{
-				std::array{ vector.x() },
-				std::array{ vector.y() },
-				std::array{ vector.z() }
-			})
+		: m_elements({ vector.x(), vector.y(), vector.z() })
 	{
 
 	}
@@ -55,24 +53,24 @@ public:
 		return result;
 	}
 
-	constexpr double&						operator()(size_t row, size_t col)
+	constexpr inline double&				operator()(size_t row, size_t col)
 	{
-		return m_elements[row][col];
+		return m_elements[row * COLS + col];
 	}
 
-	constexpr const double&					operator()(size_t row, size_t col) const
+	constexpr inline const double&			operator()(size_t row, size_t col) const
 	{
-		return m_elements[row][col];
+		return m_elements[row * COLS + col];
 	}
 
 	constexpr Vector						toVector() const
 		requires (ROWS == 3 && COLS == 1)
 	{
-		return Vector(m_elements[0][0], m_elements[1][0], m_elements[2][0]);
+		return Vector(m_elements[0], m_elements[1], m_elements[2]);
 	}
 
 private:
-	ElementStorage							m_elements = {};
+	std::array<double, ROWS * COLS>			m_elements;
 };
 
 namespace MatrixUtils
@@ -91,24 +89,22 @@ namespace MatrixUtils
 		const auto cosGamma = std::cos(gamma);
 		const auto sinGamma = std::sin(gamma);
 
-		return Matrix<3, 3>(
-			std::array
-			{
-				std::array{
-					cosAlpha * cosBeta,
-					(cosAlpha * sinBeta * sinGamma) - (sinAlpha * cosGamma),
-					(cosAlpha * sinBeta * cosGamma) + (sinAlpha * sinGamma)
-				},
-				std::array{
-					sinAlpha * cosBeta,
-					(sinAlpha * sinBeta * sinGamma) + (cosAlpha * cosGamma),
-					(sinAlpha * sinBeta * cosGamma) - (cosAlpha * sinGamma)
-				},
-				std::array{
-					-sinBeta,
-					cosBeta * sinGamma,
-					cosBeta * cosGamma
-				}
-			});
+		const auto m00 = cosAlpha * cosBeta;
+		const auto m01 = (cosAlpha * sinBeta * sinGamma) - (sinAlpha * cosGamma);
+		const auto m02 = (cosAlpha * sinBeta * cosGamma) + (sinAlpha * sinGamma);
+
+		const auto m10 = sinAlpha * cosBeta;
+		const auto m11 = (sinAlpha * sinBeta * sinGamma) + (cosAlpha * cosGamma);
+		const auto m12 = (sinAlpha * sinBeta * cosGamma) - (cosAlpha * sinGamma);
+
+		const auto m20 = -sinBeta;
+		const auto m21 = cosBeta * sinGamma;
+		const auto m22 = cosBeta * cosGamma;
+
+		return Matrix<3, 3>({
+			m00, m01, m02,
+			m10, m11, m12,
+			m20, m21, m22
+		});
 	}
 }
