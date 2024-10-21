@@ -38,7 +38,61 @@ public:
 
 	}
 
-	constexpr Color			add(const Color& other) const
+	constexpr Color&		operator+=(const Color& other)
+	{
+		m_red += other.m_red;
+		m_green += other.m_green;
+		m_blue += other.m_blue;
+
+		return *this;
+	}
+
+	constexpr Color&		operator-=(const Color& other)
+	{
+		m_red -= other.m_red;
+		m_green -= other.m_green;
+		m_blue -= other.m_blue;
+
+		return *this;
+	}
+
+	constexpr Color&		operator*=(const Color& other)
+	{
+		m_red *= other.m_red;
+		m_green *= other.m_green;
+		m_blue *= other.m_blue;
+
+		return *this;
+	}
+
+	constexpr Color&		operator*=(double factor)
+	{
+		m_red *= factor;
+		m_green *= factor;
+		m_blue *= factor;
+
+		return *this;
+	}
+
+	constexpr Color&		operator/=(const Color& other)
+	{
+		m_red /= other.m_red;
+		m_green /= other.m_green;
+		m_blue /= other.m_blue;
+
+		return *this;
+	}
+
+	constexpr Color&		operator/=(double factor)
+	{
+		m_red /= factor;
+		m_green /= factor;
+		m_blue /= factor;
+
+		return *this;
+	}
+
+	constexpr Color			operator+(const Color& other) const
 	{
 		return Color(
 			m_red + other.m_red,
@@ -47,7 +101,16 @@ public:
 		);
 	}
 
-	constexpr Color			multiply(const Color& other) const
+	constexpr Color			operator-(const Color& other) const
+	{
+		return Color(
+			m_red - other.m_red,
+			m_green - other.m_green,
+			m_blue - other.m_blue
+		);
+	}
+
+	constexpr Color			operator*(const Color& other) const
 	{
 		return Color(
 			m_red * other.m_red,
@@ -56,12 +119,30 @@ public:
 		);
 	}
 
-	constexpr Color			scale(double factor) const
+	constexpr Color			operator*(double factor) const
 	{
 		return Color(
 			m_red * factor,
 			m_green * factor,
 			m_blue * factor
+		);
+	}
+
+	constexpr Color			operator/(const Color& other) const
+	{
+		return Color(
+			m_red / other.m_red,
+			m_green / other.m_green,
+			m_blue / other.m_blue
+		);
+	}
+
+	constexpr Color			operator/(double factor) const
+	{
+		return Color(
+			m_red / factor,
+			m_green / factor,
+			m_blue / factor
 		);
 	}
 

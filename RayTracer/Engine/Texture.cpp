@@ -58,14 +58,14 @@ Color Texture::sample(double u, double v) const
 			size_t nextP = (p + 1) % m_width;
 			size_t nextQ = (q + 1) % m_height;
 
-			color = color.add(colorAt(p    , q).scale((1 - dP) * (1 - dQ)));
-			color = color.add(colorAt(nextP, q).scale(dP * (1 - dQ)));
-			color = color.add(colorAt(p    , nextQ).scale((1 - dP) * dQ));
-			color = color.add(colorAt(nextP, nextQ).scale(dP * dQ));
+			color += colorAt(p    , q) * (1 - dP) * (1 - dQ);
+			color += colorAt(nextP, q) * dP * (1 - dQ);
+			color += colorAt(p    , nextQ) * (1 - dP) * dQ;
+			color += colorAt(nextP, nextQ) * dP * dQ;
 
 			break;
 		}
 	}
 
-	return color.multiply(m_multiplier);
+	return color * m_multiplier;
 }

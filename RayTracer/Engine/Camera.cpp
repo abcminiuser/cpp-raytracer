@@ -31,10 +31,10 @@ Color Camera::trace(const Scene& scene, double x, double y) const
 	for (size_t sample = 0; sample < scene.samplesPerPixel; sample++)
 	{
 		const Color sampleColor = Ray(m_position, rayDirection).trace(scene, scene.maxRayDepth);
-		accumulatedSamples = accumulatedSamples.add(sampleColor);
+		accumulatedSamples += sampleColor;
 	}
 
-	return accumulatedSamples.scale(1.0 / scene.samplesPerPixel);
+	return accumulatedSamples / scene.samplesPerPixel;
 }
 
 void Camera::setPosition(const Vector& position)

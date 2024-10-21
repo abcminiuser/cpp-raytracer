@@ -7,7 +7,7 @@
 #include "Engine/Texture/CheckerboardTexture.hpp"
 
 Material::Material(std::shared_ptr<Texture> texture, std::shared_ptr<Texture> normals)
-	: m_texture(texture ? std::move(texture) : std::make_shared<CheckerboardTexture>(Texture::Interpolation::NearestNeighbor, Palette::kWhite, Palette::kWhite.scale(.5), 10))
+	: m_texture(texture ? std::move(texture) : std::make_shared<CheckerboardTexture>(Texture::Interpolation::NearestNeighbor, Palette::kWhite, Palette::kWhite * .5, 10))
 	, m_normals(std::move(normals))
 {
 
@@ -42,7 +42,7 @@ Color Material::illuminate(const Scene& scene, const Ray& sourceRay, const Vecto
 
 	Color attenuation;
 	if (auto scatterRay = scatter(sourceRay.direction(), position, normal, uv, attenuation))
-		finalColor = finalColor.add(attenuation.multiply(scatterRay->trace(scene, rayDepthRemaining)));
+		finalColor += attenuation * scatterRay->trace(scene, rayDepthRemaining);
 
 	return finalColor;
 }
