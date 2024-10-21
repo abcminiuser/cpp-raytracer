@@ -67,7 +67,7 @@ void Viewer::view(const std::string& path)
 	uint8_t lastRenderPercent = 0;
 	std::string extraInfoMessage;
 
-	Scene scene;
+	std::optional<Scene> scene;
 
 	try
 	{
@@ -109,6 +109,8 @@ void Viewer::view(const std::string& path)
 						}
 						catch (const std::exception& e)
 						{
+							scene.reset();
+
 							extraInfoMessage = std::string("Failed to parse scene file: ") + e.what();
 							infoTextUpdatePending = true;
 						}
@@ -176,7 +178,7 @@ void Viewer::view(const std::string& path)
 								{ sf::Keyboard::Key::F, Vector(0, -kMoveDelta, 0) },
 							};
 
-						scene.camera.setPosition(scene.camera.position().add(cameraMoveAmount.at(event.key.code)));
+						scene->camera.setPosition(scene->camera.position().add(cameraMoveAmount.at(event.key.code)));
 
 						nextRenderType = RenderType::CoarsePreview;
 						sceneUpdatePending = true;
@@ -198,7 +200,7 @@ void Viewer::view(const std::string& path)
 								{ sf::Keyboard::Key::L, MatrixUtils::RotationMatrix(Vector(0, kRotateDelta, 0)) },
 							};
 
-						scene.camera.setDirection(cameraRotateAmount.at(event.key.code).multiply(scene.camera.direction()).toVector().unit());
+						scene->camera.setDirection(cameraRotateAmount.at(event.key.code).multiply(scene->camera.direction()).toVector().unit());
 
 						nextRenderType = RenderType::CoarsePreview;
 						sceneUpdatePending = true;
@@ -216,7 +218,7 @@ void Viewer::view(const std::string& path)
 								{ sf::Keyboard::Key::O, MatrixUtils::RotationMatrix(Vector(-kRotateDelta, 0, 0)) },
 							};
 
-						scene.camera.setOrientation(cameraRotateAmount.at(event.key.code).multiply(scene.camera.orientation()).toVector().unit());
+						scene->camera.setOrientation(cameraRotateAmount.at(event.key.code).multiply(scene->camera.orientation()).toVector().unit());
 
 						nextRenderType = RenderType::CoarsePreview;
 						sceneUpdatePending = true;
@@ -231,21 +233,21 @@ void Viewer::view(const std::string& path)
 			}
 		}
 
-		if (sceneUpdatePending)
+		if (sceneUpdatePending && scene.has_value())
 		{
 			switch (nextRenderType)
 			{
 				case RenderType::CoarsePreview:
-					scene.maxRayDepth = 1;
-					scene.samplesPerPixel = 1;
+					scene->maxRayDepth = 1;
+					scene->samplesPerPixel = 1;
 					break;
 				case RenderType::Preview:
-					scene.maxRayDepth = 5;
-					scene.samplesPerPixel = 1;
+					scene->maxRayDepth = 5;
+					scene->samplesPerPixel = 1;
 					break;
 				case RenderType::Full:
-					scene.maxRayDepth = 10;
-					scene.samplesPerPixel = 150;
+					scene->maxRayDepth = 10;
+					scene->samplesPerPixel = 150;
 					break;
 			}
 
@@ -254,7 +256,7 @@ void Viewer::view(const std::string& path)
 			if (nextRenderType == RenderType::CoarsePreview && previousRenderType == RenderType::CoarsePreview)
 				m_renderer.waitForRenderCompletion();
 
-			m_renderer.setScene(scene);
+			m_renderer.setScene(scene.value());
 			m_renderer.setCoarsePreview(nextRenderType == RenderType::CoarsePreview);
 			m_renderer.startRender();
 
@@ -311,14 +313,18 @@ void Viewer::view(const std::string& path)
 		if (infoTextUpdatePending)
 		{
 			std::string infoMessage;
-			infoMessage += "Camera Position:  " + scene.camera.position().string() + "\n";
-			infoMessage += "Camera Direction: " + scene.camera.direction().string() + "\n";
-			infoMessage += "Camera Orientation: " + scene.camera.orientation().string() + "\n";
 
-			if (isRendering)
-				infoMessage += std::string("Rendering In Progress (" + std::string(previousRenderType != RenderType::Full ? "Preview" : "Full") + " - " + std::to_string(m_renderer.renderPercentage()) + "%)");
-			else
-				infoMessage += std::string("Rendering Completed (") + std::to_string(m_renderer.renderTime().count()) + " ms)";
+			if (scene)
+			{
+				infoMessage += "Camera Position:  " + scene->camera.position().string() + "\n";
+				infoMessage += "Camera Direction: " + scene->camera.direction().string() + "\n";
+				infoMessage += "Camera Orientation: " + scene->camera.orientation().string() + "\n";
+
+				if (isRendering)
+					infoMessage += std::string("Rendering In Progress (" + std::string(previousRenderType != RenderType::Full ? "Preview" : "Full") + " - " + std::to_string(m_renderer.renderPercentage()) + "%)");
+				else
+					infoMessage += std::string("Rendering Completed (") + std::to_string(m_renderer.renderTime().count()) + " ms)";
+			}
 
 			if (! extraInfoMessage.empty())
 			{
