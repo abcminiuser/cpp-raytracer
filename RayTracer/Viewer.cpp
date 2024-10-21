@@ -6,6 +6,7 @@
 
 #include <chrono>
 #include <numbers>
+#include <optional>
 #include <stddef.h>
 #include <stdint.h>
 #include <time.h>
