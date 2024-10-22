@@ -127,14 +127,14 @@ namespace
 			return Color(r, g, b);
 		}
 
-		static const std::regex componentColorRegex("Color8Bit\\(" "([^\\,]+)" "," "([^\\,]+)" "," "([^\\)]+)" "\\)");
-		if (std::smatch matches; std::regex_search(value, matches, componentColorRegex))
+		static const std::regex rgb888ColorRegex("ColorRGB888\\(" "([^\\,]+)" "," "([^\\,]+)" "," "([^\\)]+)" "\\)");
+		if (std::smatch matches; std::regex_search(value, matches, rgb888ColorRegex))
 		{
 			auto r = std::clamp<double>(DoubleFromString(matches[1]), 0, 255);
 			auto g = std::clamp<double>(DoubleFromString(matches[2]), 0, 255);
 			auto b = std::clamp<double>(DoubleFromString(matches[3]), 0, 255);
 
-			return Color::FromComponentRGB(static_cast<uint8_t>(r), static_cast<uint8_t>(g), static_cast<uint8_t>(b));
+			return Color::FromRGB888(static_cast<uint8_t>(r), static_cast<uint8_t>(g), static_cast<uint8_t>(b));
 		}
 
 		static const std::map<std::string, Color> kKnownNames

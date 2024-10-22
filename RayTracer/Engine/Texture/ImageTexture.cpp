@@ -16,5 +16,5 @@ ImageTexture::ImageTexture(size_t width, size_t height, const Color& multiplier,
 Color ImageTexture::colorAt(size_t x, size_t y) const
 {
 	y = (m_height - 1) - y;
-	return Color::FromPackedRGBA(m_pixels[(y * m_width) + x]);
+	return Color::FromRGBA8888(m_pixels[(y * m_width) + x]);
 }
