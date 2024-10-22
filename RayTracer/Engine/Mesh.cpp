@@ -2,8 +2,8 @@
 
 namespace
 {
-	constexpr auto kMaxOctreePartitionDepth = 5;
-	constexpr auto kMinTrianglesForOctreePartition = 1;
+	constexpr auto kMaxOctreePartitionDepth = 6;
+	constexpr auto kMinTrianglesForPartition = 25;
 }
 
 Mesh::Mesh(std::vector<Vertex> vertices, std::vector<Triangle> triangles)
@@ -26,112 +26,109 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<Triangle> triangles)
 		}
 	}
 
+	const Vector position	= minPoint;
+	const Vector size		= maxPoint - minPoint;
+
+	printf("Partitioning mesh %s size %s - %zu triangles\n", position.string().c_str(), size.string().c_str(), triangles.size());
+
 	// Now build a tree of all the triangles, storing a bounding box for
 	// each node, along with a list of triangles inside that bounding box
 	// and a pair of sub-nodes for more triangles that are inside the left
 	// or right side of the bounding box.
-	const Vector position	= minPoint;
-	const Vector size		= maxPoint - minPoint;
-	printf("Partitioning mesh %s size %s - %zu triangles\n", position.string().c_str(), size.string().c_str(), triangles.size());
+	m_root = partition(std::move(triangles), 0);
 
-	partition(position, size, 0, std::move(triangles));
-
-	printf("Octree built, %zu nodes.\n", m_elements.size());
+	size_t nodeCount = 0;
+	walk(
+		[&](const Vector& lowerCorner, const Vector& upperCorner) -> bool
+		{
+			nodeCount++;
+			return true;
+		},
+		[&](const std::vector<Vertex>& vertices, const std::vector<Triangle>& triangles)
+		{
+			// NOP
+		});
+	printf("Partitioning complete, %zu nodes.\n", nodeCount);
 }
 
-size_t Mesh::partition(const Vector& position, const Vector& size, uint32_t depth, std::vector<Triangle> triangles)
+std::unique_ptr<Mesh::Node> Mesh::partition(std::vector<Triangle> triangles, uint32_t depth)
 {
-	const size_t nodeIndex = m_elements.size();
-	m_elements.emplace_back(Node());
+	if (triangles.empty())
+		return nullptr;
 
-	auto* node = &m_elements.back();
+	auto node = std::make_unique<Node>();
+	node->lowerCorner	= StandardVectors::kMax;
+	node->upperCorner	= StandardVectors::kMin;
+	node->triangles		= std::move(triangles);
 
-	node->lowerCorner	= position;
-	node->upperCorner	= position + size;
-
-	// Find all triangles that are within this node's bounding box.
-	node->triangles.reserve(triangles.size());
-	for (const auto& triangle : triangles)
+	for (const auto& t : node->triangles)
 	{
-		if (boxContainsTriangle(node->lowerCorner, node->upperCorner, triangle))
-		    node->triangles.push_back(triangle);
-	}
-	node->triangles.shrink_to_fit();
-
-	// If this node matched no triangles, just return a null node to save space now and processing time later.
-	if (node->triangles.empty())
-	{
-		m_elements.pop_back();
-		return 0;
+		for (const auto& p : t)
+		{
+			node->lowerCorner = VectorUtils::MinPoint(node->lowerCorner, m_vertices[p].position);
+			node->upperCorner = VectorUtils::MaxPoint(node->upperCorner, m_vertices[p].position);
+		}
 	}
 
 	// If we've hit our depth limit, we'll just adopt all the matching triangles here and bail out.
 	if (depth >= kMaxOctreePartitionDepth)
-		return nodeIndex;
+		return node;
 
-	// If we have fewer than our minimum number of triangles before a split, adopt all the matching triangles here and bail out.
-	if (node->triangles.size() <= kMinTrianglesForOctreePartition)
-		return nodeIndex;
+	// If we have fewer triangles than the set limit, we don't partition further.
+	if (node->triangles.size() < kMinTrianglesForPartition)
+		return node;
 
 	// If we matched too many triangles for this node, split it up into eight smaller cubes within our bounding box.
-	const auto partitionSize = size * 0.5;
+	const auto partitionSize = (node->upperCorner - node->lowerCorner) * 0.5;
 
 	const auto oX = partitionSize.x();
 	const auto oY = partitionSize.y();
 	const auto oZ = partitionSize.z();
 
-	std::swap(triangles, node->triangles);
-	node->triangles.clear();
-
-	// NOTE: Partitioning will invalidate our iterators (and out node pointer).
-	const std::array<size_t, 8> childrenIndexes
+	const std::array kOffsets =
 		{
-			partition(position + Vector(0, 0, 0), partitionSize, depth + 1, triangles),
-			partition(position + Vector(oX, 0, 0), partitionSize, depth + 1, triangles),
-			partition(position + Vector(0, oY, 0), partitionSize, depth + 1, triangles),
-			partition(position + Vector(0, 0, oZ), partitionSize, depth + 1, triangles),
-
-			partition(position + Vector(oX, oY, 0), partitionSize,  depth + 1, triangles),
-			partition(position + Vector(oX, 0, oZ), partitionSize, depth + 1, triangles),
-			partition(position + Vector(0, oY, oZ), partitionSize, depth + 1, triangles),
-			partition(position + Vector(oX, oY, oZ), partitionSize, depth + 1, triangles)
+			Vector(0, 0, 0),
+			Vector(oX, 0, 0),
+			Vector(0, oY, 0),
+			Vector(0, 0, oZ),
+			Vector(oX, oY, 0),
+			Vector(oX, 0, oZ),
+			Vector(0, oY, oZ),
+			Vector(oX, oY, oZ)
 		};
 
-	// Re-seat our node pointer into the list at the same position, which may have been reallocated.
-	node = &m_elements[nodeIndex];
+	std::array<std::vector<Triangle>, 8> childrenTriangles;
 
-	// Check if we've ended up with all our divided triangles in a single, smaller octant.
-	size_t orphanChild = 0;
-	for (const auto& c : childrenIndexes)
-	{
-		if (! c)
-			continue;
+	// Determine which of our triangles intersect each child's bounding box.
+	for (size_t i = 0; i < 8; i++)
+		childrenTriangles[i] = trianglesInBox(node->lowerCorner + kOffsets[i], node->lowerCorner + kOffsets[i] + partitionSize, node->triangles);
 
-		if (orphanChild)
-		{
-			orphanChild = 0;
-			break;
-		}
+	// Now we've partitioned our triangles, remove them from our node.
+	node->triangles.clear();
 
-		orphanChild = c;
-	}
+	// Build child nodes from the list of triangles in each child's bounding box.
+	for (size_t i = 0; i < 8; i++)
+		node->children[i] = partition(std::move(childrenTriangles[i]), depth + 1);
 
-	// If all the triangles are in one child, just adopt its bounding box and contents and remove it,
-	// to avoid redundant bounding box checks later on.
-	if (orphanChild)
-	{
-		*node = m_elements[orphanChild];
-		m_elements.pop_back();
-	}
-	else
-	{
-		node->childrenIndexes = childrenIndexes;
-	}
-
-	return nodeIndex;
+	return node;
 }
 
-bool Mesh::boxContainsTriangle(const Vector& lowerCorner, const Vector& upperCorner, const Triangle& triangle)
+std::vector<Triangle> Mesh::trianglesInBox(const Vector& lowerCorner, const Vector& upperCorner, const std::vector<Triangle>& triangles) const
+{
+	std::vector<Triangle> matchedTriangles;
+
+	matchedTriangles.reserve(triangles.size());
+	for (const auto& triangle : triangles)
+	{
+		if (boxContainsTriangle(lowerCorner, upperCorner, triangle))
+		    matchedTriangles.push_back(triangle);
+	}
+	matchedTriangles.shrink_to_fit();
+
+	return matchedTriangles;
+}
+
+bool Mesh::boxContainsTriangle(const Vector& lowerCorner, const Vector& upperCorner, const Triangle& triangle) const
 {
 	// Determine the bounding box for this triangle.
 	Vector triangleLowerCorner = StandardVectors::kMax;
