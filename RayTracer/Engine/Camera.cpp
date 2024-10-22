@@ -29,10 +29,7 @@ Color Camera::trace(const Scene& scene, double x, double y) const
 	Color accumulatedSamples;
 
 	for (size_t sample = 0; sample < scene.samplesPerPixel; sample++)
-	{
-		const Color sampleColor = Ray(m_position, rayDirection).trace(scene, scene.maxRayDepth);
-		accumulatedSamples += sampleColor;
-	}
+		accumulatedSamples += Ray(m_position, rayDirection).trace(scene, scene.maxRayDepth);
 
 	return accumulatedSamples / scene.samplesPerPixel;
 }
@@ -57,6 +54,6 @@ void Camera::setOrientation(const Vector& orientation)
 
 void Camera::update()
 {
-	m_right = m_orientation.crossProduct(m_direction).unit() * (m_viewWidth / 2);
-	m_down = (m_right.crossProduct(m_direction).unit() * (-m_viewHeight / 2)).inverted();
+	m_right	= m_orientation.crossProduct(m_direction).unit() * (m_viewWidth / 2);
+	m_down	= (m_right.crossProduct(m_direction).unit() * (-m_viewHeight / 2)).inverted();
 }

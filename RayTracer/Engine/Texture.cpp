@@ -31,7 +31,7 @@ Color Texture::sample(double u, double v) const
 	double x = (m_width - 1) * u;
 	double y = (m_height - 1) * v;
 
-	Color color = Palette::kBlack;
+	Color color;
 
 	switch (m_interpolation)
 	{
