@@ -24,7 +24,7 @@ public:
 							Mesh(std::vector<Vertex> vertices, std::vector<Triangle> triangles);
 
 	template <typename BBTestCallable, typename TriangleCallable>
-	void					walk(const BBTestCallable& boundingBoxTest, const TriangleCallable& triangleTest) const
+	void					walk(BBTestCallable&& boundingBoxTest, TriangleCallable&& triangleTest) const
 	{
 		if (! m_root)
 			return;
@@ -44,7 +44,7 @@ private:
 	};
 
 	template <typename BBTestCallable, typename TriangleCallable>
-	void					walk(const BBTestCallable& boundingBoxTest, const TriangleCallable& triangleTest, const Node* node) const
+	void					walk(BBTestCallable&& boundingBoxTest, TriangleCallable&& triangleTest, const Node* node) const
 	{
 		if (! boundingBoxTest(node->lowerCorner, node->upperCorner))
 			return;
