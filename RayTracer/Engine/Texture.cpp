@@ -16,16 +16,13 @@ Texture::Texture(size_t width, size_t height, const Color& multiplier, Interpola
 Color Texture::sample(double u, double v) const
 {
 	// Wrap U coordinate in both directions to be between [0, 1]
-    if (u < 0)
-        u -= -1 + std::ceil(u);
-	else
-		u -= std::floor(u);
+	u = std::fmod(u, 1.0);
+	if (u < 0)
+		u += 1.0;
 
-	// Wrap V coordinate in both directions to be between [0, 1]
-    if (v < 0)
-        v -= -1 + std::ceil(v);
-	else
-		v -= std::floor(v);
+	v = std::fmod(v, 1.0);
+	if (v < 0)
+		v += 1.0;
 
 	assert(u == std::clamp(u, 0.0, 1.0));
 	assert(v == std::clamp(v, 0.0, 1.0));
@@ -62,7 +59,6 @@ Color Texture::sample(double u, double v) const
 			color += colorAt(nextP, q) * dP * (1 - dQ);
 			color += colorAt(p    , nextQ) * (1 - dP) * dQ;
 			color += colorAt(nextP, nextQ) * dP * dQ;
-
 			break;
 		}
 	}
