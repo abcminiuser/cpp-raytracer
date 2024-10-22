@@ -4,7 +4,6 @@
 
 #include <array>
 #include <cstdint>
-#include <memory>
 #include <vector>
 
 using Triangle = std::array<size_t, 3>;
@@ -24,7 +23,7 @@ public:
 			Mesh(std::vector<Vertex> vertices, std::vector<Triangle> triangles);
 
 	template <typename BBTestCallable, typename TriangleCallable>
-	void	walk(const BBTestCallable& boundingBoxTest, const TriangleCallable& triangleTest)
+	void	walk(const BBTestCallable& boundingBoxTest, const TriangleCallable& triangleTest) const
 	{
 		if (m_elements.empty())
 			return;
@@ -44,7 +43,7 @@ private:
 	};
 
 	template <typename BBTestCallable, typename TriangleCallable>
-	void	walk(const BBTestCallable& boundingBoxTest, const TriangleCallable& triangleTest, const Node& node)
+	void	walk(const BBTestCallable& boundingBoxTest, const TriangleCallable& triangleTest, const Node& node) const
 	{
 		if (! boundingBoxTest(node.lowerCorner, node.upperCorner))
 			return;

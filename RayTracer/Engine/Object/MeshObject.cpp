@@ -147,6 +147,7 @@ double MeshObject::intersectWith(const Ray& ray, const Vertex& v0, const Vertex&
 
 	const Vector edge1 = v1.position - v0.position;
 	const Vector edge2 = v2.position - v0.position;
+
 	const Vector rayCrossE2 = ray.direction().crossProduct(edge2);
 
 	const double det = edge1.dotProduct(rayCrossE2);
@@ -207,10 +208,10 @@ Vector MeshObject::interpolate(const Vector& point, const Vertex& v0, const Vert
 	const double d11 = e1.dotProduct(e1);
 	const double d20 = e2.dotProduct(e0);
 	const double d21 = e2.dotProduct(e1);
-	const double denom = d00 * d11 - d01 * d01;
+	const double invDenom = 1.0 / (d00 * d11 - d01 * d01);
 
-	const double v = (d11 * d20 - d01 * d21) / denom;
-	const double w = (d00 * d21 - d01 * d20) / denom;
+	const double v = (d11 * d20 - d01 * d21) * invDenom;
+	const double w = (d00 * d21 - d01 * d20) * invDenom;
 	const double u = 1.0 - v - w;
 
 	return Vector(u, v, w);

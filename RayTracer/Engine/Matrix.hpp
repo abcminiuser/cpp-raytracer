@@ -72,15 +72,15 @@ namespace MatrixUtils
 {
 	static inline Matrix<3, 3>				RotationMatrix(const Vector& rotation)
 	{
-		const auto& alpha = rotation.x();
+		const auto alpha = rotation.x();
 		const auto cosAlpha = std::cos(alpha);
 		const auto sinAlpha = std::sin(alpha);
 
-		const auto& beta = rotation.y();
+		const auto beta = rotation.y();
 		const auto cosBeta = std::cos(beta);
 		const auto sinBeta = std::sin(beta);
 
-		const auto& gamma = rotation.z();
+		const auto gamma = rotation.z();
 		const auto cosGamma = std::cos(gamma);
 		const auto sinGamma = std::sin(gamma);
 
