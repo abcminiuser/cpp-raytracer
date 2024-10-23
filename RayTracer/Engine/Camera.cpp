@@ -21,8 +21,8 @@ Camera::Camera(const Vector& position, const Vector& target, double viewWidth, d
 
 Color Camera::trace(const Scene& scene, double u, double v) const
 {
-	const Vector rayX = m_right * u;
-	const Vector rayY = m_down * v;
+	const Vector rayX = m_right * (u - .5);
+	const Vector rayY = m_down * (v - .5);
 
 	const Vector rayDirection = (m_direction + rayX + rayY).unit();
 

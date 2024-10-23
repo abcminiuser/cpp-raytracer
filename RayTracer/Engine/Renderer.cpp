@@ -193,8 +193,8 @@ void Renderer::renderLines(size_t startLine, size_t endLine)
 				continue;
 			}
 
-			const double u = (x * xSampleOffset) - .5;
-			const double v = (y * ySampleOffset) - .5;
+			const double u = (x * xSampleOffset);
+			const double v = (y * ySampleOffset);
 
 			*(currentPixel++) = m_scene.camera.trace(m_scene, u, v).toRGBA8888();
 		}
