@@ -19,7 +19,7 @@ public:
 	void			setDirection(const Vector& direction);
 	void			setOrientation(const Vector& orientation);
 
-	Color			trace(const Scene& scene, double x, double y) const;
+	Color			trace(const Scene& scene, double u, double v) const;
 
 private:
 	void			update();
