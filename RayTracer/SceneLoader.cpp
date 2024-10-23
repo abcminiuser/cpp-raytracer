@@ -118,7 +118,7 @@ namespace
 		std::string value = TrimWhitespace(node[property].get_value<std::string>());
 
 		static const std::regex normColorRegex("Color\\(" "([^\\,]+)" "," "([^\\,]+)" "," "([^\\)]+)" "\\)");
-		if (std::smatch matches; std::regex_search(value, matches, normColorRegex))
+		if (std::smatch matches; std::regex_match(value, matches, normColorRegex))
 		{
 			auto r = DoubleFromString(matches[1]);
 			auto g = DoubleFromString(matches[2]);
@@ -128,7 +128,7 @@ namespace
 		}
 
 		static const std::regex rgb888ColorRegex("ColorRGB888\\(" "([^\\,]+)" "," "([^\\,]+)" "," "([^\\)]+)" "\\)");
-		if (std::smatch matches; std::regex_search(value, matches, rgb888ColorRegex))
+		if (std::smatch matches; std::regex_match(value, matches, rgb888ColorRegex))
 		{
 			auto r = std::clamp<double>(DoubleFromString(matches[1]), 0, 255);
 			auto g = std::clamp<double>(DoubleFromString(matches[2]), 0, 255);
@@ -162,7 +162,7 @@ namespace
 		std::string value = TrimWhitespace(node[property].get_value<std::string>());
 
 		static const std::regex vectorRegex("Vector\\(" "([^\\,]+)" "," "([^\\,]+)" "," "([^\\)]+)" "\\)");
-		if (std::smatch matches; std::regex_search(value, matches, vectorRegex))
+		if (std::smatch matches; std::regex_match(value, matches, vectorRegex))
 		{
 			auto x = DoubleFromString(matches[1]);
 			auto y = DoubleFromString(matches[2]);
@@ -172,7 +172,7 @@ namespace
 		}
 
 		static const std::regex degreesVectorRegex("VectorDegrees\\(" "([^\\,]+)" "," "([^\\,]+)" "," "([^\\)]+)" "\\)");
-		if (std::smatch matches; std::regex_search(value, matches, degreesVectorRegex))
+		if (std::smatch matches; std::regex_match(value, matches, degreesVectorRegex))
 		{
 			auto x = DoubleFromString(matches[1]) * (std::numbers::pi / 180);
 			auto y = DoubleFromString(matches[2]) * (std::numbers::pi / 180);
