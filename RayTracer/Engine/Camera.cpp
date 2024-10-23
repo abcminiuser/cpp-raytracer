@@ -4,15 +4,15 @@
 #include "Engine/Scene.hpp"
 
 Camera::Camera()
-	: Camera(StandardVectors::kOrigin, StandardVectors::kUnitZ, 4.0, 9.0 / 4.0)
+	: Camera(StandardVectors::kOrigin, StandardVectors::kUnitZ, StandardVectors::kUnitY, 4.0, 9.0 / 4.0)
 {
 
 }
 
-Camera::Camera(const Vector& position, const Vector& target, double viewWidth, double viewHeight)
+Camera::Camera(const Vector& position, const Vector& target, const Vector& orientation, double viewWidth, double viewHeight)
 	: m_position(position)
 	, m_direction((target - position).unit())
-	, m_orientation(StandardVectors::kUnitY)
+	, m_orientation(orientation)
 	, m_viewWidth(viewWidth)
 	, m_viewHeight(viewHeight)
 {

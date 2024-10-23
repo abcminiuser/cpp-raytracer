@@ -237,10 +237,11 @@ namespace
 
 		auto position			= ParseVector(cameraNode, "position").value_or(StandardVectors::kOrigin);
 		auto target				= ParseVector(cameraNode, "target").value_or(StandardVectors::kUnitZ);
+		auto orientation		= ParseVector(cameraNode, "orientation").value_or(StandardVectors::kUnitY);
 		auto viewWidth			= ParseDouble(cameraNode, "width").value_or(4.0);
 		auto viewHeight			= ParseDouble(cameraNode, "height").value_or(9.0 / 4.0);
 
-		return Camera(position, target, viewWidth, viewHeight);
+		return Camera(position, target, orientation, viewWidth, viewHeight);
 	}
 
 	std::shared_ptr<Texture> ParseCheckerboardTexture(const fkyaml::node& node)

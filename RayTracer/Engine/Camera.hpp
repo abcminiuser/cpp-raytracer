@@ -9,11 +9,11 @@ class Camera
 {
 public:
 					Camera();
-					Camera(const Vector& position, const Vector& target, double viewWidth, double viewHeight);
+					Camera(const Vector& position, const Vector& target, const Vector& orientation, double viewWidth, double viewHeight);
 
-	const Vector&	position() const						{ return m_position; }
-	const Vector&	direction() const						{ return m_direction; }
-	const Vector&	orientation() const						{ return m_orientation; }
+	const Vector&	position() const	{ return m_position; }
+	const Vector&	direction() const	{ return m_direction; }
+	const Vector&	orientation() const	{ return m_orientation; }
 
 	void			setPosition(const Vector& position);
 	void			setDirection(const Vector& direction);
