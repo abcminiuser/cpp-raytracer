@@ -130,9 +130,9 @@ namespace
 		static const std::regex rgb888ColorRegex("ColorRGB888\\(" "([^\\,]+)" "," "([^\\,]+)" "," "([^\\)]+)" "\\)");
 		if (std::smatch matches; std::regex_match(value, matches, rgb888ColorRegex))
 		{
-			auto r = std::clamp<double>(DoubleFromString(matches[1]), 0, 255);
-			auto g = std::clamp<double>(DoubleFromString(matches[2]), 0, 255);
-			auto b = std::clamp<double>(DoubleFromString(matches[3]), 0, 255);
+			auto r = std::clamp(DoubleFromString(matches[1]), 0.0, 255.0);
+			auto g = std::clamp(DoubleFromString(matches[2]), 0.0, 255.0);
+			auto b = std::clamp(DoubleFromString(matches[3]), 0.0, 255.0);
 
 			return Color::FromRGB888(static_cast<uint8_t>(r), static_cast<uint8_t>(g), static_cast<uint8_t>(b));
 		}
@@ -356,7 +356,7 @@ namespace
 	{
 		auto position			= ParseVector(node, "position").value_or(StandardVectors::kOrigin);
 		auto rotation			= ParseVector(node, "rotation").value_or(Vector(0, 0, 0));
-		auto material			= ParseMaterial(node["material"]);
+		auto material			= ParseMaterial(node.at("material"));
 		auto size				= ParseVector(node, "size").value_or(Vector(1, 1, 1));
 
 		return std::make_shared<BoxObject>(position, rotation, std::move(material), size);
@@ -364,7 +364,7 @@ namespace
 
 	std::shared_ptr<Object> ParsePlaneObject(const fkyaml::node& node)
 	{
-		auto material			= ParseMaterial(node["material"]);
+		auto material			= ParseMaterial(node.at("material"));
 		auto normal				= ParseVector(node, "normal").value_or(StandardVectors::kUnitY);
 		auto distance			= ParseDouble(node, "distance").value_or(0.0);
 		auto uvScaleFactor		= ParseDouble(node, "scale").value_or(1.0);
@@ -376,8 +376,8 @@ namespace
 	{
 		auto position			= ParseVector(node, "position").value_or(StandardVectors::kOrigin);
 		auto rotation			= ParseVector(node, "rotation").value_or(Vector(0, 0, 0));
-		auto material			= ParseMaterial(node["material"]);
-		auto path				= node["path"].get_value<std::string>();
+		auto material			= ParseMaterial(node.at("material"));
+		auto path				= node.at("path").get_value<std::string>();
 		auto scaleFactor		= ParseDouble(node, "scale").value_or(1.0);
 
 		return std::make_shared<MeshObject>(position, rotation, std::move(material), MaskObjectMesh(path, scaleFactor));
@@ -387,7 +387,7 @@ namespace
 	{
 		auto position			= ParseVector(node, "position").value_or(StandardVectors::kOrigin);
 		auto rotation			= ParseVector(node, "rotation").value_or(Vector(0, 0, 0));
-		auto material			= ParseMaterial(node["material"]);
+		auto material			= ParseMaterial(node.at("material"));
 		auto radius				= ParseDouble(node, "radius").value_or(1.0);
 
 		return std::make_shared<SphereObject>(position, rotation, std::move(material), radius);
