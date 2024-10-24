@@ -2,6 +2,7 @@
 
 #include "Engine/Camera.hpp"
 #include "Engine/Color.hpp"
+#include "Engine/Random.hpp"
 #include "Engine/Vector.hpp"
 
 #include <algorithm>
@@ -193,10 +194,21 @@ void Renderer::renderLines(size_t startLine, size_t endLine)
 				continue;
 			}
 
-			const double u = (x * xSampleOffset);
-			const double v = (y * ySampleOffset);
+			const double u = x * xSampleOffset;
+			const double v = y * ySampleOffset;
 
-			*(currentPixel++) = m_scene.camera.trace(m_scene, u, v).toRGBA8888();
+			Color accumulatedSamples;
+
+			for (size_t sample = 0; sample < m_scene.samplesPerPixel; sample++)
+			{
+				// Apply some jitter within the current pixel, so we average out aliasing errors.
+				double sampleU = std::clamp(u + .5 * xSampleOffset * Random::SignedNormal(), 0.0, 1.0);
+				double sampleV = std::clamp(v + .5 * ySampleOffset * Random::SignedNormal(), 0.0, 1.0);
+
+				accumulatedSamples += m_scene.camera.trace(m_scene, sampleU, sampleV);
+			}
+
+			*(currentPixel++) = (accumulatedSamples / m_scene.samplesPerPixel).toRGBA8888();
 		}
 	}
 }
