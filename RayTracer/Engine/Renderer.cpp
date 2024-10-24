@@ -194,8 +194,8 @@ void Renderer::renderLines(size_t startLine, size_t endLine)
 				continue;
 			}
 
-			const double u = x * xSampleOffset;
-			const double v = y * ySampleOffset;
+			const double u = (x + .5) * xSampleOffset;
+			const double v = (y + .5) * ySampleOffset;
 
 			Color accumulatedSamples;
 
