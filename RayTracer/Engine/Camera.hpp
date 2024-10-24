@@ -32,6 +32,6 @@ private:
 	double			m_viewWidth;
 	double			m_viewHeight;
 
-	Vector			m_right;
-	Vector			m_down;
+	Vector			m_u;
+	Vector			m_v;
 };

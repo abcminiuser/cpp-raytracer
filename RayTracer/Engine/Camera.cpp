@@ -21,8 +21,8 @@ Camera::Camera(const Vector& position, const Vector& target, const Vector& orien
 
 Color Camera::trace(const Scene& scene, double u, double v) const
 {
-	const Vector rayX = m_right * (u - .5);
-	const Vector rayY = m_down * (v - .5);
+	const Vector rayX = m_u * (u - .5) * (m_viewWidth / 2);
+	const Vector rayY = m_v * (v - .5) * (m_viewHeight / 2);
 
 	const Vector rayDirection = (m_direction + rayX + rayY).unit();
 
@@ -49,6 +49,6 @@ void Camera::setOrientation(const Vector& orientation)
 
 void Camera::update()
 {
-	m_right	= m_orientation.crossProduct(m_direction).unit() * (m_viewWidth / 2);
-	m_down	= (m_right.crossProduct(m_direction).unit() * (-m_viewHeight / 2)).inverted();
+	m_u	= m_orientation.crossProduct(m_direction).unit();
+	m_v	= m_direction.inverted().crossProduct(m_u).unit();
 }
