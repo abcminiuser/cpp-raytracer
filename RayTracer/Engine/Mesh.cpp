@@ -39,12 +39,12 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<Triangle> triangles)
 
 	size_t nodeCount = 0;
 	walk(
-		[&](const Vector& lowerCorner, const Vector& upperCorner) -> bool
+		[&](const Vector&, const Vector&) -> bool
 		{
 			nodeCount++;
 			return true;
 		},
-		[&](const std::vector<Vertex>& vertices, const std::vector<Triangle>& triangles)
+		[](const std::vector<Vertex>&, const std::vector<Triangle>&)
 		{
 			// NOP
 		});
