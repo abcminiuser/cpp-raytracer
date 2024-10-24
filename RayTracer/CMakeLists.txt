@@ -23,7 +23,7 @@ if (CPPCHECK_BIN)
 endif ()
 
 find_package (SFML CONFIG REQUIRED COMPONENTS graphics)
-find_package (fkYAML CONFIG REQUIRED HINTS ${CMAKE_SOURCE_DIR}/Vendor/fkyaml-0.3.13/package/share/cmake/fkYAML)
+find_package (fkYAML CONFIG REQUIRED HINTS ${CMAKE_SOURCE_DIR}/Vendor/fkyaml-0.3.13/package)
 
 add_executable (RayTracer
 	"Engine/Renderer.cpp"
