@@ -26,7 +26,6 @@
 
 #include <fkYAML/node.hpp>
 
-#include <charconv>
 #include <fstream>
 #include <map>
 #include <numbers>
@@ -52,10 +51,10 @@ namespace
 	{
 		str = TrimWhitespace(str);
 
-		double value;
-		const auto [ptr, ec] = std::from_chars(str.data(), str.data() + str.size(), value);
+		char* parsedEnd;
+		double value = std::strtod(str.data(), &parsedEnd);
 
-		if (ec != std::errc() || ptr != (str.data() + str.size()))
+		if (parsedEnd != (str.data() + str.size()))
 			throw std::runtime_error("Failed to parse double '" + str + "' in scene YAML file");
 
 		return value;
