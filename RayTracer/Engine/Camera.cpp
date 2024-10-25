@@ -21,12 +21,17 @@ Camera::Camera(const Vector& position, const Vector& target, const Vector& orien
 
 Color Camera::trace(const Scene& scene, double u, double v) const
 {
-	const Vector rayX = m_u * (u - .5) * (m_viewWidth / 2);
-	const Vector rayY = m_v * (v - .5) * (m_viewHeight / 2);
+	const Vector ray00U = m_u * - .5 * (m_viewWidth / 2);
+	const Vector ray00V = m_v * - .5 * (m_viewHeight / 2);
+	const Vector ray00 = ray00U + ray00V;
 
-	const Vector rayDirection = (m_direction + rayX + rayY).unit();
+	const Vector rayX = m_u * u * (m_viewWidth / 2);
+	const Vector rayY = m_v * v * (m_viewHeight / 2);
+	const Vector rayXY = rayX + rayY;
 
-	return Ray(m_position, rayDirection).trace(scene, scene.maxRayDepth);
+	const Vector rayDirection = (m_direction + ray00 + rayXY);
+
+	return Ray(m_position, rayDirection.unit()).trace(scene, scene.maxRayDepth);
 }
 
 void Camera::setPosition(const Vector& position)
