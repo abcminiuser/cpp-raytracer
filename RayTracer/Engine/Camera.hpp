@@ -15,6 +15,10 @@ public:
 	const Vector&	direction() const	{ return m_direction; }
 	const Vector&	orientation() const	{ return m_orientation; }
 
+	const Vector&	u() const			{ return m_u; }
+	const Vector&	v() const			{ return m_v; }
+	const Vector&	w() const			{ return m_w; }
+
 	void			setPosition(const Vector& position);
 	void			setDirection(const Vector& direction);
 	void			setOrientation(const Vector& orientation);
@@ -34,4 +38,5 @@ private:
 
 	Vector			m_u;
 	Vector			m_v;
+	Vector			m_w;
 };

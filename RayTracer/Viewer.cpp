@@ -5,6 +5,7 @@
 #include "Engine/Scene.hpp"
 
 #include <chrono>
+#include <functional>
 #include <numbers>
 #include <optional>
 #include <stddef.h>
@@ -167,19 +168,18 @@ void Viewer::view(const std::string& path)
 					case sf::Keyboard::Key::R:
 					case sf::Keyboard::Key::F:
 					{
-						constexpr auto kMoveDelta = .1;
-
-						static const std::map<sf::Keyboard::Key, Vector> cameraMoveAmount
+						static const std::map<sf::Keyboard::Key, std::function<Vector()>> cameraMoveAmount
 							{
-								{ sf::Keyboard::Key::W, Vector(0, 0, kMoveDelta) },
-								{ sf::Keyboard::Key::A, Vector(-kMoveDelta, 0, 0) },
-								{ sf::Keyboard::Key::S, Vector(0, 0,-kMoveDelta) },
-								{ sf::Keyboard::Key::D, Vector(kMoveDelta, 0, 0) },
-								{ sf::Keyboard::Key::R, Vector(0, kMoveDelta, 0) },
-								{ sf::Keyboard::Key::F, Vector(0, -kMoveDelta, 0) },
+								{ sf::Keyboard::Key::W, [&]() { return scene->camera.w().inverted(); }},
+								{ sf::Keyboard::Key::A, [&]() { return scene->camera.u().inverted(); } },
+								{ sf::Keyboard::Key::S, [&]() { return scene->camera.w(); } },
+								{ sf::Keyboard::Key::D, [&]() { return scene->camera.u(); } },
+								{ sf::Keyboard::Key::R, [&]() { return scene->camera.v().inverted(); } },
+								{ sf::Keyboard::Key::F, [&]() { return scene->camera.v(); } },
 							};
 
-						scene->camera.setPosition(scene->camera.position() + cameraMoveAmount.at(event.key.code));
+						constexpr auto kMoveDelta = .1;
+						scene->camera.setPosition(scene->camera.position() + cameraMoveAmount.at(event.key.code)() * kMoveDelta);
 
 						nextRenderType = RenderType::CoarsePreview;
 						sceneUpdatePending = true;
@@ -193,7 +193,7 @@ void Viewer::view(const std::string& path)
 					{
 						constexpr auto kRotateDelta = std::numbers::pi / 360.0;
 
-						static const std::map<sf::Keyboard::Key, Matrix<3, 3>> cameraRotateAmount
+						const std::map<sf::Keyboard::Key, Matrix<3, 3>> cameraRotateAmount
 							{
 								{ sf::Keyboard::Key::I, MatrixUtils::RotationMatrix(Vector(0, 0, -kRotateDelta)) },
 								{ sf::Keyboard::Key::J, MatrixUtils::RotationMatrix(Vector(0, -kRotateDelta, 0)) },

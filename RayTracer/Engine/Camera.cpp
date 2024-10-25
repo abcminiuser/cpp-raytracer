@@ -49,6 +49,7 @@ void Camera::setOrientation(const Vector& orientation)
 
 void Camera::update()
 {
+	m_w = m_direction.inverted();
 	m_u	= m_orientation.crossProduct(m_direction).unit();
-	m_v	= m_direction.inverted().crossProduct(m_u).unit();
+	m_v	= m_w.crossProduct(m_u).unit();
 }
