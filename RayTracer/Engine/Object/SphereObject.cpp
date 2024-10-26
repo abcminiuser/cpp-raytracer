@@ -23,7 +23,7 @@ double SphereObject::intersectWith(const Ray& ray) const
 	if (d < 0)
 	{
 		// No intersection
-		return kNoIntersection;
+		return Ray::kNoIntersection;
 	}
 	else if (d == 0)
 	{

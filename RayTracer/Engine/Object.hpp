@@ -3,7 +3,6 @@
 #include "Engine/BoundingBox.hpp"
 #include "Engine/Color.hpp"
 #include "Engine/Matrix.hpp"
-#include "Engine/Ray.hpp"
 #include "Engine/Vector.hpp"
 
 #include <limits>
@@ -11,14 +10,13 @@
 #include <stdint.h>
 
 class Material;
+class Ray;
 
 struct Scene;
 
 class Object
 {
 public:
-	static constexpr auto kNoIntersection = Ray::kNoIntersection;
-
 	static inline constexpr double kComparisonThreshold		= 1e-10;
 
 									Object(const Vector& position, const Vector& rotation, std::shared_ptr<Material> material);

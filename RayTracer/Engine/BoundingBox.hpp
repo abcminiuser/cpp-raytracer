@@ -1,12 +1,11 @@
 #pragma once
 
-#include "Engine/Ray.hpp"
 #include "Engine/Vector.hpp"
+
+class Ray;
 
 struct BoundingBox
 {
-	static constexpr auto kNoIntersection = Ray::kNoIntersection;
-
 	Vector	lower;
 	Vector	upper;
 

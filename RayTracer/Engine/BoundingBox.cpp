@@ -1,5 +1,7 @@
 #include "Engine/BoundingBox.hpp"
 
+#include "Engine/Ray.hpp"
+
 double BoundingBox::intersect(const Ray& ray) const
 {
 	const Vector t1 = (lower - ray.position()) * ray.directionInverse();
@@ -14,13 +16,13 @@ double BoundingBox::intersect(const Ray& ray) const
 	if (tMax < 0)
 	{
 		// Intersection is behind us
-		return kNoIntersection;
+		return Ray::kNoIntersection;
 	}
 
 	if (tMin > tMax)
 	{
 		// No intersection
-		return kNoIntersection;
+		return Ray::kNoIntersection;
 	}
 
 	return tMin;

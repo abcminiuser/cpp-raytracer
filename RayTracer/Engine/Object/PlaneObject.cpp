@@ -22,7 +22,7 @@ double PlaneObject::intersectWith(const Ray& ray) const
 	if (angle == 0)
 	{
 		// No intersection
-		return kNoIntersection;
+		return Ray::kNoIntersection;
 	}
 
 	// Intersection at a single point (as we're infinitely thin)

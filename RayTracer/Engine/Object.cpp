@@ -24,7 +24,7 @@ double Object::intersect(const Ray& ray) const
 
 	const double closestIntersectionDistance = intersectWith(rayObjectSpace);
 	if (closestIntersectionDistance < kComparisonThreshold)
-		return kNoIntersection;
+		return Ray::kNoIntersection;
 
 	return closestIntersectionDistance;
 }

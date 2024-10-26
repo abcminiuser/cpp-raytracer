@@ -15,7 +15,7 @@ MeshObject::MeshObject(const Vector& position, const Vector& rotation, std::shar
 
 double MeshObject::intersectWith(const Ray& ray) const
 {
-	double distance = kNoIntersection;
+	double distance = Ray::kNoIntersection;
 
 	m_mesh->walk(
 		[&](const BoundingBox& boundingBox) -> bool
@@ -122,24 +122,24 @@ double MeshObject::intersectWith(const Ray& ray, const Vertex& v0, const Vertex&
 
 	const double det = edge1.dotProduct(rayCrossE2);
 	if (std::abs(det) < kComparisonThreshold)
-		return kNoIntersection;
+		return Ray::kNoIntersection;
 
 	const double invDet = 1.0 / det;
 	const Vector s = ray.position() - v0.position;
 
 	const double u = invDet * s.dotProduct(rayCrossE2);
 	if (u < 0 || u > 1)
-		return kNoIntersection;
+		return Ray::kNoIntersection;
 
 	const Vector sCrossE1 = s.crossProduct(edge1);
 
 	const double v = invDet * ray.direction().dotProduct(sCrossE1);
 	if (v < 0 || u + v > 1)
-		return kNoIntersection;
+		return Ray::kNoIntersection;
 
 	const double t = invDet * edge2.dotProduct(sCrossE1);
 	if (t < kComparisonThreshold)
-		return kNoIntersection;
+		return Ray::kNoIntersection;
 
 	return t;
 }

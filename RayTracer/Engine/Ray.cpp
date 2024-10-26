@@ -19,7 +19,7 @@ Color Ray::trace(const Scene& scene, uint32_t rayDepthRemaining) const
 	if (rayDepthRemaining-- == 0)
 		return Palette::kBlack;
 
-	double	closestIntersectionDistance = Object::kNoIntersection;
+	double	closestIntersectionDistance = Ray::kNoIntersection;
 	Object*	closestObject = nullptr;
 
 	for (const auto& o : scene.objects)
@@ -32,7 +32,7 @@ Color Ray::trace(const Scene& scene, uint32_t rayDepthRemaining) const
 		closestObject = o.get();
 	}
 
-	if (closestIntersectionDistance == Object::kNoIntersection)
+	if (closestIntersectionDistance == Ray::kNoIntersection)
 		return scene.background;
 
 	const Vector closestCollisionPoint = m_position + (m_direction * closestIntersectionDistance);
