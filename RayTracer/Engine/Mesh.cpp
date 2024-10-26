@@ -130,17 +130,12 @@ std::vector<Triangle> Mesh::trianglesInBox(const BoundingBox& boundingBox, const
 bool Mesh::boxContainsTriangle(const BoundingBox& boundingBox, const Triangle& triangle) const
 {
 	// Determine the bounding box for this triangle.
-	Vector triangleLowerCorner = StandardVectors::kMax;
-	Vector triangleUpperCorner = StandardVectors::kMin;
+	BoundingBox triangleBoundingBox { .lower = StandardVectors::kMax, .upper = StandardVectors::kMin };
 	for (const auto& p : triangle)
 	{
-		triangleLowerCorner = VectorUtils::MinPoint(triangleLowerCorner, m_vertices[p].position);
-		triangleUpperCorner = VectorUtils::MaxPoint(triangleUpperCorner, m_vertices[p].position);
+		triangleBoundingBox.lower = VectorUtils::MinPoint(triangleBoundingBox.lower, m_vertices[p].position);
+		triangleBoundingBox.upper = VectorUtils::MaxPoint(triangleBoundingBox.upper, m_vertices[p].position);
 	}
 
-	const auto xInBounds = boundingBox.lower.x() <= triangleUpperCorner.x() && triangleLowerCorner.x() <= boundingBox.upper.x();
-	const auto yInBounds = boundingBox.lower.y() <= triangleUpperCorner.y() && triangleLowerCorner.y() <= boundingBox.upper.y();
-	const auto zInBounds = boundingBox.lower.z() <= triangleUpperCorner.z() && triangleLowerCorner.z() <= boundingBox.upper.z();
-
-	return xInBounds && yInBounds && zInBounds;
+	return boundingBox.intersects(triangleBoundingBox);
 }

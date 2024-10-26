@@ -58,14 +58,16 @@ private:
 		{
 			for (const auto& c : node->children)
 			{
-				if (c)
-					walk(boundingBoxTest, triangleTest, c.get());
+				if (const auto* childNode = c.get())
+					walk(boundingBoxTest, triangleTest, childNode);
 			}
 
 			return;
 		}
-
-		triangleTest(std::as_const(m_vertices), node->triangles);
+		else
+		{
+			triangleTest(std::as_const(m_vertices), node->triangles);
+		}
 	}
 
 	std::unique_ptr<Node>	partition(std::vector<Triangle> triangles, uint32_t depth);
@@ -74,6 +76,6 @@ private:
 	bool					boxContainsTriangle(const BoundingBox& boundingBox, const Triangle& triangle) const;
 
 private:
-	std::vector<Vertex> 			m_vertices;
-	std::unique_ptr<Node>			m_root;
+	std::vector<Vertex> 	m_vertices;
+	std::unique_ptr<Node>	m_root;
 };

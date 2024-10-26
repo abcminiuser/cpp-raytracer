@@ -48,22 +48,12 @@ void MeshObject::getIntersectionProperties(const Vector& position, Vector& norma
 	m_mesh->walk(
 		[&](const BoundingBox& boundingBox) -> bool
 		{
-			// Check if this point is within this node's bounding box.
-
+			// If we already found a matching point, don't search this node.
 			if (found)
 				return false;
 
-			if (position.x() < boundingBox.lower.x() || position.x() > boundingBox.upper.x())
-				return false;
-
-			if (position.y() < boundingBox.lower.y() || position.y() > boundingBox.upper.y())
-				return false;
-
-			if (position.z() < boundingBox.lower.z() || position.z() > boundingBox.upper.z())
-				return false;
-
-			// Our search point is contained in the bounding box, search this node.
-			return true;
+			// If out search point is contained in the bounding box, search this node.
+			return boundingBox.contains(position);
 		},
 		[&](const std::vector<Vertex>& vertices, const std::vector<Triangle>& triangles)
 		{
