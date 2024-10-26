@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Engine/BoundingBox.hpp"
 #include "Engine/Vector.hpp"
 
 #include <array>
@@ -23,6 +24,11 @@ public:
 
 							Mesh(std::vector<Vertex> vertices, std::vector<Triangle> triangles);
 
+	BoundingBox				boundingBox() const
+	{
+		return m_root ? m_root->boundingBox : BoundingBox();
+	}
+
 	template <typename BBTestCallable, typename TriangleCallable>
 	void					walk(BBTestCallable&& boundingBoxTest, TriangleCallable&& triangleTest) const
 	{
@@ -35,8 +41,7 @@ public:
 private:
 	struct Node
 	{
-		Vector									lowerCorner;
-		Vector									upperCorner;
+		BoundingBox								boundingBox;
 
 		std::vector<Triangle>					triangles;
 
@@ -46,7 +51,7 @@ private:
 	template <typename BBTestCallable, typename TriangleCallable>
 	void					walk(BBTestCallable&& boundingBoxTest, TriangleCallable&& triangleTest, const Node* node) const
 	{
-		if (! boundingBoxTest(node->lowerCorner, node->upperCorner))
+		if (! boundingBoxTest(node->boundingBox))
 			return;
 
 		if (node->triangles.empty())
@@ -65,8 +70,8 @@ private:
 
 	std::unique_ptr<Node>	partition(std::vector<Triangle> triangles, uint32_t depth);
 
-	std::vector<Triangle>	trianglesInBox(const Vector& lowerCorner, const Vector& upperCorner, const std::vector<Triangle>& triangles) const;
-	bool					boxContainsTriangle(const Vector& lowerCorner, const Vector& upperCorner, const Triangle& triangle) const;
+	std::vector<Triangle>	trianglesInBox(const BoundingBox& boundingBox, const std::vector<Triangle>& triangles) const;
+	bool					boxContainsTriangle(const BoundingBox& boundingBox, const Triangle& triangle) const;
 
 private:
 	std::vector<Vertex> 			m_vertices;

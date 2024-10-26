@@ -3,11 +3,15 @@
 #include "Engine/Color.hpp"
 #include "Engine/Vector.hpp"
 
+#include <limits>
+
 struct Scene;
 
 class Ray
 {
 public:
+	static inline constexpr double kNoIntersection = std::numeric_limits<double>::max();
+
 						Ray(const Vector& position, const Vector& direction);
 
 	const Vector&		position() const			{ return m_position; }

@@ -39,7 +39,7 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<Triangle> triangles)
 
 	size_t nodeCount = 0;
 	walk(
-		[&](const Vector&, const Vector&) -> bool
+		[&](const BoundingBox&) -> bool
 		{
 			nodeCount++;
 			return true;
@@ -57,16 +57,15 @@ std::unique_ptr<Mesh::Node> Mesh::partition(std::vector<Triangle> triangles, uin
 		return nullptr;
 
 	auto node = std::make_unique<Node>();
-	node->lowerCorner	= StandardVectors::kMax;
-	node->upperCorner	= StandardVectors::kMin;
+	node->boundingBox	= BoundingBox{ .lower = StandardVectors::kMax, .upper = StandardVectors::kMin };
 	node->triangles		= std::move(triangles);
 
 	for (const auto& t : node->triangles)
 	{
 		for (const auto& p : t)
 		{
-			node->lowerCorner = VectorUtils::MinPoint(node->lowerCorner, m_vertices[p].position);
-			node->upperCorner = VectorUtils::MaxPoint(node->upperCorner, m_vertices[p].position);
+			node->boundingBox.lower = VectorUtils::MinPoint(node->boundingBox.lower, m_vertices[p].position);
+			node->boundingBox.upper = VectorUtils::MaxPoint(node->boundingBox.upper, m_vertices[p].position);
 		}
 	}
 
@@ -79,7 +78,7 @@ std::unique_ptr<Mesh::Node> Mesh::partition(std::vector<Triangle> triangles, uin
 		return node;
 
 	// If we matched too many triangles for this node, split it up into eight smaller cubes within our bounding box.
-	const auto partitionSize = (node->upperCorner - node->lowerCorner) * 0.5;
+	const auto partitionSize = (node->boundingBox.upper - node->boundingBox.lower) * 0.5;
 
 	const auto oX = partitionSize.x();
 	const auto oY = partitionSize.y();
@@ -101,7 +100,7 @@ std::unique_ptr<Mesh::Node> Mesh::partition(std::vector<Triangle> triangles, uin
 
 	// Determine which of our triangles intersect each child's bounding box.
 	for (size_t i = 0; i < 8; i++)
-		childrenTriangles[i] = trianglesInBox(node->lowerCorner + kOffsets[i], node->lowerCorner + kOffsets[i] + partitionSize, node->triangles);
+		childrenTriangles[i] = trianglesInBox(BoundingBox{ .lower = node->boundingBox.lower + kOffsets[i], .upper = node->boundingBox.lower + kOffsets[i] + partitionSize }, node->triangles);
 
 	// Now we've partitioned our triangles, remove them from our node.
 	node->triangles.clear();
@@ -113,14 +112,14 @@ std::unique_ptr<Mesh::Node> Mesh::partition(std::vector<Triangle> triangles, uin
 	return node;
 }
 
-std::vector<Triangle> Mesh::trianglesInBox(const Vector& lowerCorner, const Vector& upperCorner, const std::vector<Triangle>& triangles) const
+std::vector<Triangle> Mesh::trianglesInBox(const BoundingBox& boundingBox, const std::vector<Triangle>& triangles) const
 {
 	std::vector<Triangle> matchedTriangles;
 
 	matchedTriangles.reserve(triangles.size());
 	for (const auto& triangle : triangles)
 	{
-		if (boxContainsTriangle(lowerCorner, upperCorner, triangle))
+		if (boxContainsTriangle(boundingBox, triangle))
 		    matchedTriangles.push_back(triangle);
 	}
 	matchedTriangles.shrink_to_fit();
@@ -128,7 +127,7 @@ std::vector<Triangle> Mesh::trianglesInBox(const Vector& lowerCorner, const Vect
 	return matchedTriangles;
 }
 
-bool Mesh::boxContainsTriangle(const Vector& lowerCorner, const Vector& upperCorner, const Triangle& triangle) const
+bool Mesh::boxContainsTriangle(const BoundingBox& boundingBox, const Triangle& triangle) const
 {
 	// Determine the bounding box for this triangle.
 	Vector triangleLowerCorner = StandardVectors::kMax;
@@ -139,9 +138,9 @@ bool Mesh::boxContainsTriangle(const Vector& lowerCorner, const Vector& upperCor
 		triangleUpperCorner = VectorUtils::MaxPoint(triangleUpperCorner, m_vertices[p].position);
 	}
 
-	const auto xInBounds = lowerCorner.x() <= triangleUpperCorner.x() && triangleLowerCorner.x() <= upperCorner.x();
-	const auto yInBounds = lowerCorner.y() <= triangleUpperCorner.y() && triangleLowerCorner.y() <= upperCorner.y();
-	const auto zInBounds = lowerCorner.z() <= triangleUpperCorner.z() && triangleLowerCorner.z() <= upperCorner.z();
+	const auto xInBounds = boundingBox.lower.x() <= triangleUpperCorner.x() && triangleLowerCorner.x() <= boundingBox.upper.x();
+	const auto yInBounds = boundingBox.lower.y() <= triangleUpperCorner.y() && triangleLowerCorner.y() <= boundingBox.upper.y();
+	const auto zInBounds = boundingBox.lower.z() <= triangleUpperCorner.z() && triangleLowerCorner.z() <= boundingBox.upper.z();
 
 	return xInBounds && yInBounds && zInBounds;
 }

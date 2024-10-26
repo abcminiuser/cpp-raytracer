@@ -25,31 +25,7 @@ BoxObject::BoxObject(const Vector& position, const Vector& rotation, std::shared
 
 double BoxObject::intersectWith(const Ray& ray) const
 {
-	// https://en.wikipedia.org/wiki/Slab_method
-
-	const auto t1 = ray.position().inverted() * ray.directionInverse();
-	const auto t2 = (m_size - ray.position()) * ray.directionInverse();
-
-	const Vector minPoint = VectorUtils::MinPoint(t1, t2);
-	const Vector maxPoint = VectorUtils::MaxPoint(t1, t2);
-
-	const double tMin = VectorUtils::MaxComponent(minPoint);
-	const double tMax = VectorUtils::MinComponent(maxPoint);
-
-	if (tMax < 0)
-	{
-		// Intersection is behind us
-		return kNoIntersection;
-	}
-
-	if (tMin > tMax)
-	{
-		// No intersection
-		return kNoIntersection;
-	}
-
-	// Intersection with a face
-	return tMin;
+	return BoundingBox{ .lower = Vector(), .upper = m_size }.intersect(ray);
 }
 
 void BoxObject::getIntersectionProperties(const Vector& position, Vector& normal, Vector& tangent, Vector& bitangent, Vector& uv) const

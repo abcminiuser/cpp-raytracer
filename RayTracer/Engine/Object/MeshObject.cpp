@@ -18,39 +18,9 @@ double MeshObject::intersectWith(const Ray& ray) const
 	double distance = kNoIntersection;
 
 	m_mesh->walk(
-		[&](const Vector& lowerCorner, const Vector& upperCorner) -> bool
+		[&](const BoundingBox& boundingBox) -> bool
 		{
-			// Check if the ray intersects this node's bounding box.
-
-			const Vector t1 = (lowerCorner - ray.position()) * ray.directionInverse();
-			const Vector t2 = (upperCorner - ray.position()) * ray.directionInverse();
-
-			const Vector minPoint = VectorUtils::MinPoint(t1, t2);
-			const Vector maxPoint = VectorUtils::MaxPoint(t1, t2);
-
-			const double tMin = VectorUtils::MaxComponent(minPoint);
-			const double tMax = VectorUtils::MinComponent(maxPoint);
-
-			if (tMax < 0)
-			{
-				// Intersection is behind us
-				return false;
-			}
-
-			if (tMin > tMax)
-			{
-				// No intersection
-				return false;
-			}
-
-			if (tMin >= distance)
-			{
-				// Intersected, but further away than our existing closest match
-				return false;
-			}
-
-			// Intersected, search this node.
-			return true;
+			return boundingBox.intersect(ray) < distance;
 		},
 		[&](const std::vector<Vertex>& vertices, const std::vector<Triangle>& triangles)
 		{
@@ -76,20 +46,20 @@ void MeshObject::getIntersectionProperties(const Vector& position, Vector& norma
 	bool found = false;
 
 	m_mesh->walk(
-		[&](const Vector& lowerCorner, const Vector& upperCorner) -> bool
+		[&](const BoundingBox& boundingBox) -> bool
 		{
 			// Check if this point is within this node's bounding box.
 
 			if (found)
 				return false;
 
-			if (position.x() < lowerCorner.x() || position.x() > upperCorner.x())
+			if (position.x() < boundingBox.lower.x() || position.x() > boundingBox.upper.x())
 				return false;
 
-			if (position.y() < lowerCorner.y() || position.y() > upperCorner.y())
+			if (position.y() < boundingBox.lower.y() || position.y() > boundingBox.upper.y())
 				return false;
 
-			if (position.z() < lowerCorner.z() || position.z() > upperCorner.z())
+			if (position.z() < boundingBox.lower.z() || position.z() > boundingBox.upper.z())
 				return false;
 
 			// Our search point is contained in the bounding box, search this node.
