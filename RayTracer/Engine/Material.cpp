@@ -6,8 +6,13 @@
 #include "Engine/Texture.hpp"
 #include "Engine/Texture/CheckerboardTexture.hpp"
 
+namespace
+{
+	const auto kDefaultTexture = std::make_shared<CheckerboardTexture>(Texture::Interpolation::NearestNeighbor, Palette::kWhite, Palette::kWhite * .5, 10);
+}
+
 Material::Material(std::shared_ptr<Texture> texture, std::shared_ptr<Texture> normals)
-	: m_texture(texture ? std::move(texture) : std::make_shared<CheckerboardTexture>(Texture::Interpolation::NearestNeighbor, Palette::kWhite, Palette::kWhite * .5, 10))
+	: m_texture(texture ? std::move(texture) : kDefaultTexture)
 	, m_normals(std::move(normals))
 {
 
@@ -20,8 +25,8 @@ Vector Material::mapNormal(const Vector& normal, const Vector& tangent, const Ve
 
 	// https://medium.com/@muhammedcan.erbudak/ray-tracing-from-scratch-texture-normal-bump-mapping-22ece96038bf
 
-	const auto mappedNormal = m_normals->sample(uv.x(), uv.y());
-	const auto mappedNormalVector = Vector(mappedNormal.red() * 2 - 1, mappedNormal.green() * 2 - 1, mappedNormal.blue() * 2 - 1);
+	const auto mappedNormalColor	= m_normals->sample(uv.x(), uv.y());
+	const auto mappedNormalVector	= Vector(mappedNormalColor.red() * 2 - 1, mappedNormalColor.green() * 2 - 1, mappedNormalColor.blue() * 2 - 1);
 
 	const Matrix<3, 3> mappingMatrix
 		({
