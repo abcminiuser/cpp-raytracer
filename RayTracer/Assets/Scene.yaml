@@ -2,12 +2,12 @@ scene:
   background: Color(0.1, 0.1, 0.1)
 
   camera:
-    position: Vector(0, 3, -6)
+    position: Vector(0, 5, -9)
     target: Origin
 
     width: 1920
     aspectRatio: 16:9
-    verticalFov: 90
+    verticalFov: 60
 
     focusDistance: 1.0
     aperture: 0.0
