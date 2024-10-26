@@ -2,10 +2,15 @@ scene:
   background: Color(0.1, 0.1, 0.1)
 
   camera:
-    position: Vector(0, 4, -8)
+    position: Vector(0, 3, -4)
     target: Origin
-    width: 4.5
-    height: 2.5
+
+    width: 1920
+    aspectRatio: 16:9
+    verticalFov: 90
+
+    focusDistance: 1.2
+    defocusAngle: 0.0
 
   objects:
     # Big illuminating rectangle behind the camera

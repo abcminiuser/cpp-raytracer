@@ -9,7 +9,7 @@ class Camera
 {
 public:
 					Camera();
-					Camera(const Vector& position, const Vector& target, const Vector& orientation, double viewWidth, double viewHeight);
+					Camera(const Vector& position, const Vector& target, const Vector& orientation, double imageWidth, double aspectRatio, double verticalFov, double focusDistance, double defocusAngle);
 
 	const Vector&	position() const	{ return m_position; }
 	const Vector&	direction() const	{ return m_direction; }
@@ -33,8 +33,15 @@ private:
 	Vector			m_direction;
 	Vector			m_orientation;
 
+	double			m_imageWidth;
+	double			m_aspectRatio;
+	double			m_verticalFov;
+	double			m_focusDistance;
+	double			m_defocusAngle;
+
 	double			m_viewWidth;
 	double			m_viewHeight;
+	double			m_defocusRadius;
 
 	Vector			m_u;
 	Vector			m_v;

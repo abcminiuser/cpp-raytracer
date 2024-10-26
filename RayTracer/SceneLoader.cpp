@@ -47,6 +47,11 @@ namespace
 		return value;
 	}
 
+	double DegreesToRadians(double degrees)
+	{
+		return degrees * (std::numbers::pi / 180);
+	}
+
 	double DoubleFromString(std::string str)
 	{
 		str = TrimWhitespace(str);
@@ -173,9 +178,9 @@ namespace
 		static const std::regex degreesVectorRegex("VectorDegrees\\(" "([^\\,]+)" "," "([^\\,]+)" "," "([^\\)]+)" "\\)");
 		if (std::smatch matches; std::regex_match(value, matches, degreesVectorRegex))
 		{
-			auto x = DoubleFromString(matches[1]) * (std::numbers::pi / 180);
-			auto y = DoubleFromString(matches[2]) * (std::numbers::pi / 180);
-			auto z = DoubleFromString(matches[3]) * (std::numbers::pi / 180);
+			auto x = DegreesToRadians(DoubleFromString(matches[1]));
+			auto y = DegreesToRadians(DoubleFromString(matches[2]));
+			auto z = DegreesToRadians(DoubleFromString(matches[3]));
 
 			return Vector(x, y, z);
 		}
@@ -212,6 +217,34 @@ namespace
 		throw std::runtime_error("Unknown interpolation type '" + value + "' specified in scene YAML file");
 	}
 
+	std::optional<double> ParseAspectRatio(const fkyaml::node& node, const std::string& property)
+	{
+		if (! node.contains(property))
+			return std::nullopt;
+
+		const auto& valueNode = node[property];
+
+		if (valueNode.is_float_number())
+		{
+			return valueNode.get_value<double>();
+		}
+		else
+		{
+			std::string value = TrimWhitespace(node[property].get_value<std::string>());
+
+			static const std::regex aspectRatioRegex("([^\\,]+)" ":" "([^\\,]+)");
+			if (std::smatch matches; std::regex_match(value, matches, aspectRatioRegex))
+			{
+				auto numerator		= DoubleFromString(matches[1]);
+				auto denominator	= DoubleFromString(matches[2]);
+
+				return numerator / denominator;
+			}
+		}
+
+		throw std::runtime_error("Unknown aspect ratio type specified in scene YAML file");
+	}
+
 	std::optional<double> ParseDouble(const fkyaml::node& node, const std::string& property)
 	{
 		if (! node.contains(property))
@@ -237,10 +270,13 @@ namespace
 		auto position			= ParseVector(cameraNode, "position").value_or(StandardVectors::kOrigin);
 		auto target				= ParseVector(cameraNode, "target").value_or(StandardVectors::kUnitZ);
 		auto orientation		= ParseVector(cameraNode, "orientation").value_or(StandardVectors::kUnitY);
-		auto viewWidth			= ParseDouble(cameraNode, "width").value_or(4.0);
-		auto viewHeight			= ParseDouble(cameraNode, "height").value_or(9.0 / 4.0);
+		auto width				= ParseDouble(cameraNode, "width").value_or(4.0);
+		auto aspectRatio		= ParseAspectRatio(cameraNode, "aspectRatio").value_or(16.0 / 9.0);
+		auto verticalFov		= DegreesToRadians(ParseDouble(cameraNode, "verticalFov").value_or(90));
+		auto focusDistance		= ParseDouble(cameraNode, "focusDistance").value_or(1.0);
+		auto defocusAngle		= DegreesToRadians(ParseDouble(cameraNode, "defocusAngle").value_or(0.0));
 
-		return Camera(position, target, orientation, viewWidth, viewHeight);
+		return Camera(position, target, orientation, width, aspectRatio, verticalFov, focusDistance, defocusAngle);
 	}
 
 	std::shared_ptr<Texture> ParseCheckerboardTexture(const fkyaml::node& node)
