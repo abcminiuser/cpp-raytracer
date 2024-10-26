@@ -91,17 +91,17 @@ void MeshObject::getIntersectionProperties(const Vector& position, Vector& norma
 	}
 }
 
-Vector MeshObject::normalAt(const Vertex& v0, const Vertex& v1, const Vertex v2, const Vector& mix) const
+Vector MeshObject::normalAt(const Vertex& v0, const Vertex& v1, const Vertex& v2, const Vector& mix) const
 {
 	return (v0.normal * mix.x() + v1.normal * mix.y() + v2.normal * mix.z()).unit();
 }
 
-Vector MeshObject::uvAt(const Vertex& v0, const Vertex& v1, const Vertex v2, const Vector& mix) const
+Vector MeshObject::uvAt(const Vertex& v0, const Vertex& v1, const Vertex& v2, const Vector& mix) const
 {
 	return (v0.texture * mix.x() + v1.texture * mix.y() + v2.texture * mix.z());
 }
 
-double MeshObject::intersectWith(const Ray& ray, const Vertex& v0, const Vertex& v1, const Vertex v2) const
+double MeshObject::intersectWith(const Ray& ray, const Vertex& v0, const Vertex& v1, const Vertex& v2) const
 {
 	// https://en.wikipedia.org/wiki/M%C3%B6ller%E2%80%93Trumbore_intersection_algorithm
 
@@ -134,7 +134,7 @@ double MeshObject::intersectWith(const Ray& ray, const Vertex& v0, const Vertex&
 	return t;
 }
 
-bool MeshObject::pointOn(const Vector& point, const Vertex& v0, const Vertex& v1, const Vertex v2) const
+bool MeshObject::pointOn(const Vector& point, const Vertex& v0, const Vertex& v1, const Vertex& v2) const
 {
 	// https://gdbooks.gitbooks.io/3dcollisions/content/Chapter4/point_in_triangle.html
 
@@ -155,7 +155,7 @@ bool MeshObject::pointOn(const Vector& point, const Vertex& v0, const Vertex& v1
 	return true;
 }
 
-Vector MeshObject::interpolate(const Vector& point, const Vertex& v0, const Vertex& v1, const Vertex v2) const
+Vector MeshObject::interpolate(const Vector& point, const Vertex& v0, const Vertex& v1, const Vertex& v2) const
 {
 	// https://gamedev.stackexchange.com/questions/23743/whats-the-most-efficient-way-to-find-barycentric-coordinates
 
