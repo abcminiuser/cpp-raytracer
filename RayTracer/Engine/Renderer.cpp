@@ -205,10 +205,6 @@ void Renderer::renderLines(size_t startLine, size_t endLine)
 				double sampleU = std::clamp(u + .5 * xSampleOffset * Random::SignedNormal(), 0.0, 1.0);
 				double sampleV = std::clamp(v + .5 * ySampleOffset * Random::SignedNormal(), 0.0, 1.0);
 
-				// Convert from [0,1] range coordinates to [-1, 1]
-				sampleU = (sampleU * 2) - 1;
-				sampleV = (sampleV * 2) - 1;
-
 				accumulatedSamples += m_scene.camera.trace(m_scene, sampleU, sampleV);
 			}
 

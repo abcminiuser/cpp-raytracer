@@ -6,12 +6,12 @@
 #include <numbers>
 
 Camera::Camera()
-	: Camera(StandardVectors::kOrigin, StandardVectors::kUnitZ, StandardVectors::kUnitY, 1920, 16.0 / 9.0, std::numbers::pi / 2, 10.0, 0.0)
+	: Camera(StandardVectors::kOrigin, StandardVectors::kUnitZ, StandardVectors::kUnitY, 1920, 16.0 / 9.0, std::numbers::pi / 2, 1.0, 0.0)
 {
 
 }
 
-Camera::Camera(const Vector& position, const Vector& target, const Vector& orientation, double imageWidth, double aspectRatio, double verticalFov, double focusDistance, double defocusAngle)
+Camera::Camera(const Vector& position, const Vector& target, const Vector& orientation, double imageWidth, double aspectRatio, double verticalFov, double focusDistance, double aperture)
 	: m_position(position)
 	, m_direction((target - position).unit())
 	, m_orientation(orientation)
@@ -19,19 +19,15 @@ Camera::Camera(const Vector& position, const Vector& target, const Vector& orien
 	, m_aspectRatio(aspectRatio)
 	, m_verticalFov(verticalFov)
 	, m_focusDistance(focusDistance)
-	, m_defocusAngle(defocusAngle)
+	, m_aperture(aperture)
 {
 	update();
 }
 
 Color Camera::trace(const Scene& scene, double u, double v) const
 {
-	const Vector rayX	= m_u * u * (m_viewWidth / 2);
-	const Vector rayY	= m_v * v * (m_viewHeight / 2);
-	const Vector rayXY	= rayX + rayY;
-
-	Vector rayOrigin	= m_position + (m_w * m_focusDistance);
-	Vector rayDirection	= (m_direction * m_focusDistance) + rayXY;
+	Vector rayOrigin	= m_position;
+	Vector rayDirection	= m_viewportUpperLeftCorner + (m_viewportHorizontalScan * u) + (m_viewportVerticalScan * v) - m_position;
 
 	if (m_defocusRadius)
 	{
@@ -39,8 +35,8 @@ Color Camera::trace(const Scene& scene, double u, double v) const
 		const Vector defocusY	= m_v * (Random::SignedNormal() * m_defocusRadius);
 		const Vector defocusXY	= defocusX + defocusY;
 
-		rayOrigin		-= defocusXY;
-		rayDirection	+= defocusXY;
+		rayOrigin		+= defocusXY;
+		rayDirection	-= defocusXY;
 	}
 
 	return Ray(rayOrigin, rayDirection.unit()).trace(scene, scene.maxRayDepth);
@@ -75,5 +71,10 @@ void Camera::update()
     m_viewHeight	= 2 * std::tan(m_verticalFov / 2) * m_focusDistance;
     m_viewWidth		= m_viewHeight * (m_imageWidth / imageHeight);
 
-    m_defocusRadius	= m_focusDistance * std::tan(m_defocusAngle / 2);
+    m_defocusRadius	= m_focusDistance * (m_aperture / 2);
+
+	m_viewportHorizontalScan = m_u * m_viewWidth * m_focusDistance;
+	m_viewportVerticalScan = m_v * m_viewHeight * m_focusDistance;
+
+	m_viewportUpperLeftCorner = m_position - (m_viewportHorizontalScan / 2) - (m_viewportVerticalScan / 2) - (m_w * m_focusDistance);
 }
