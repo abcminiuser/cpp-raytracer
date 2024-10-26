@@ -270,13 +270,12 @@ namespace
 		auto position			= ParseVector(cameraNode, "position").value_or(StandardVectors::kOrigin);
 		auto target				= ParseVector(cameraNode, "target").value_or(StandardVectors::kUnitZ);
 		auto orientation		= ParseVector(cameraNode, "orientation").value_or(StandardVectors::kUnitY);
-		auto width				= ParseDouble(cameraNode, "width").value_or(4.0);
 		auto aspectRatio		= ParseAspectRatio(cameraNode, "aspectRatio").value_or(16.0 / 9.0);
 		auto verticalFov		= DegreesToRadians(ParseDouble(cameraNode, "verticalFov").value_or(90));
 		auto focusDistance		= ParseDouble(cameraNode, "focusDistance").value_or(1.0);
 		auto aperture			= ParseDouble(cameraNode, "aperture").value_or(0.0);
 
-		return Camera(position, target, orientation, width, aspectRatio, verticalFov, focusDistance, aperture);
+		return Camera(position, target, orientation, aspectRatio, verticalFov, focusDistance, aperture);
 	}
 
 	std::shared_ptr<Texture> ParseCheckerboardTexture(const fkyaml::node& node)

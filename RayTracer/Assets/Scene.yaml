@@ -2,7 +2,7 @@ scene:
   background: Color(0.1, 0.1, 0.1)
 
   camera:
-    position: Vector(0, 3, -5)
+    position: Vector(0, 3, -6)
     target: Origin
 
     width: 1920

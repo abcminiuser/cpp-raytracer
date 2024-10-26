@@ -6,16 +6,15 @@
 #include <numbers>
 
 Camera::Camera()
-	: Camera(StandardVectors::kOrigin, StandardVectors::kUnitZ, StandardVectors::kUnitY, 1920, 16.0 / 9.0, std::numbers::pi / 2, 1.0, 0.0)
+	: Camera(StandardVectors::kOrigin, StandardVectors::kUnitZ, StandardVectors::kUnitY, 16.0 / 9.0, std::numbers::pi / 2, 1.0, 0.0)
 {
 
 }
 
-Camera::Camera(const Vector& position, const Vector& target, const Vector& orientation, double imageWidth, double aspectRatio, double verticalFov, double focusDistance, double aperture)
+Camera::Camera(const Vector& position, const Vector& target, const Vector& orientation, double aspectRatio, double verticalFov, double focusDistance, double aperture)
 	: m_position(position)
 	, m_direction((target - position).unit())
 	, m_orientation(orientation)
-	, m_imageWidth(imageWidth)
 	, m_aspectRatio(aspectRatio)
 	, m_verticalFov(verticalFov)
 	, m_focusDistance(focusDistance)
@@ -66,15 +65,13 @@ void Camera::update()
 	m_u	= m_orientation.crossProduct(m_direction).unit();
 	m_v	= m_w.crossProduct(m_u).unit();
 
-	const size_t imageHeight = std::max<size_t>(static_cast<size_t>(m_imageWidth / m_aspectRatio), 1);
-
     m_viewHeight	= 2 * std::tan(m_verticalFov / 2) * m_focusDistance;
-    m_viewWidth		= m_viewHeight * (m_imageWidth / imageHeight);
+    m_viewWidth		= m_viewHeight * m_aspectRatio;
 
     m_defocusRadius	= m_focusDistance * (m_aperture / 2);
 
-	m_viewportHorizontalScan = m_u * m_viewWidth * m_focusDistance;
-	m_viewportVerticalScan = m_v * m_viewHeight * m_focusDistance;
+	m_viewportHorizontalScan	= m_u * m_viewWidth * m_focusDistance;
+	m_viewportVerticalScan		= m_v * m_viewHeight * m_focusDistance;
 
-	m_viewportUpperLeftCorner = m_position - (m_viewportHorizontalScan / 2) - (m_viewportVerticalScan / 2) - (m_w * m_focusDistance);
+	m_viewportUpperLeftCorner	= m_position - (m_viewportHorizontalScan / 2) - (m_viewportVerticalScan / 2) - (m_w * m_focusDistance);
 }
