@@ -471,6 +471,7 @@ Scene SceneLoader::Load(const std::string& path)
 		{
 			.background = TryParseColor(sceneNode, "background").value_or(Palette::kBlack),
 			.camera = TryParseCamera(sceneNode, "camera").value_or(Camera()),
-			.objects = ParseObjects(sceneNode, "objects")
+			.objects = ParseObjects(sceneNode, "objects"),
+			.samplesPerPixel = std::max<uint32_t>(static_cast<uint32_t>(TryParseDouble(sceneNode, "samplesPerPixel").value_or(100)), 1)
 		};
 }

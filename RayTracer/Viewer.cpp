@@ -70,10 +70,12 @@ void Viewer::view(const std::string& path)
 	std::string extraInfoMessage;
 
 	std::optional<Scene> scene;
+	uint32_t fullQualitySamplesPerPixel = 100;
 
 	try
 	{
 		scene = SceneLoader::Load(path);
+		fullQualitySamplesPerPixel = scene->samplesPerPixel;
 		sceneUpdatePending = true;
 	}
 	catch (const std::exception& e)
@@ -105,6 +107,7 @@ void Viewer::view(const std::string& path)
 						try
 						{
 							scene = SceneLoader::Load(path);
+							fullQualitySamplesPerPixel = scene->samplesPerPixel;
 
 							nextRenderType = RenderType::CoarsePreview;
 							sceneUpdatePending = true;
@@ -248,7 +251,7 @@ void Viewer::view(const std::string& path)
 					break;
 				case RenderType::Full:
 					scene->maxRayDepth = 10;
-					scene->samplesPerPixel = 150;
+					scene->samplesPerPixel = fullQualitySamplesPerPixel;
 					break;
 			}
 
@@ -322,7 +325,7 @@ void Viewer::view(const std::string& path)
 				infoMessage += "Camera Orientation: " + scene->camera.orientation().string() + "\n";
 
 				if (isRendering)
-					infoMessage += std::string("Rendering In Progress (" + std::string(previousRenderType != RenderType::Full ? "Preview" : "Full") + " - " + std::to_string(m_renderer.renderPercentage()) + "%)");
+					infoMessage += std::string("Rendering In Progress (" + std::string(previousRenderType != RenderType::Full ? "Preview" : "Full") + " - " + std::to_string(m_renderer.renderPercentage()) + "%, " + std::to_string(scene->samplesPerPixel) + " samples/pixel)");
 				else
 					infoMessage += std::string("Rendering Completed (") + std::to_string(m_renderer.renderTime().count()) + " ms)";
 			}

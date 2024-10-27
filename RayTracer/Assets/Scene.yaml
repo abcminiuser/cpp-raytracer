@@ -1,6 +1,8 @@
 scene:
   background: Color(0.1, 0.1, 0.1)
 
+  samplesPerPixel: 150
+
   camera:
     position: Vector(0, 5, -9)
     target: Origin
