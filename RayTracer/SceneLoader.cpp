@@ -47,7 +47,7 @@ namespace
 		return value;
 	}
 
-	double DegreesToRadians(double degrees)
+	constexpr double DegreesToRadians(double degrees)
 	{
 		return degrees * (std::numbers::pi / 180);
 	}
@@ -100,9 +100,9 @@ namespace
 				vertices.emplace_back(
 					Vertex
 					{
-						.position = Vector(double(v.Position.X), double(v.Position.Y), double(v.Position.Z)) * scale,
-						.normal = Vector(double(v.Normal.X), double(v.Normal.Y), double(v.Normal.Z)),
-						.texture = Vector(double(v.TextureCoordinate.X), double(v.TextureCoordinate.Y), 0.0)
+						.position	= Vector(static_cast<double>(v.Position.X), static_cast<double>(v.Position.Y), static_cast<double>(v.Position.Z)) * scale,
+						.normal		= Vector(static_cast<double>(v.Normal.X), static_cast<double>(v.Normal.Y), static_cast<double>(v.Normal.Z)),
+						.texture	= Vector(static_cast<double>(v.TextureCoordinate.X), static_cast<double>(v.TextureCoordinate.Y), 0.0)
 					}
 				);
 			}
@@ -114,7 +114,7 @@ namespace
 		return std::make_shared<Mesh>(std::move(vertices), std::move(triangles));
 	}
 
-	std::optional<Color> ParseColor(const fkyaml::node& node, const std::string& property)
+	std::optional<Color> TryParseColor(const fkyaml::node& node, const std::string& property)
 	{
 		if (! node.contains(property))
 			return std::nullopt;
@@ -158,7 +158,7 @@ namespace
 		throw std::runtime_error("Unknown color type '" + value + "' specified in scene YAML file");
 	}
 
-	std::optional<Vector> ParseVector(const fkyaml::node& node, const std::string& property)
+	std::optional<Vector> TryParseVector(const fkyaml::node& node, const std::string& property)
 	{
 		if (! node.contains(property))
 			return std::nullopt;
@@ -199,7 +199,7 @@ namespace
 		throw std::runtime_error("Unknown vector type '" + value + "' specified in scene YAML file");
 	}
 
-	std::optional<Texture::Interpolation> ParseInterpolation(const fkyaml::node& node, const std::string& property)
+	std::optional<Texture::Interpolation> TryParseInterpolation(const fkyaml::node& node, const std::string& property)
 	{
 		if (! node.contains(property))
 			return std::nullopt;
@@ -217,7 +217,7 @@ namespace
 		throw std::runtime_error("Unknown interpolation type '" + value + "' specified in scene YAML file");
 	}
 
-	std::optional<double> ParseAspectRatio(const fkyaml::node& node, const std::string& property)
+	std::optional<double> TryParseAspectRatio(const fkyaml::node& node, const std::string& property)
 	{
 		if (! node.contains(property))
 			return std::nullopt;
@@ -245,7 +245,7 @@ namespace
 		throw std::runtime_error("Unknown aspect ratio type specified in scene YAML file");
 	}
 
-	std::optional<double> ParseDouble(const fkyaml::node& node, const std::string& property)
+	std::optional<double> TryParseDouble(const fkyaml::node& node, const std::string& property)
 	{
 		if (! node.contains(property))
 			return std::nullopt;
@@ -260,30 +260,30 @@ namespace
 			return DoubleFromString(valueNode.get_value<std::string>());
 	}
 
-	std::optional<Camera> ParseCamera(const fkyaml::node& node, const std::string& property)
+	std::optional<Camera> TryParseCamera(const fkyaml::node& node, const std::string& property)
 	{
 		if (! node.contains(property))
 			return std::nullopt;
 
 		const auto cameraNode = node.at(property);
 
-		auto position			= ParseVector(cameraNode, "position").value_or(StandardVectors::kOrigin);
-		auto target				= ParseVector(cameraNode, "target").value_or(StandardVectors::kUnitZ);
-		auto orientation		= ParseVector(cameraNode, "orientation").value_or(StandardVectors::kUnitY);
-		auto aspectRatio		= ParseAspectRatio(cameraNode, "aspectRatio").value_or(16.0 / 9.0);
-		auto verticalFov		= DegreesToRadians(ParseDouble(cameraNode, "verticalFov").value_or(90));
-		auto focusDistance		= ParseDouble(cameraNode, "focusDistance").value_or(1.0);
-		auto aperture			= ParseDouble(cameraNode, "aperture").value_or(0.0);
+		auto position			= TryParseVector(cameraNode, "position").value_or(StandardVectors::kOrigin);
+		auto target				= TryParseVector(cameraNode, "target").value_or(StandardVectors::kUnitZ);
+		auto orientation		= TryParseVector(cameraNode, "orientation").value_or(StandardVectors::kUnitY);
+		auto aspectRatio		= TryParseAspectRatio(cameraNode, "aspectRatio").value_or(16.0 / 9.0);
+		auto verticalFov		= DegreesToRadians(TryParseDouble(cameraNode, "verticalFov").value_or(90));
+		auto focusDistance		= TryParseDouble(cameraNode, "focusDistance").value_or(1.0);
+		auto aperture			= TryParseDouble(cameraNode, "aperture").value_or(0.0);
 
 		return Camera(position, target, orientation, aspectRatio, verticalFov, focusDistance, aperture);
 	}
 
 	std::shared_ptr<Texture> ParseCheckerboardTexture(const fkyaml::node& node)
 	{
-		auto color1				= ParseColor(node, "color1").value_or(Palette::kMagenta);
-		auto color2				= ParseColor(node, "color2").value_or(Palette::kYellow);
-		auto rowsCols			= ParseDouble(node, "rowsCols").value_or(2);
-		auto interpolation		= ParseInterpolation(node, "interpolation").value_or(Texture::Interpolation::Bilinear);
+		auto color1				= TryParseColor(node, "color1").value_or(Palette::kMagenta);
+		auto color2				= TryParseColor(node, "color2").value_or(Palette::kYellow);
+		auto rowsCols			= TryParseDouble(node, "rowsCols").value_or(2);
+		auto interpolation		= TryParseInterpolation(node, "interpolation").value_or(Texture::Interpolation::Bilinear);
 
 		return std::make_shared<CheckerboardTexture>(interpolation, color1, color2, static_cast<uint8_t>(rowsCols));
 	}
@@ -291,15 +291,15 @@ namespace
 	std::shared_ptr<Texture> ParseImageTexture(const fkyaml::node& node)
 	{
 		auto path				= node.at("path").get_value<std::string>();
-		auto multiplier			= ParseColor(node, "multiplier").value_or(Palette::kWhite);
-		auto interpolation		= ParseInterpolation(node, "interpolation").value_or(Texture::Interpolation::Bilinear);
+		auto multiplier			= TryParseColor(node, "multiplier").value_or(Palette::kWhite);
+		auto interpolation		= TryParseInterpolation(node, "interpolation").value_or(Texture::Interpolation::Bilinear);
 
 		return MakeImageTexture(path, multiplier, interpolation);
 	}
 
 	std::shared_ptr<Texture> ParseSolidTexture(const fkyaml::node& node)
 	{
-		auto color				= ParseColor(node, "color").value_or(Palette::kWhite);
+		auto color				= TryParseColor(node, "color").value_or(Palette::kWhite);
 
 		return std::make_shared<SolidTexture>(color);
 	}
@@ -339,7 +339,7 @@ namespace
 	{
 		auto texture			= ParseTexture(node, "texture");
 		auto normals			= ParseTexture(node, "normals");
-		auto refractionIndex	= ParseDouble(node, "refractionIndex").value_or(1.0);
+		auto refractionIndex	= TryParseDouble(node, "refractionIndex").value_or(1.0);
 
 		return std::make_shared<DielectricMaterial>(std::move(texture), std::move(normals), refractionIndex);
 	}
@@ -364,7 +364,7 @@ namespace
 	{
 		auto texture			= ParseTexture(node, "texture");
 		auto normals			= ParseTexture(node, "normals");
-		auto polish				= ParseDouble(node, "polish").value_or(1.0);
+		auto polish				= TryParseDouble(node, "polish").value_or(1.0);
 
 		return std::make_shared<ReflectiveMaterial>(std::move(texture), std::move(normals), polish);
 	}
@@ -389,10 +389,10 @@ namespace
 
 	std::shared_ptr<Object> ParseBoxObject(const fkyaml::node& node)
 	{
-		auto position			= ParseVector(node, "position").value_or(StandardVectors::kOrigin);
-		auto rotation			= ParseVector(node, "rotation").value_or(Vector(0, 0, 0));
+		auto position			= TryParseVector(node, "position").value_or(StandardVectors::kOrigin);
+		auto rotation			= TryParseVector(node, "rotation").value_or(Vector(0, 0, 0));
 		auto material			= ParseMaterial(node.at("material"));
-		auto size				= ParseVector(node, "size").value_or(Vector(1, 1, 1));
+		auto size				= TryParseVector(node, "size").value_or(Vector(1, 1, 1));
 
 		return std::make_shared<BoxObject>(position, rotation, std::move(material), size);
 	}
@@ -400,30 +400,30 @@ namespace
 	std::shared_ptr<Object> ParsePlaneObject(const fkyaml::node& node)
 	{
 		auto material			= ParseMaterial(node.at("material"));
-		auto normal				= ParseVector(node, "normal").value_or(StandardVectors::kUnitY);
-		auto distance			= ParseDouble(node, "distance").value_or(0.0);
-		auto uvScaleFactor		= ParseDouble(node, "scale").value_or(1.0);
+		auto normal				= TryParseVector(node, "normal").value_or(StandardVectors::kUnitY);
+		auto distance			= TryParseDouble(node, "distance").value_or(0.0);
+		auto uvScaleFactor		= TryParseDouble(node, "scale").value_or(1.0);
 
 		return std::make_shared<PlaneObject>(std::move(material), normal, distance, uvScaleFactor);
 	}
 
 	std::shared_ptr<Object> ParseMeshObject(const fkyaml::node& node)
 	{
-		auto position			= ParseVector(node, "position").value_or(StandardVectors::kOrigin);
-		auto rotation			= ParseVector(node, "rotation").value_or(Vector(0, 0, 0));
+		auto position			= TryParseVector(node, "position").value_or(StandardVectors::kOrigin);
+		auto rotation			= TryParseVector(node, "rotation").value_or(Vector(0, 0, 0));
 		auto material			= ParseMaterial(node.at("material"));
 		auto path				= node.at("path").get_value<std::string>();
-		auto scaleFactor		= ParseDouble(node, "scale").value_or(1.0);
+		auto scaleFactor		= TryParseDouble(node, "scale").value_or(1.0);
 
 		return std::make_shared<MeshObject>(position, rotation, std::move(material), MaskObjectMesh(path, scaleFactor));
 	}
 
 	std::shared_ptr<Object> ParseSphereObject(const fkyaml::node& node)
 	{
-		auto position			= ParseVector(node, "position").value_or(StandardVectors::kOrigin);
-		auto rotation			= ParseVector(node, "rotation").value_or(Vector(0, 0, 0));
+		auto position			= TryParseVector(node, "position").value_or(StandardVectors::kOrigin);
+		auto rotation			= TryParseVector(node, "rotation").value_or(Vector(0, 0, 0));
 		auto material			= ParseMaterial(node.at("material"));
-		auto radius				= ParseDouble(node, "radius").value_or(1.0);
+		auto radius				= TryParseDouble(node, "radius").value_or(1.0);
 
 		return std::make_shared<SphereObject>(position, rotation, std::move(material), radius);
 	}
@@ -469,8 +469,8 @@ Scene SceneLoader::Load(const std::string& path)
 	return
 		Scene
 		{
-			.background = ParseColor(sceneNode, "background").value_or(Palette::kBlack),
-			.camera = ParseCamera(sceneNode, "camera").value_or(Camera()),
+			.background = TryParseColor(sceneNode, "background").value_or(Palette::kBlack),
+			.camera = TryParseCamera(sceneNode, "camera").value_or(Camera()),
 			.objects = ParseObjects(sceneNode, "objects")
 		};
 }
