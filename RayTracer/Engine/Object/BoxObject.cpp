@@ -25,7 +25,7 @@ BoxObject::BoxObject(const Vector& position, const Vector& rotation, std::shared
 
 double BoxObject::intersectWith(const Ray& ray) const
 {
-	return BoundingBox{ .lower = Vector(), .upper = m_size }.intersect(ray);
+	return BoundingBox(Vector(), m_size).intersect(ray);
 }
 
 void BoxObject::getIntersectionProperties(const Vector& position, Vector& normal, Vector& tangent, Vector& bitangent, Vector& uv) const

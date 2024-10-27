@@ -2,8 +2,8 @@
 
 namespace
 {
-	constexpr auto kMaxOctreePartitionDepth		= 6;
-	constexpr auto kMinTrianglesForPartition	= 25;
+	constexpr auto kMaxOctreePartitionDepth		= 10;
+	constexpr auto kMinTrianglesForPartition	= 50;
 }
 
 Mesh::Mesh(std::vector<Vertex> vertices, std::vector<Triangle> triangles)
@@ -31,10 +31,9 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<Triangle> triangles)
 
 	printf("Partitioning mesh %s size %s - %zu triangles\n", position.string().c_str(), size.string().c_str(), triangles.size());
 
-	// Now build a tree of all the triangles, storing a bounding box for
-	// each node, along with a list of triangles inside that bounding box
-	// and a pair of sub-nodes for more triangles that are inside the left
-	// or right side of the bounding box.
+	// Now build a tree of all the triangles, storing a bounding box for each node,
+	// along with either a list of triangles that intersect that bounding box, or
+	// an array of children nodes to search.
 	m_root = partition(std::move(triangles), 0);
 
 	size_t nodeCount = 0;
@@ -57,15 +56,15 @@ std::unique_ptr<Mesh::Node> Mesh::partition(std::vector<Triangle> triangles, uin
 		return nullptr;
 
 	auto node = std::make_unique<Node>();
-	node->boundingBox	= BoundingBox{ .lower = StandardVectors::kMax, .upper = StandardVectors::kMin };
+	node->boundingBox	= BoundingBox(StandardVectors::kMax, StandardVectors::kMin);
 	node->triangles		= std::move(triangles);
 
 	for (const auto& t : node->triangles)
 	{
 		for (const auto& p : t)
 		{
-			node->boundingBox.lower = VectorUtils::MinPoint(node->boundingBox.lower, m_vertices[p].position);
-			node->boundingBox.upper = VectorUtils::MaxPoint(node->boundingBox.upper, m_vertices[p].position);
+			node->boundingBox.setLower(VectorUtils::MinPoint(node->boundingBox.lower(), m_vertices[p].position));
+			node->boundingBox.setUpper(VectorUtils::MaxPoint(node->boundingBox.upper(), m_vertices[p].position));
 		}
 	}
 
@@ -78,7 +77,7 @@ std::unique_ptr<Mesh::Node> Mesh::partition(std::vector<Triangle> triangles, uin
 		return node;
 
 	// If we matched too many triangles for this node, split it up into eight smaller cubes within our bounding box.
-	const auto partitionSize = (node->boundingBox.upper - node->boundingBox.lower) * 0.5;
+	const auto partitionSize = node->boundingBox.size() / 2;
 
 	const auto oX = partitionSize.x();
 	const auto oY = partitionSize.y();
@@ -100,7 +99,7 @@ std::unique_ptr<Mesh::Node> Mesh::partition(std::vector<Triangle> triangles, uin
 
 	// Determine which of our triangles intersect each child's bounding box.
 	for (size_t i = 0; i < 8; i++)
-		childrenTriangles[i] = trianglesInBox(BoundingBox{ .lower = node->boundingBox.lower + kOffsets[i], .upper = node->boundingBox.lower + kOffsets[i] + partitionSize }, node->triangles);
+		childrenTriangles[i] = trianglesInBox(BoundingBox(node->boundingBox.lower() + kOffsets[i], node->boundingBox.lower() + kOffsets[i] + partitionSize), node->triangles);
 
 	// Now we've partitioned our triangles, remove them from our node.
 	node->triangles.clear();
@@ -130,11 +129,11 @@ std::vector<Triangle> Mesh::trianglesInBox(const BoundingBox& boundingBox, const
 bool Mesh::boxContainsTriangle(const BoundingBox& boundingBox, const Triangle& triangle) const
 {
 	// Determine the bounding box for this triangle.
-	BoundingBox triangleBoundingBox { .lower = StandardVectors::kMax, .upper = StandardVectors::kMin };
+	BoundingBox triangleBoundingBox(StandardVectors::kMax, StandardVectors::kMin);
 	for (const auto& p : triangle)
 	{
-		triangleBoundingBox.lower = VectorUtils::MinPoint(triangleBoundingBox.lower, m_vertices[p].position);
-		triangleBoundingBox.upper = VectorUtils::MaxPoint(triangleBoundingBox.upper, m_vertices[p].position);
+		triangleBoundingBox.setLower(VectorUtils::MinPoint(triangleBoundingBox.lower(), m_vertices[p].position));
+		triangleBoundingBox.setUpper(VectorUtils::MaxPoint(triangleBoundingBox.upper(), m_vertices[p].position));
 	}
 
 	return boundingBox.intersects(triangleBoundingBox);

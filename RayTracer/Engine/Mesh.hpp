@@ -35,7 +35,7 @@ public:
 		if (! m_root)
 			return;
 
-		walk(boundingBoxTest, triangleTest, m_root.get());
+		walk(boundingBoxTest, triangleTest, *m_root);
 	}
 
 private:
@@ -49,24 +49,24 @@ private:
 	};
 
 	template <typename BBTestCallable, typename TriangleCallable>
-	void					walk(BBTestCallable&& boundingBoxTest, TriangleCallable&& triangleTest, const Node* node) const
+	void					walk(BBTestCallable&& boundingBoxTest, TriangleCallable&& triangleTest, const Node& node) const
 	{
-		if (! boundingBoxTest(node->boundingBox))
+		if (! boundingBoxTest(node.boundingBox))
 			return;
 
-		if (node->triangles.empty())
+		if (node.triangles.empty())
 		{
-			for (const auto& c : node->children)
+			for (const auto& c : node.children)
 			{
 				if (const auto* childNode = c.get())
-					walk(boundingBoxTest, triangleTest, childNode);
+					walk(boundingBoxTest, triangleTest, *childNode);
 			}
 
 			return;
 		}
 		else
 		{
-			triangleTest(std::as_const(m_vertices), node->triangles);
+			triangleTest(std::as_const(m_vertices), node.triangles);
 		}
 	}
 
