@@ -15,21 +15,16 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<Triangle> triangles)
 	m_vertices.shrink_to_fit();
 
 	// First find the bounding box for all triangles in the mesh.
-	Vector minPoint = StandardVectors::kMax;
-	Vector maxPoint = StandardVectors::kMin;
+	BoundingBox meshBoundingBox(StandardVectors::kMax, StandardVectors::kMin);
 	for (const auto& t : triangles)
 	{
 		for (const auto& p : t)
 		{
-			minPoint = VectorUtils::MinPoint(minPoint, m_vertices[p].position);
-			maxPoint = VectorUtils::MaxPoint(maxPoint, m_vertices[p].position);
+			meshBoundingBox.setLower(VectorUtils::MinPoint(meshBoundingBox.lower(), m_vertices[p].position));
+			meshBoundingBox.setUpper(VectorUtils::MaxPoint(meshBoundingBox.upper(), m_vertices[p].position));
 		}
 	}
-
-	const Vector position	= minPoint;
-	const Vector size		= maxPoint - minPoint;
-
-	printf("Partitioning mesh %s size %s - %zu triangles\n", position.string().c_str(), size.string().c_str(), triangles.size());
+	printf("Partitioning mesh %s size %s - %zu triangles\n", meshBoundingBox.lower().string().c_str(), meshBoundingBox.size().string().c_str(), triangles.size());
 
 	// Now build a tree of all the triangles, storing a bounding box for each node,
 	// along with either a list of triangles that intersect that bounding box, or
