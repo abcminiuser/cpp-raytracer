@@ -180,7 +180,7 @@ scene:
     # Teapot
     - type: Mesh
       position: Vector(0, 0, 6)
-      rotation: VectorDegrees(0, 50, 0)
+      rotation: VectorDegrees(0, -50, 0)
       size: Vector(1, 1, 1)
       path: "Assets/Teapot.obj"
       scale: 1.0
