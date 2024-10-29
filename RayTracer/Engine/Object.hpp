@@ -30,7 +30,6 @@ protected:
 	virtual void					getIntersectionProperties(const Vector& position, Vector& normal, Vector& tangent, Vector& bitangent, Vector& uv) const = 0;
 
 private:
-	Matrix<3, 3>					makeRotationMatrix(const Vector& rotation) const;
 	Vector							rotate(const Vector& vector, const Matrix<3, 3>& rotation) const;
 
 protected:
