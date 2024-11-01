@@ -47,8 +47,12 @@ Color Object::illuminate(const Scene& scene, const Ray& ray, double distance, ui
 	// Remap the object's normal using the texture normal map if present
 	normalObjectSpace = m_material->mapNormal(normalObjectSpace, tangent, bitangent, uv);
 
+	assert(normalObjectSpace.isUnit());
+
 	const Vector 	normalWorldSpace	= m_transform.untransformDirection(normalObjectSpace);
 	const Vector 	positionWorldSpace	= ray.at(distance);
+
+	assert(normalWorldSpace.isUnit());
 
 	return m_material->illuminate(scene, ray, positionWorldSpace, normalWorldSpace, uv, rayDepthRemaining);
 }
