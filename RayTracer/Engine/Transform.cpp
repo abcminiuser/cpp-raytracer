@@ -66,6 +66,20 @@ namespace
 				0.0, 0.0, 0.0, 1.0
 			});
 	}
+
+	Vector TransformVector(const Vector& vector, const Matrix<4, 4>& transform, bool allowScaling)
+	{
+		const Matrix<4, 1> input({
+			vector.x(),
+			vector.y(),
+			vector.z(),
+			allowScaling ? 1.0 : 0.0
+		});
+
+		const Matrix<4, 1> output = transform * input;
+
+		return Vector(output(0, 0), output(0, 1), output(0, 2));
+	}
 }
 
 Transform::Transform()
@@ -117,30 +131,12 @@ void Transform::update()
 
 Vector Transform::transformPosition(const Vector& vector) const
 {
-	const Matrix<4, 1> input({
-		vector.x(),
-		vector.y(),
-		vector.z(),
-		1.0
-	});
-
-	const Matrix<4, 1> output = m_forwardTransform * input;
-
-	return Vector(output(0, 0), output(0, 1), output(0, 2));
+	return TransformVector(vector, m_forwardTransform, true);
 }
 
 Vector Transform::transformDirection(const Vector& vector) const
 {
-	const Matrix<4, 1> input({
-		vector.x(),
-		vector.y(),
-		vector.z(),
-		0.0
-	});
-
-	const Matrix<4, 1> output = m_forwardTransform * input;
-
-	return Vector(output(0, 0), output(0, 1), output(0, 2)).unit();
+	return TransformVector(vector, m_forwardTransform, false).unit();
 }
 
 Ray Transform::transformRay(const Ray& ray) const
@@ -150,30 +146,12 @@ Ray Transform::transformRay(const Ray& ray) const
 
 Vector Transform::untransformPosition(const Vector& vector) const
 {
-	const Matrix<4, 1> input({
-		vector.x(),
-		vector.y(),
-		vector.z(),
-		1.0
-	});
-
-	const Matrix<4, 1> output = m_reverseTransform * input;
-
-	return Vector(output(0, 0), output(0, 1), output(0, 2));
+	return TransformVector(vector, m_reverseTransform, true);
 }
 
 Vector Transform::untransformDirection(const Vector& vector) const
 {
-	const Matrix<4, 1> input({
-		vector.x(),
-		vector.y(),
-		vector.z(),
-		0.0
-	});
-
-	const Matrix<4, 1> output = m_reverseTransform * input;
-
-	return Vector(output(0, 0), output(0, 1), output(0, 2)).unit();
+	return TransformVector(vector, m_reverseTransform, false).unit();
 }
 
 Ray Transform::untransformRay(const Ray& ray) const
