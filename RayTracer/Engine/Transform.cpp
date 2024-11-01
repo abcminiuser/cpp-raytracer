@@ -1,5 +1,7 @@
 #include "Engine/Transform.hpp"
 
+#include <cmath>
+
 namespace
 {
 	Matrix<4, 4> TranslateMatrix(const Vector& translation)

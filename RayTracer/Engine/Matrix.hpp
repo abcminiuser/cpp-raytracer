@@ -4,7 +4,6 @@
 #include "Engine/Ray.hpp"
 
 #include <array>
-#include <cmath>
 #include <concepts>
 #include <stdint.h>
 
