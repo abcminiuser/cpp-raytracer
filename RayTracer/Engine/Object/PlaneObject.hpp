@@ -12,7 +12,7 @@ class PlaneObject final
 	: public Object
 {
 public:
-				PlaneObject(std::shared_ptr<Material> material, const Vector& normal, double distance, double uvScaleFactor);
+				PlaneObject(const Transform& transform, std::shared_ptr<Material> material);
 				~PlaneObject() override = default;
 
 // Object i/f:
@@ -24,8 +24,5 @@ private:
 	Vector		uvAt(const Vector& position, const Vector& normal) const;
 
 private:
-	Vector		m_normal;
-	Vector		m_tangent;
-	Vector		m_bitangent;
-	double		m_uvScaleFactor;
+	Vector		m_uvScale;
 };

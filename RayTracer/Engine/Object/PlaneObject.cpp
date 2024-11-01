@@ -3,21 +3,23 @@
 #include "Engine/Ray.hpp"
 #include "Engine/Vector.hpp"
 
-PlaneObject::PlaneObject(std::shared_ptr<Material> material, const Vector& normal, double distance, double uvScaleFactor)
-	: Object(Transform(normal * distance, StandardVectors::kZero, StandardVectors::kUnit), std::move(material))
-	, m_normal(normal)
-	, m_uvScaleFactor(uvScaleFactor)
+namespace
 {
-	m_tangent = StandardVectors::kUnitX.crossProduct(normal).unit();
-	if (m_tangent.length() == 0)
-		m_tangent = StandardVectors::kUnitZ.crossProduct(normal).unit();
+	constexpr Vector kNormal 	= StandardVectors::kUnitY;
+	constexpr Vector kTangent	= StandardVectors::kUnitX;
+	constexpr Vector kBitangent	= StandardVectors::kUnitZ;
+}
 
-	m_bitangent = m_normal.crossProduct(m_tangent);
+PlaneObject::PlaneObject(const Transform& transform, std::shared_ptr<Material> material)
+	: Object(Transform(transform.position(), transform.rotation(), StandardVectors::kUnit), std::move(material))
+	, m_uvScale(transform.scale())
+{
+
 }
 
 double PlaneObject::intersectWith(const Ray& ray) const
 {
-	const auto angle = ray.direction().dotProduct(m_normal);
+	const auto angle = ray.direction().dotProduct(kNormal);
 
 	if (angle == 0)
 	{
@@ -26,24 +28,24 @@ double PlaneObject::intersectWith(const Ray& ray) const
 	}
 
 	// Intersection at a single point (as we're infinitely thin)
-	const auto b = m_normal.dotProduct(ray.position());
+	const auto b = kNormal.dotProduct(ray.position());
 	return -b / angle;
 }
 
 void PlaneObject::getIntersectionProperties(const Vector& position, Vector& normal, Vector& tangent, Vector& bitangent, Vector& uv) const
 {
-	normal		= m_normal;
-	tangent		= m_tangent;
-	bitangent	= m_bitangent;
+	normal		= kNormal;
+	tangent		= kTangent;
+	bitangent	= kBitangent;
 	uv			= uvAt(position, normal);
 }
 
 Vector PlaneObject::uvAt(const Vector& position, const Vector& normal) const
 {
-	const auto positionFromOrigin = position * m_uvScaleFactor;
+	const auto positionFromOrigin = position * m_uvScale;
 
-	auto u = m_tangent.dotProduct(positionFromOrigin);
-	auto v = m_bitangent.dotProduct(positionFromOrigin);
+	auto u = kTangent.dotProduct(positionFromOrigin);
+	auto v = kBitangent.dotProduct(positionFromOrigin);
 
 	return Vector(u, v, 0);
 }

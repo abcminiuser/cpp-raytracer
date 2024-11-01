@@ -11,9 +11,13 @@ public:
 					Transform();
 					Transform(const Vector& position, const Vector& rotation, const Vector& scale);
 
+	Vector			position() const { return m_position; }
+	Vector			rotation() const { return m_rotation; }
+	Vector			scale() const { return m_scale; }
+
 	void			setPosition(const Vector& position);
-	void			setRotation(const Vector& position);
-	void			setScale(const Vector& position);
+	void			setRotation(const Vector& roation);
+	void			setScale(const Vector& scale);
 
 	Vector			transformPosition(const Vector& vector) const;
 	Vector			transformDirection(const Vector& vector) const;

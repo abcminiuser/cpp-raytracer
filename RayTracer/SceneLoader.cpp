@@ -418,12 +418,10 @@ namespace
 
 	std::shared_ptr<Object> ParsePlaneObject(const fkyaml::node& node)
 	{
+		auto transform			= ParseTransform(node, "transform");
 		auto material			= ParseMaterial(node, "material");
-		auto normal				= TryParseVector(node, "normal").value_or(StandardVectors::kUnitY);
-		auto distance			= TryParseDouble(node, "distance").value_or(0.0);
-		auto uvScale			= TryParseDouble(node, "uvScale").value_or(1.0);
 
-		return std::make_shared<PlaneObject>(std::move(material), normal, distance, uvScale);
+		return std::make_shared<PlaneObject>(transform, std::move(material));
 	}
 
 	std::shared_ptr<Object> ParseMeshObject(const fkyaml::node& node)

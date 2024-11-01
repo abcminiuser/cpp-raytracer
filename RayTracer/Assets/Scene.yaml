@@ -41,9 +41,10 @@ scene:
 
     # Floor plane
     - type: Plane
-      normal: Vector(0, 1, 0)
-      distance: -1
-      uvScale: 0.3
+      transform:
+        position: Vector(0, -1, 0)
+        rotation: Zero
+        scale: Vector(.3, .3, .3)
       material:
         type: Diffuse
         texture:
