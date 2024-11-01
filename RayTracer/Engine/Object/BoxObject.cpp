@@ -16,8 +16,8 @@ namespace
 	constexpr auto kBackNormal		= StandardVectors::kUnitZ;
 }
 
-BoxObject::BoxObject(const Vector& position, const Vector& rotation, const Vector& scale, std::shared_ptr<Material> material)
-	: Object(position, rotation, scale, std::move(material))
+BoxObject::BoxObject(const Transform& transform, std::shared_ptr<Material> material)
+	: Object(transform, std::move(material))
 {
 
 }

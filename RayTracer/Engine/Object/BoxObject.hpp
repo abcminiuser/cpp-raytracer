@@ -12,7 +12,7 @@ class BoxObject final
 	: public Object
 {
 public:
-				BoxObject(const Vector& position, const Vector& rotation, const Vector& scale, std::shared_ptr<Material> material);
+				BoxObject(const Transform& transform, std::shared_ptr<Material> material);
 				~BoxObject() override = default;
 
 // Object i/f:

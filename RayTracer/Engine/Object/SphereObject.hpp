@@ -12,7 +12,7 @@ class SphereObject final
 	: public Object
 {
 public:
-				SphereObject(const Vector& position, const Vector& rotation, const Vector& scale, std::shared_ptr<Material> material);
+				SphereObject(const Transform& transform, std::shared_ptr<Material> material);
 				~SphereObject() override = default;
 
 // Object i/f:

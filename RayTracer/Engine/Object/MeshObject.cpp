@@ -5,8 +5,8 @@
 
 #include <stdexcept>
 
-MeshObject::MeshObject(const Vector& position, const Vector& rotation, const Vector& scale, std::shared_ptr<Material> material, std::shared_ptr<Mesh> mesh)
-	: Object(position, rotation, scale, std::move(material))
+MeshObject::MeshObject(const Transform& transform, std::shared_ptr<Material> material, std::shared_ptr<Mesh> mesh)
+	: Object(transform, std::move(material))
 	, m_mesh(std::move(mesh))
 {
 	if (! m_mesh)

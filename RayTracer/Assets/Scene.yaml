@@ -17,9 +17,10 @@ scene:
   objects:
     # Big illuminating rectangle behind the camera
     - type: Box
-      position: Vector(-1e20, -1e20, -50)
-      rotation: Zero
-      scale: Vector(2e20, 2e20, 1)
+      transform:
+        position: Vector(-1e20, -1e20, -50)
+        rotation: Zero
+        scale: Vector(2e20, 2e20, 1)
       material:
         type: Light
         texture:
@@ -28,9 +29,10 @@ scene:
 
     # Orange light ball to the left behind the camera
     - type: Sphere
-      position: Vector(-6, 3, -5)
-      rotation: Zero
-      scale: Vector(1, 1, 1)
+      transform:
+        position: Vector(-6, 3, -5)
+        rotation: Zero
+        scale: Vector(1, 1, 1)
       material:
         type: Light
         texture:
@@ -53,9 +55,10 @@ scene:
 
     # White sphere in "V" group of spheres
     - type: Sphere
-      position: Vector(-4, 0, 4)
-      rotation: Zero
-      scale: Vector(1, 1, 1)
+      transform:
+        position: Vector(-4, 0, 4)
+        rotation: Zero
+        scale: Vector(1, 1, 1)
       material:
         type: Diffuse
         texture:
@@ -64,9 +67,10 @@ scene:
 
     # Checkerboard sphere in "V" group of spheres
     - type: Sphere
-      position: Vector(-2, 0, 2)
-      rotation: VectorDegrees(-15, -15, -15)
-      scale: Vector(1, 1, 1)
+      transform:
+        position: Vector(-2, 0, 2)
+        rotation: VectorDegrees(-15, -15, -15)
+        scale: Vector(1, 1, 1)
       material:
         type: Diffuse
         texture:
@@ -77,9 +81,10 @@ scene:
 
     # Red sphere in "V" group of spheres
     - type: Sphere
-      position: Vector(0, 0, 0)
-      rotation: Zero
-      scale: Vector(1, 1, 1)
+      transform:
+        position: Vector(0, 0, 0)
+        rotation: Zero
+        scale: Vector(1, 1, 1)
       material:
         type: Reflective
         polish: 0.90
@@ -89,9 +94,10 @@ scene:
 
     # Green sphere in "V" group of spheres
     - type: Sphere
-      position: Vector(2, 0, 2)
-      rotation: Zero
-      scale: Vector(1, 1, 1)
+      transform:
+        position: Vector(2, 0, 2)
+        rotation: Zero
+        scale: Vector(1, 1, 1)
       material:
         type: Reflective
         polish: 0.90
@@ -101,9 +107,10 @@ scene:
 
     # Blue sphere in "V" group of spheres
     - type: Sphere
-      position: Vector(4, 0, 4)
-      rotation: Zero
-      scale: Vector(1, 1, 1)
+      transform:
+        position: Vector(4, 0, 4)
+        rotation: Zero
+        scale: Vector(1, 1, 1)
       material:
         type: Reflective
         polish: 0.90
@@ -113,9 +120,10 @@ scene:
 
     # Wooden slightly reflective sphere on right
     - type: Sphere
-      position: Vector(6, 0, 0)
-      rotation: Zero
-      scale: Vector(1, 1, 1)
+      transform:
+        position: Vector(6, 0, 0)
+        rotation: Zero
+        scale: Vector(1, 1, 1)
       material:
         type: Reflective
         polish: 0.5
@@ -128,9 +136,10 @@ scene:
 
     # Marble sphere on left
     - type: Sphere
-      position: Vector(-6, 0, 0)
-      rotation: Zero
-      scale: Vector(1.2, 1.2, 1.2)
+      transform:
+        position: Vector(-6, 0, 0)
+        rotation: Zero
+        scale: Vector(1.2, 1.2, 1.2)
       material:
         type: Diffuse
         texture:
@@ -142,9 +151,10 @@ scene:
 
     # Glass sphere on front-left
     - type: Sphere
-      position: Vector(-3, 0, -3)
-      rotation: Zero
-      scale: Vector(1, 1, 1)
+      transform:
+        position: Vector(-3, 0, -3)
+        rotation: Zero
+        scale: Vector(1, 1, 1)
       material:
         type: Dielectric
         refractionIndex: 2.2
@@ -154,9 +164,10 @@ scene:
 
     # Asphalt box on back-right
     - type: Box
-      position: Vector(8, 0, 8)
-      rotation: Zero
-      scale: Vector(3, 2, 2)
+      transform:
+        position: Vector(8, 0, 8)
+        rotation: Zero
+        scale: Vector(3, 2, 2)
       material:
         type: Diffuse
         texture:
@@ -168,9 +179,10 @@ scene:
 
     # Front cube with example texture
     - type: Box
-      position: Vector(2, 0, -4)
-      rotation: VectorDegrees(0, -45, 0)
-      scale: Vector(1.1, 1.1, 1.1)
+      transform:
+        position: Vector(2, 0, -4)
+        rotation: VectorDegrees(0, -45, 0)
+        scale: Vector(1.1, 1.1, 1.1)
       material:
         type: Diffuse
         texture:
@@ -179,9 +191,10 @@ scene:
 
     # Teapot
     - type: Mesh
-      position: Vector(0, 0, 6)
-      rotation: VectorDegrees(0, -50, 0)
-      scale: Vector(1.15, 1.15, 1.15)
+      transform:
+        position: Vector(0, 0, 6)
+        rotation: VectorDegrees(0, -50, 0)
+        scale: Vector(1.15, 1.15, 1.15)
       path: "Assets/Teapot.obj"
       material:
         type: Reflective

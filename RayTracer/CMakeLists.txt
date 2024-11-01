@@ -47,6 +47,7 @@ add_executable (RayTracer
     "Engine/Texture/CheckerboardTexture.cpp"
     "Engine/Texture/ImageTexture.cpp"
     "Engine/Texture/SolidTexture.cpp"
+    "Engine/Transform.cpp"
     "Engine/Vector.cpp"
     "Main.cpp"
     "SceneLoader.cpp"

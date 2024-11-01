@@ -2,7 +2,7 @@
 
 #include "Engine/BoundingBox.hpp"
 #include "Engine/Color.hpp"
-#include "Engine/Matrix.hpp"
+#include "Engine/Transform.hpp"
 #include "Engine/Vector.hpp"
 
 #include <limits>
@@ -19,7 +19,7 @@ class Object
 public:
 	static inline constexpr double kComparisonThreshold		= 1e-10;
 
-									Object(const Vector& position, const Vector& rotation, const Vector& scale, std::shared_ptr<Material> material);
+									Object(const Transform& transform, std::shared_ptr<Material> material);
 	virtual							~Object() = default;
 
 	double							intersect(const Ray& ray) const;
@@ -29,14 +29,7 @@ protected:
 	virtual double					intersectWith(const Ray& ray) const = 0;
 	virtual void					getIntersectionProperties(const Vector& position, Vector& normal, Vector& tangent, Vector& bitangent, Vector& uv) const = 0;
 
-protected:
-	const std::shared_ptr<Material>	m_material;
-
 private:
-	Vector							m_position;
-	Vector							m_rotation;
-	Vector							m_scale;
-
-	Matrix<4, 4>					m_transform;
-	Matrix<4, 4>					m_inverseTransform;
+	Transform						m_transform;
+	const std::shared_ptr<Material>	m_material;
 };

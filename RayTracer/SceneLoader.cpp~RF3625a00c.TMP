@@ -371,39 +371,32 @@ namespace
 		return std::make_shared<ReflectiveMaterial>(std::move(texture), std::move(normals), polish);
 	}
 
-	std::shared_ptr<Material> ParseMaterial(const fkyaml::node& node, const std::string& property)
+	std::shared_ptr<Material> ParseMaterial(const fkyaml::node& node)
 	{
-		if (! node.contains(property))
-			return nullptr;
-
-		const auto materialNode = node.at(property);
-
-		const auto type = materialNode.at("type").get_value<std::string>();
+		const auto type = node.at("type").get_value<std::string>();
 
 		if (type == "Debug")
-			return ParseDebugMaterial(materialNode);
+			return ParseDebugMaterial(node);
 		else if (type == "Dielectric")
-			return ParseDielectricMaterial(materialNode);
+			return ParseDielectricMaterial(node);
 		else if (type == "Diffuse")
-			return ParseDiffuseMaterial(materialNode);
+			return ParseDiffuseMaterial(node);
 		else if (type == "Light")
-			return ParseLightMaterial(materialNode);
+			return ParseLightMaterial(node);
 		else if (type == "Reflective")
-			return ParseReflectiveMaterial(materialNode);
+			return ParseReflectiveMaterial(node);
 		else
 			throw std::runtime_error("Unknown material type '" + type + "' specified in scene YAML file");
 	}
 
-	Transform ParseTransform(const fkyaml::node& node, const std::string& property)
+	Transform TryParseTransform(const fkyaml::node& node, const std::string& property)
 	{
 		if (! node.contains(property))
 			return Transform();
 
-		const auto transformNode = node.at(property);
-
-		auto position			= TryParseVector(transformNode, "position").value_or(StandardVectors::kOrigin);
-		auto rotation			= TryParseVector(transformNode, "rotation").value_or(StandardVectors::kZero);
-		auto scale				= TryParseVector(transformNode, "scale").value_or(StandardVectors::kUnit);
+		auto position			= TryParseVector(node, "position").value_or(StandardVectors::kOrigin);
+		auto rotation			= TryParseVector(node, "rotation").value_or(StandardVectors::kZero);
+		auto scale				= TryParseVector(node, "scale").value_or(StandardVectors::kUnit);
 
 		return Transform(position, rotation, scale);
 	}
@@ -411,14 +404,14 @@ namespace
 	std::shared_ptr<Object> ParseBoxObject(const fkyaml::node& node)
 	{
 		auto transform			= ParseTransform(node, "transform");
-		auto material			= ParseMaterial(node, "material");
+		auto material			= ParseMaterial(node.at("material"));
 
 		return std::make_shared<BoxObject>(transform, std::move(material));
 	}
 
 	std::shared_ptr<Object> ParsePlaneObject(const fkyaml::node& node)
 	{
-		auto material			= ParseMaterial(node, "material");
+		auto material			= ParseMaterial(node.at("material"));
 		auto normal				= TryParseVector(node, "normal").value_or(StandardVectors::kUnitY);
 		auto distance			= TryParseDouble(node, "distance").value_or(0.0);
 		auto uvScale			= TryParseDouble(node, "uvScale").value_or(1.0);
@@ -429,7 +422,7 @@ namespace
 	std::shared_ptr<Object> ParseMeshObject(const fkyaml::node& node)
 	{
 		auto transform			= ParseTransform(node, "transform");
-		auto material			= ParseMaterial(node, "material");
+		auto material			= ParseMaterial(node.at("material"));
 		auto path				= node.at("path").get_value<std::string>();
 
 		return std::make_shared<MeshObject>(transform, std::move(material), MakeObjectMesh(path));
@@ -438,7 +431,7 @@ namespace
 	std::shared_ptr<Object> ParseSphereObject(const fkyaml::node& node)
 	{
 		auto transform			= ParseTransform(node, "transform");
-		auto material			= ParseMaterial(node, "material");
+		auto material			= ParseMaterial(node.at("material"));
 
 		return std::make_shared<SphereObject>(transform, std::move(material));
 	}

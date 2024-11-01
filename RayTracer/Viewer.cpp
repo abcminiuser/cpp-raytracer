@@ -1,7 +1,7 @@
 ﻿#include "Viewer.hpp"
 #include "SceneLoader.hpp"
 
-#include "Engine/Matrix.hpp"
+#include "Engine/Transform.hpp"
 #include "Engine/Scene.hpp"
 
 #include <chrono>
@@ -196,15 +196,15 @@ void Viewer::view(const std::string& path)
 					{
 						constexpr auto kRotateDelta = std::numbers::pi / 360.0;
 
-						const std::map<sf::Keyboard::Key, Matrix<4, 4>> cameraRotateAmount
+						const std::map<sf::Keyboard::Key, Transform> cameraRotateAmount
 							{
-								{ sf::Keyboard::Key::I, MatrixUtils::RotateMatrix(Vector(0, 0, -kRotateDelta)) },
-								{ sf::Keyboard::Key::J, MatrixUtils::RotateMatrix(Vector(0, -kRotateDelta, 0)) },
-								{ sf::Keyboard::Key::K, MatrixUtils::RotateMatrix(Vector(0, 0, kRotateDelta)) },
-								{ sf::Keyboard::Key::L, MatrixUtils::RotateMatrix(Vector(0, kRotateDelta, 0)) },
+								{ sf::Keyboard::Key::I, Transform(StandardVectors::kZero, Vector(0, 0, kRotateDelta), StandardVectors::kUnit) },
+								{ sf::Keyboard::Key::J, Transform(StandardVectors::kZero, Vector(0, kRotateDelta, 0), StandardVectors::kUnit) },
+								{ sf::Keyboard::Key::K, Transform(StandardVectors::kZero, Vector(0, 0, -kRotateDelta), StandardVectors::kUnit) },
+								{ sf::Keyboard::Key::L, Transform(StandardVectors::kZero, Vector(0, -kRotateDelta, 0), StandardVectors::kUnit) },
 							};
 
-						scene->camera.setDirection(MatrixUtils::Transform(scene->camera.direction(), cameraRotateAmount.at(event.key.code), true));
+						scene->camera.setDirection(cameraRotateAmount.at(event.key.code).transformDirection(scene->camera.direction()));
 
 						nextRenderType = RenderType::CoarsePreview;
 						sceneUpdatePending = true;
@@ -216,13 +216,13 @@ void Viewer::view(const std::string& path)
 					{
 						constexpr auto kRotateDelta = std::numbers::pi / 360.0;
 
-						static const std::map<sf::Keyboard::Key, Matrix<4, 4>> cameraRotateAmount
+						static const std::map<sf::Keyboard::Key, Transform> cameraRotateAmount
 							{
-								{ sf::Keyboard::Key::U, MatrixUtils::RotateMatrix(Vector(kRotateDelta, 0, 0)) },
-								{ sf::Keyboard::Key::O, MatrixUtils::RotateMatrix(Vector(-kRotateDelta, 0, 0)) },
+								{ sf::Keyboard::Key::U, Transform(StandardVectors::kZero, Vector(-kRotateDelta, 0, 0), StandardVectors::kUnit) },
+								{ sf::Keyboard::Key::O, Transform(StandardVectors::kZero, Vector(kRotateDelta, 0, 0), StandardVectors::kUnit) },
 							};
 
-						scene->camera.setOrientation(MatrixUtils::Transform(scene->camera.orientation(), cameraRotateAmount.at(event.key.code), true));
+						scene->camera.setOrientation(cameraRotateAmount.at(event.key.code).transformDirection(scene->camera.orientation()));
 
 						nextRenderType = RenderType::CoarsePreview;
 						sceneUpdatePending = true;

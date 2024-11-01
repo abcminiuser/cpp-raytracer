@@ -7,8 +7,8 @@
 #include <cmath>
 #include <numbers>
 
-SphereObject::SphereObject(const Vector& position, const Vector& rotation, const Vector& scale, std::shared_ptr<Material> material)
-	: Object(position, rotation, scale, std::move(material))
+SphereObject::SphereObject(const Transform& transform, std::shared_ptr<Material> material)
+	: Object(transform, std::move(material))
 {
 
 }
