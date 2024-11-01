@@ -6,7 +6,6 @@
 #include "Engine/Scene.hpp"
 
 #include <cassert>
-#include <limits>
 
 namespace
 {
@@ -41,9 +40,9 @@ Color Object::illuminate(const Scene& scene, const Ray& ray, double distance, ui
 	Vector uv;
 	getIntersectionProperties(rayObjectSpace, distance, normalObjectSpace, tangent, bitangent, uv);
 
-	assert(normalObjectSpace.length() - 1 <= std::numeric_limits<double>::epsilon());
-	assert(tangent.length() - 1 <= std::numeric_limits<double>::epsilon());
-	assert(bitangent.length() - 1 <= std::numeric_limits<double>::epsilon());
+	assert(normalObjectSpace.isUnit());
+	assert(tangent.isUnit());
+	assert(bitangent.isUnit());
 
 	// Remap the object's normal using the texture normal map if present
 	normalObjectSpace = m_material->mapNormal(normalObjectSpace, tangent, bitangent, uv);

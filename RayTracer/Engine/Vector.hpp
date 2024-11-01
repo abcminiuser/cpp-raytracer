@@ -4,6 +4,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <limits>
 #include <string>
 
 struct Vector final
@@ -161,6 +162,11 @@ public:
 	Vector				unit() const
 	{
 		return *this / length();
+	}
+
+	bool				isUnit() const
+	{
+		return (length() - 1) <= std::numeric_limits<double>::epsilon();
 	}
 
 	constexpr double	x() const	{ return m_x; }

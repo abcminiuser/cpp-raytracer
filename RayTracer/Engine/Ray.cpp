@@ -4,14 +4,13 @@
 #include "Engine/Scene.hpp"
 
 #include <cassert>
-#include <limits>
 
 Ray::Ray(const Vector& position, const Vector& direction)
 	: m_position(position)
 	, m_direction(direction)
 	, m_directionInverse(StandardVectors::kUnit / m_direction)
 {
-	assert(direction.length() - 1 <= std::numeric_limits<double>::epsilon());
+	assert(direction.isUnit());
 }
 
 Color Ray::trace(const Scene& scene, uint32_t rayDepthRemaining) const
