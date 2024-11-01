@@ -1,6 +1,8 @@
 ﻿#pragma once
 
+#include "Engine/Matrix.hpp"
 #include "Engine/Renderer.hpp"
+#include "Engine/Vector.hpp"
 
 #include <string>
 

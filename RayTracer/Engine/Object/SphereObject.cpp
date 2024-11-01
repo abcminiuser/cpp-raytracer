@@ -7,9 +7,8 @@
 #include <cmath>
 #include <numbers>
 
-SphereObject::SphereObject(const Vector& position, const Vector& rotation, std::shared_ptr<Material> material, double radius)
-	: Object(position, rotation, std::move(material))
-	, m_diameter(radius * radius)
+SphereObject::SphereObject(const Vector& position, const Vector& rotation, const Vector& scale, std::shared_ptr<Material> material)
+	: Object(position, rotation, scale, std::move(material))
 {
 
 }
@@ -17,7 +16,7 @@ SphereObject::SphereObject(const Vector& position, const Vector& rotation, std::
 double SphereObject::intersectWith(const Ray& ray) const
 {
 	const double b = 2 * ray.position().dotProduct(ray.direction());
-	const double c = ray.position().lengthSquared() - m_diameter;
+	const double c = ray.position().lengthSquared() - 1;
 	const double d = (b * b) - 4 * c;
 
 	if (d < 0)

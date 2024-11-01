@@ -218,10 +218,12 @@ namespace VectorUtils
 
 namespace StandardVectors
 {
+	static inline constexpr auto kZero = Vector(0, 0, 0);
 	static inline constexpr auto kOrigin = Vector(0, 0, 0);
 	static inline constexpr auto kUnitX = Vector(1, 0, 0);
 	static inline constexpr auto kUnitY = Vector(0, 1, 0);
 	static inline constexpr auto kUnitZ = Vector(0, 0, 1);
+	static inline constexpr auto kUnit = Vector(1, 1, 1);
 
 	static inline constexpr auto kMin = Vector(std::numeric_limits<double>::lowest(), std::numeric_limits<double>::lowest(), std::numeric_limits<double>::lowest());
 	static inline constexpr auto kMax = Vector(std::numeric_limits<double>::max(), std::numeric_limits<double>::max(), std::numeric_limits<double>::max());

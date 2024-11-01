@@ -77,7 +77,7 @@ namespace
 		return std::make_shared<ImageTexture>(dimensions.x, dimensions.y, multiplier, interpolation, reinterpret_cast<const uint32_t*>(pixels));
 	}
 
-	std::shared_ptr<Mesh> MaskObjectMesh(const std::string& path, double scale)
+	std::shared_ptr<Mesh> MakeObjectMesh(const std::string& path)
 	{
 		objl::Loader objLoader;
 		if (! objLoader.LoadFile(path))
@@ -100,7 +100,7 @@ namespace
 				vertices.emplace_back(
 					Vertex
 					{
-						.position	= Vector(static_cast<double>(v.Position.X), static_cast<double>(v.Position.Y), static_cast<double>(v.Position.Z)) * scale,
+						.position	= Vector(static_cast<double>(v.Position.X), static_cast<double>(v.Position.Y), static_cast<double>(v.Position.Z)),
 						.normal		= Vector(static_cast<double>(v.Normal.X), static_cast<double>(v.Normal.Y), static_cast<double>(v.Normal.Z)),
 						.texture	= Vector(static_cast<double>(v.TextureCoordinate.X), static_cast<double>(v.TextureCoordinate.Y), 0.0)
 					}
@@ -192,6 +192,7 @@ namespace
 				{ "UnitX", StandardVectors::kUnitX },
 				{ "UnitY", StandardVectors::kUnitY },
 				{ "UnitZ", StandardVectors::kUnitZ },
+				{ "Unit", StandardVectors::kUnit },
 			};
 		if (kKnownNames.contains(value))
 			return kKnownNames.at(value);
@@ -390,11 +391,11 @@ namespace
 	std::shared_ptr<Object> ParseBoxObject(const fkyaml::node& node)
 	{
 		auto position			= TryParseVector(node, "position").value_or(StandardVectors::kOrigin);
-		auto rotation			= TryParseVector(node, "rotation").value_or(Vector(0, 0, 0));
+		auto rotation			= TryParseVector(node, "rotation").value_or(StandardVectors::kZero);
+		auto scale				= TryParseVector(node, "scale").value_or(StandardVectors::kUnit);
 		auto material			= ParseMaterial(node.at("material"));
-		auto size				= TryParseVector(node, "size").value_or(Vector(1, 1, 1));
 
-		return std::make_shared<BoxObject>(position, rotation, std::move(material), size);
+		return std::make_shared<BoxObject>(position, rotation, scale, std::move(material));
 	}
 
 	std::shared_ptr<Object> ParsePlaneObject(const fkyaml::node& node)
@@ -402,30 +403,30 @@ namespace
 		auto material			= ParseMaterial(node.at("material"));
 		auto normal				= TryParseVector(node, "normal").value_or(StandardVectors::kUnitY);
 		auto distance			= TryParseDouble(node, "distance").value_or(0.0);
-		auto uvScaleFactor		= TryParseDouble(node, "scale").value_or(1.0);
+		auto uvScale			= TryParseDouble(node, "uvScale").value_or(1.0);
 
-		return std::make_shared<PlaneObject>(std::move(material), normal, distance, uvScaleFactor);
+		return std::make_shared<PlaneObject>(std::move(material), normal, distance, uvScale);
 	}
 
 	std::shared_ptr<Object> ParseMeshObject(const fkyaml::node& node)
 	{
 		auto position			= TryParseVector(node, "position").value_or(StandardVectors::kOrigin);
-		auto rotation			= TryParseVector(node, "rotation").value_or(Vector(0, 0, 0));
+		auto rotation			= TryParseVector(node, "rotation").value_or(StandardVectors::kZero);
+		auto scale				= TryParseVector(node, "scale").value_or(StandardVectors::kUnit);
 		auto material			= ParseMaterial(node.at("material"));
 		auto path				= node.at("path").get_value<std::string>();
-		auto scaleFactor		= TryParseDouble(node, "scale").value_or(1.0);
 
-		return std::make_shared<MeshObject>(position, rotation, std::move(material), MaskObjectMesh(path, scaleFactor));
+		return std::make_shared<MeshObject>(position, rotation, scale, std::move(material), MakeObjectMesh(path));
 	}
 
 	std::shared_ptr<Object> ParseSphereObject(const fkyaml::node& node)
 	{
 		auto position			= TryParseVector(node, "position").value_or(StandardVectors::kOrigin);
-		auto rotation			= TryParseVector(node, "rotation").value_or(Vector(0, 0, 0));
+		auto rotation			= TryParseVector(node, "rotation").value_or(StandardVectors::kZero);
+		auto scale				= TryParseVector(node, "scale").value_or(StandardVectors::kUnit);
 		auto material			= ParseMaterial(node.at("material"));
-		auto radius				= TryParseDouble(node, "radius").value_or(1.0);
 
-		return std::make_shared<SphereObject>(position, rotation, std::move(material), radius);
+		return std::make_shared<SphereObject>(position, rotation, scale, std::move(material));
 	}
 
 	std::vector<std::shared_ptr<Object>> ParseObjects(const fkyaml::node& node, const std::string& property)

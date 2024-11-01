@@ -4,7 +4,7 @@
 #include "Engine/Vector.hpp"
 
 PlaneObject::PlaneObject(std::shared_ptr<Material> material, const Vector& normal, double distance, double uvScaleFactor)
-	: Object(normal * distance, Vector(), std::move(material))
+	: Object(normal * distance, StandardVectors::kZero, StandardVectors::kUnit, std::move(material))
 	, m_normal(normal)
 	, m_uvScaleFactor(uvScaleFactor)
 {

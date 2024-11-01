@@ -13,7 +13,7 @@ class MeshObject final
 	: public Object
 {
 public:
-								MeshObject(const Vector& position, const Vector& rotation, std::shared_ptr<Material> material, std::shared_ptr<Mesh> mesh);
+								MeshObject(const Vector& position, const Vector& rotation, const Vector& scale, std::shared_ptr<Material> material, std::shared_ptr<Mesh> mesh);
 								~MeshObject() override = default;
 
 // Object i/f:

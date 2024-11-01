@@ -12,7 +12,7 @@ class BoxObject final
 	: public Object
 {
 public:
-				BoxObject(const Vector& position, const Vector& rotation, std::shared_ptr<Material> material, const Vector& size);
+				BoxObject(const Vector& position, const Vector& rotation, const Vector& scale, std::shared_ptr<Material> material);
 				~BoxObject() override = default;
 
 // Object i/f:
@@ -22,7 +22,4 @@ protected:
 
 private:
 	Vector		uvAt(const Vector& position, const Vector& normal) const;
-
-private:
-	Vector		m_size;
 };

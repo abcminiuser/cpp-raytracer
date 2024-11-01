@@ -26,7 +26,13 @@ Vector Material::mapNormal(const Vector& normal, const Vector& tangent, const Ve
 	// https://medium.com/@muhammedcan.erbudak/ray-tracing-from-scratch-texture-normal-bump-mapping-22ece96038bf
 
 	const auto mappedNormalColor	= m_normals->sample(uv.x(), uv.y());
-	const auto mappedNormalVector	= Vector(mappedNormalColor.red() * 2 - 1, mappedNormalColor.green() * 2 - 1, mappedNormalColor.blue() * 2 - 1);
+
+	const Matrix<3, 1> input
+		({
+			mappedNormalColor.red() * 2 - 1,
+			mappedNormalColor.green() * 2 - 1,
+			mappedNormalColor.blue() * 2 - 1
+		});
 
 	const Matrix<3, 3> mappingMatrix
 		({
@@ -35,7 +41,9 @@ Vector Material::mapNormal(const Vector& normal, const Vector& tangent, const Ve
 			tangent.z(), bitangent.z(), normal.z()
 		});
 
-	return mappingMatrix.multiply(mappedNormalVector).unit();
+	const Matrix<3, 1> output = mappingMatrix * input;
+
+	return Vector(output(0, 0),output(0, 1), output(0, 2)).unit();
 }
 
 Color Material::illuminate(const Scene& scene, const Ray& sourceRay, const Vector& position, const Vector& normal, const Vector& uv, uint32_t rayDepthRemaining)

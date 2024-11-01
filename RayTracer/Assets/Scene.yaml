@@ -19,7 +19,7 @@ scene:
     - type: Box
       position: Vector(-1e20, -1e20, -50)
       rotation: Zero
-      size: Vector(2e20, 2e20, 1)
+      scale: Vector(2e20, 2e20, 1)
       material:
         type: Light
         texture:
@@ -30,7 +30,7 @@ scene:
     - type: Sphere
       position: Vector(-6, 3, -5)
       rotation: Zero
-      radius: 1.0
+      scale: Vector(1, 1, 1)
       material:
         type: Light
         texture:
@@ -41,7 +41,7 @@ scene:
     - type: Plane
       normal: Vector(0, 1, 0)
       distance: -1
-      scale: 0.3
+      uvScale: 0.3
       material:
         type: Diffuse
         texture:
@@ -55,7 +55,7 @@ scene:
     - type: Sphere
       position: Vector(-4, 0, 4)
       rotation: Zero
-      radius: 1.0
+      scale: Vector(1, 1, 1)
       material:
         type: Diffuse
         texture:
@@ -65,8 +65,8 @@ scene:
     # Checkerboard sphere in "V" group of spheres
     - type: Sphere
       position: Vector(-2, 0, 2)
-      rotation: VectorDegrees(15, 15, 15)
-      radius: 1.0
+      rotation: VectorDegrees(-15, -15, -15)
+      scale: Vector(1, 1, 1)
       material:
         type: Diffuse
         texture:
@@ -79,7 +79,7 @@ scene:
     - type: Sphere
       position: Vector(0, 0, 0)
       rotation: Zero
-      radius: 1.0
+      scale: Vector(1, 1, 1)
       material:
         type: Reflective
         polish: 0.90
@@ -91,7 +91,7 @@ scene:
     - type: Sphere
       position: Vector(2, 0, 2)
       rotation: Zero
-      radius: 1.0
+      scale: Vector(1, 1, 1)
       material:
         type: Reflective
         polish: 0.90
@@ -103,7 +103,7 @@ scene:
     - type: Sphere
       position: Vector(4, 0, 4)
       rotation: Zero
-      radius: 1.0
+      scale: Vector(1, 1, 1)
       material:
         type: Reflective
         polish: 0.90
@@ -115,7 +115,7 @@ scene:
     - type: Sphere
       position: Vector(6, 0, 0)
       rotation: Zero
-      radius: 1.0
+      scale: Vector(1, 1, 1)
       material:
         type: Reflective
         polish: 0.5
@@ -130,7 +130,7 @@ scene:
     - type: Sphere
       position: Vector(-6, 0, 0)
       rotation: Zero
-      radius: 1.2
+      scale: Vector(1.2, 1.2, 1.2)
       material:
         type: Diffuse
         texture:
@@ -144,7 +144,7 @@ scene:
     - type: Sphere
       position: Vector(-3, 0, -3)
       rotation: Zero
-      radius: 1.0
+      scale: Vector(1, 1, 1)
       material:
         type: Dielectric
         refractionIndex: 2.2
@@ -156,7 +156,7 @@ scene:
     - type: Box
       position: Vector(8, 0, 8)
       rotation: Zero
-      size: Vector(3, 2, 2)
+      scale: Vector(3, 2, 2)
       material:
         type: Diffuse
         texture:
@@ -168,9 +168,9 @@ scene:
 
     # Front cube with example texture
     - type: Box
-      position: Vector(1, 0, -4)
-      rotation: VectorDegrees(0, 45, 0)
-      size: Vector(1, 1, 1)
+      position: Vector(2, 0, -4)
+      rotation: VectorDegrees(0, -45, 0)
+      scale: Vector(1.1, 1.1, 1.1)
       material:
         type: Diffuse
         texture:
@@ -181,9 +181,8 @@ scene:
     - type: Mesh
       position: Vector(0, 0, 6)
       rotation: VectorDegrees(0, -50, 0)
-      size: Vector(1, 1, 1)
+      scale: Vector(1.15, 1.15, 1.15)
       path: "Assets/Teapot.obj"
-      scale: 1.0
       material:
         type: Reflective
         polish: 0.99

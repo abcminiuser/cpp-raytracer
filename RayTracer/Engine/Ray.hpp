@@ -18,6 +18,8 @@ public:
 	const Vector&		direction() const			{ return m_direction; }
 	const Vector&		directionInverse() const	{ return m_directionInverse; }
 
+	const Vector		at(double distance) const	{ return m_position + (m_direction * distance); }
+
 	Color				trace(const Scene& scene, uint32_t rayDepthRemaining) const;
 
 private:

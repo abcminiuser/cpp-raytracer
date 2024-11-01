@@ -7,20 +7,22 @@
 #include <cassert>
 #include <limits>
 
-Object::Object(const Vector& position, const Vector& rotation, std::shared_ptr<Material> material)
+Object::Object(const Vector& position, const Vector& rotation, const Vector& scale, std::shared_ptr<Material> material)
 	: m_material(std::move(material))
 	, m_position(position)
-	, m_hasRotation(rotation != Vector())
-	, m_rotationMatrix(MatrixUtils::RotationMatrix(rotation))
-	, m_rotationMatrixInverse(MatrixUtils::RotationMatrix(rotation.inverted()))
+	, m_rotation(rotation)
+	, m_scale(scale)
 {
 	if (! m_material)
 		throw std::runtime_error("Object created with no associated material");
+
+	m_transform			= MatrixUtils::RotateMatrix(m_rotation.inverted()) * MatrixUtils::ScaleMatrix(StandardVectors::kUnit / m_scale) * MatrixUtils::TranslateMatrix(m_position.inverted());
+	m_inverseTransform	= (MatrixUtils::TranslateMatrix(m_position) * MatrixUtils::RotateMatrix(m_rotation.inverted()) * MatrixUtils::ScaleMatrix(m_scale)).transposed();
 }
 
 double Object::intersect(const Ray& ray) const
 {
-	const Ray rayObjectSpace = Ray(rotate(ray.position() - m_position, m_rotationMatrixInverse), rotate(ray.direction(), m_rotationMatrixInverse).unit());
+	const Ray rayObjectSpace = MatrixUtils::Transform(ray, m_transform);
 
 	const double closestIntersectionDistance = intersectWith(rayObjectSpace);
 	if (closestIntersectionDistance < kComparisonThreshold)
@@ -29,14 +31,15 @@ double Object::intersect(const Ray& ray) const
 	return closestIntersectionDistance;
 }
 
-Color Object::illuminate(const Scene& scene, const Ray& ray, const Vector& position, uint32_t rayDepthRemaining) const
+Color Object::illuminate(const Scene& scene, const Ray& ray, double distance, uint32_t rayDepthRemaining) const
 {
-	const Vector positionObjectSpace = rotate(position - m_position, m_rotationMatrixInverse);
+	const Ray		rayObjectSpace		= MatrixUtils::Transform(ray, m_transform);
+	const Vector	positionObjectSpace	= rayObjectSpace.at(distance);
 
-	Vector	normalObjectSpace;
-	Vector	tangent;
-	Vector	bitangent;
-	Vector	uv;
+	Vector normalObjectSpace;
+	Vector tangent;
+	Vector bitangent;
+	Vector uv;
 	getIntersectionProperties(positionObjectSpace, normalObjectSpace, tangent, bitangent, uv);
 
 	assert(normalObjectSpace.length() - 1 <= std::numeric_limits<double>::epsilon());
@@ -46,12 +49,8 @@ Color Object::illuminate(const Scene& scene, const Ray& ray, const Vector& posit
 	// Remap the object's normal using the texture normal map if present
 	normalObjectSpace = m_material->mapNormal(normalObjectSpace, tangent, bitangent, uv);
 
-	const Vector normalWorldSpace = rotate(normalObjectSpace, m_rotationMatrix).unit();
+	const Vector 	normalWorldSpace	= MatrixUtils::Transform(normalObjectSpace, m_inverseTransform, true).unit();
+	const Vector 	positionWorldSpace	= ray.at(distance);
 
-	return m_material->illuminate(scene, ray, position, normalWorldSpace, uv, rayDepthRemaining);
-}
-
-Vector Object::rotate(const Vector& vector, const Matrix<3, 3>& rotation) const
-{
-	return m_hasRotation ? rotation.multiply(vector) : vector;
+	return m_material->illuminate(scene, ray, positionWorldSpace, normalWorldSpace, uv, rayDepthRemaining);
 }

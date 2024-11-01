@@ -16,16 +16,15 @@ namespace
 	constexpr auto kBackNormal		= StandardVectors::kUnitZ;
 }
 
-BoxObject::BoxObject(const Vector& position, const Vector& rotation, std::shared_ptr<Material> material, const Vector& size)
-	: Object(position, rotation, std::move(material))
-	, m_size(size)
+BoxObject::BoxObject(const Vector& position, const Vector& rotation, const Vector& scale, std::shared_ptr<Material> material)
+	: Object(position, rotation, scale, std::move(material))
 {
 
 }
 
 double BoxObject::intersectWith(const Ray& ray) const
 {
-	return BoundingBox(Vector(), m_size).intersect(ray);
+	return BoundingBox(Vector(), StandardVectors::kUnit).intersect(ray);
 }
 
 void BoxObject::getIntersectionProperties(const Vector& position, Vector& normal, Vector& tangent, Vector& bitangent, Vector& uv) const
@@ -48,13 +47,13 @@ void BoxObject::getIntersectionProperties(const Vector& position, Vector& normal
 		tangent		= StandardVectors::kUnitZ;
 		bitangent	= StandardVectors::kUnitX;
 	}
-	else if (std::abs(position.y() - m_size.y()) < kComparisonThreshold)
+	else if (std::abs(position.y() - 1) < kComparisonThreshold)
 	{
 		normal		= kBottomNormal; // Bottom face
 		tangent		= StandardVectors::kUnitZ.inverted();
 		bitangent	= StandardVectors::kUnitX;
 	}
-	else if (std::abs(position.x() - m_size.x()) < kComparisonThreshold)
+	else if (std::abs(position.x() - 1) < kComparisonThreshold)
 	{
 		normal		= kRightNormal; // Right face
 		tangent		= StandardVectors::kUnitY;
@@ -75,8 +74,8 @@ Vector BoxObject::uvAt(const Vector& position, const Vector& normal) const
 	constexpr double kStepU = (1.0 / 4);
 	constexpr double kStepV = (1.0 / 3);
 
-	const auto dLower = position / m_size;
-	const auto dUpper = (m_size - position) / m_size;
+	const auto dLower = position;
+	const auto dUpper = StandardVectors::kUnit - position;
 
 	double u = 0;
 	double v = 0;

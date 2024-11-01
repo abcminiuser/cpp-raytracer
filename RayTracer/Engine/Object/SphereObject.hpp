@@ -12,7 +12,7 @@ class SphereObject final
 	: public Object
 {
 public:
-				SphereObject(const Vector& position, const Vector& rotation, std::shared_ptr<Material> material, double radius);
+				SphereObject(const Vector& position, const Vector& rotation, const Vector& scale, std::shared_ptr<Material> material);
 				~SphereObject() override = default;
 
 // Object i/f:
@@ -22,7 +22,4 @@ protected:
 
 private:
 	Vector		uvAt(const Vector& position, const Vector& normal) const;
-
-private:
-	double		m_diameter;
 };
