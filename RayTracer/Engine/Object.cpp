@@ -1,18 +1,23 @@
 #include "Engine/Object.hpp"
 
 #include "Engine/Material.hpp"
+#include "Engine/Material/DiffuseMaterial.hpp"
 #include "Engine/Ray.hpp"
 #include "Engine/Scene.hpp"
 
 #include <cassert>
 #include <limits>
 
+namespace
+{
+	const auto kDefaultMaterial = std::make_shared<DiffuseMaterial>(nullptr, nullptr);
+}
+
 Object::Object(const Transform& transform, std::shared_ptr<Material> material)
 	: m_transform(transform)
-	, m_material(std::move(material))
+	, m_material(material ? std::move(material) : kDefaultMaterial)
 {
-	if (! m_material)
-		throw std::runtime_error("Object created with no associated material");
+
 }
 
 double Object::intersect(const Ray& ray) const

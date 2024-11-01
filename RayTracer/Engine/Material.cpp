@@ -8,7 +8,7 @@
 
 namespace
 {
-	const auto kDefaultTexture = std::make_shared<CheckerboardTexture>(Texture::Interpolation::NearestNeighbor, Palette::kWhite, Palette::kWhite * .5, 10);
+	const auto kDefaultTexture = std::make_shared<CheckerboardTexture>(Texture::Interpolation::NearestNeighbor, Palette::kWhite, Palette::kWhite * .5, 15);
 }
 
 Material::Material(std::shared_ptr<Texture> texture, std::shared_ptr<Texture> normals)

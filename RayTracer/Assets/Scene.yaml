@@ -30,7 +30,7 @@ scene:
     # Orange light ball to the left behind the camera
     - type: Sphere
       transform:
-        position: Vector(-6, 3, -5)
+        position: Vector(-6, 3, -6)
         rotation: Zero
         scale: Vector(1, 1, 1)
       material:
