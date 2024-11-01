@@ -1,6 +1,7 @@
 #include "Engine/Transform.hpp"
 
 #include <cmath>
+#include <stdexcept>
 
 namespace
 {
@@ -95,6 +96,9 @@ Transform::Transform(const Vector& position, const Vector& rotation, const Vecto
 	, m_rotation(rotation)
 	, m_scale(scale)
 {
+	if (scale.length() == 0)
+		throw std::runtime_error("Transform created with zero scale.");
+
 	update();
 }
 

@@ -87,7 +87,7 @@ void MeshObject::getIntersectionProperties(const Vector& position, Vector& norma
 		normal		= StandardVectors::kUnitZ;
 		tangent		= StandardVectors::kUnitY;
 		bitangent	= StandardVectors::kUnitX;
-		uv			= Vector();
+		uv			= StandardVectors::kZero;
 	}
 }
 

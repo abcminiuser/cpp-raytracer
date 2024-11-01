@@ -8,7 +8,7 @@ struct BoundingBox
 {
 public:
 	constexpr			BoundingBox()
-		: BoundingBox(Vector(), Vector())
+		: BoundingBox(StandardVectors::kZero, StandardVectors::kZero)
 	{
 
 	}
