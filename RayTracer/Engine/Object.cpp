@@ -34,13 +34,12 @@ double Object::intersect(const Ray& ray) const
 Color Object::illuminate(const Scene& scene, const Ray& ray, double distance, uint32_t rayDepthRemaining) const
 {
 	const Ray		rayObjectSpace		= m_transform.transformRay(ray);
-	const Vector	positionObjectSpace	= rayObjectSpace.at(distance);
 
 	Vector normalObjectSpace;
 	Vector tangent;
 	Vector bitangent;
 	Vector uv;
-	getIntersectionProperties(positionObjectSpace, normalObjectSpace, tangent, bitangent, uv);
+	getIntersectionProperties(rayObjectSpace, distance, normalObjectSpace, tangent, bitangent, uv);
 
 	assert(normalObjectSpace.length() - 1 <= std::numeric_limits<double>::epsilon());
 	assert(tangent.length() - 1 <= std::numeric_limits<double>::epsilon());
