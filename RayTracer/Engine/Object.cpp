@@ -27,18 +27,26 @@ double Object::intersect(const Ray& ray) const
 	if (closestIntersectionDistance < kComparisonThreshold)
 		return Ray::kNoIntersection;
 
-	return closestIntersectionDistance;
+	const Vector positionObjectSpace = rayObjectSpace.at(closestIntersectionDistance);
+	const Vector positionWorldSpace = m_transform.untransformPosition(positionObjectSpace);
+	const double distanceWorldSpace = (positionWorldSpace - ray.position()).length();
+
+	return distanceWorldSpace;
 }
 
 Color Object::illuminate(const Scene& scene, const Ray& ray, double distance, uint32_t rayDepthRemaining) const
 {
+	const Vector	positionWorldSpace = ray.at(distance);
+
 	const Ray		rayObjectSpace		= m_transform.transformRay(ray);
+	const Vector	positionObjectSpace = m_transform.transformPosition(positionWorldSpace);
+	const double	distanceObjectSpace	= (positionObjectSpace - rayObjectSpace.position()).length();
 
 	Vector normalObjectSpace;
 	Vector tangent;
 	Vector bitangent;
 	Vector uv;
-	getIntersectionProperties(rayObjectSpace, distance, normalObjectSpace, tangent, bitangent, uv);
+	getIntersectionProperties(rayObjectSpace, distanceObjectSpace, normalObjectSpace, tangent, bitangent, uv);
 
 	assert(normalObjectSpace.isUnit());
 	assert(tangent.isUnit());
@@ -50,7 +58,6 @@ Color Object::illuminate(const Scene& scene, const Ray& ray, double distance, ui
 	assert(normalObjectSpace.isUnit());
 
 	const Vector 	normalWorldSpace	= m_transform.untransformDirection(normalObjectSpace);
-	const Vector 	positionWorldSpace	= ray.at(distance);
 
 	assert(normalWorldSpace.isUnit());
 
