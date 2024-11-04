@@ -131,7 +131,7 @@ void Transform::setScale(const Vector& scale)
 
 void Transform::update()
 {
-	m_forwardTransform  = (
+	m_forwardTransform = (
 		ScaleMatrix(StandardVectors::kUnit / m_scale) *
 		RotateMatrix(m_rotation.inverted()) *
 		TranslateMatrix(m_position.inverted())
@@ -139,9 +139,9 @@ void Transform::update()
 
 	m_reverseTransform = (
 		TranslateMatrix(m_position) *
-		RotateMatrix(m_rotation.inverted()) *
+		RotateMatrix(m_rotation) *
 		ScaleMatrix(m_scale)
-	).transposed();
+	);
 }
 
 Vector Transform::transformPosition(const Vector& vector) const
