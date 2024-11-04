@@ -27,7 +27,7 @@ public:
 
 protected:
 	virtual double					intersectWith(const Ray& ray) const = 0;
-	virtual void					getIntersectionProperties(const Ray& ray, double distance, Vector& normal, Vector& tangent, Vector& bitangent, Vector& uv) const = 0;
+	virtual void					getIntersectionProperties(const Ray& ray, const Vector& position, Vector& normal, Vector& tangent, Vector& bitangent, Vector& uv) const = 0;
 
 private:
 	Transform						m_transform;

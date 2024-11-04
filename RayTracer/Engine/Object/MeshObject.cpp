@@ -41,11 +41,9 @@ double MeshObject::intersectWith(const Ray& ray) const
 	return distance;
 }
 
-void MeshObject::getIntersectionProperties(const Ray& ray, double distance, Vector& normal, Vector& tangent, Vector& bitangent, Vector& uv) const
+void MeshObject::getIntersectionProperties(const Ray& ray, const Vector& position, Vector& normal, Vector& tangent, Vector& bitangent, Vector& uv) const
 {
 	bool found = false;
-
-	const Vector position = ray.at(distance);
 
 	m_mesh->walk(
 		[&](const BoundingBox& boundingBox) -> bool

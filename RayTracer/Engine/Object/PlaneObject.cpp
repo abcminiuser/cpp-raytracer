@@ -32,10 +32,8 @@ double PlaneObject::intersectWith(const Ray& ray) const
 	return -b / angle;
 }
 
-void PlaneObject::getIntersectionProperties(const Ray& ray, double distance, Vector& normal, Vector& tangent, Vector& bitangent, Vector& uv) const
+void PlaneObject::getIntersectionProperties(const Ray& ray, const Vector& position, Vector& normal, Vector& tangent, Vector& bitangent, Vector& uv) const
 {
-	const Vector position = ray.at(distance);
-
 	normal		= kNormal;
 	tangent		= kTangent;
 	bitangent	= kBitangent;

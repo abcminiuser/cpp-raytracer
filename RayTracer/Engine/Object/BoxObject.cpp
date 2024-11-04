@@ -27,10 +27,8 @@ double BoxObject::intersectWith(const Ray& ray) const
 	return BoundingBox(StandardVectors::kZero, StandardVectors::kUnit).intersect(ray);
 }
 
-void BoxObject::getIntersectionProperties(const Ray& ray, double distance, Vector& normal, Vector& tangent, Vector& bitangent, Vector& uv) const
+void BoxObject::getIntersectionProperties(const Ray& ray, const Vector& position, Vector& normal, Vector& tangent, Vector& bitangent, Vector& uv) const
 {
-	const Vector position = ray.at(distance);
-
 	if (std::abs(position.z()) < kComparisonThreshold)
 	{
 		normal		= kFrontNormal; // Front face

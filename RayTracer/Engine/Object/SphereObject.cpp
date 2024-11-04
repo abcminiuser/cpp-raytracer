@@ -42,10 +42,8 @@ double SphereObject::intersectWith(const Ray& ray) const
 	}
 }
 
-void SphereObject::getIntersectionProperties(const Ray& ray, double distance, Vector& normal, Vector& tangent, Vector& bitangent, Vector& uv) const
+void SphereObject::getIntersectionProperties(const Ray& ray, const Vector& position, Vector& normal, Vector& tangent, Vector& bitangent, Vector& uv) const
 {
-	const Vector position = ray.at(distance);
-
 	normal		= position.unit();
 	tangent		= normal.crossProduct(ray.direction()).unit();
 	bitangent	= tangent.crossProduct(normal).unit();

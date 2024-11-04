@@ -21,32 +21,31 @@ Object::Object(const Transform& transform, std::shared_ptr<Material> material)
 
 double Object::intersect(const Ray& ray) const
 {
-	const Ray rayObjectSpace = m_transform.transformRay(ray);
+	const Ray 		rayObjectSpace		= m_transform.transformRay(ray);
 
 	const double closestIntersectionDistance = intersectWith(rayObjectSpace);
 	if (closestIntersectionDistance < kComparisonThreshold)
 		return Ray::kNoIntersection;
 
-	const Vector positionObjectSpace = rayObjectSpace.at(closestIntersectionDistance);
-	const Vector positionWorldSpace = m_transform.untransformPosition(positionObjectSpace);
-	const double distanceWorldSpace = (positionWorldSpace - ray.position()).length();
+	const Vector	positionObjectSpace	= rayObjectSpace.at(closestIntersectionDistance);
+	const Vector	positionWorldSpace	= m_transform.untransformPosition(positionObjectSpace);
+	const double	distanceWorldSpace	= (positionWorldSpace - ray.position()).length();
 
 	return distanceWorldSpace;
 }
 
 Color Object::illuminate(const Scene& scene, const Ray& ray, double distance, uint32_t rayDepthRemaining) const
 {
-	const Vector	positionWorldSpace = ray.at(distance);
-
 	const Ray		rayObjectSpace		= m_transform.transformRay(ray);
+
+	const Vector	positionWorldSpace	= ray.at(distance);
 	const Vector	positionObjectSpace = m_transform.transformPosition(positionWorldSpace);
-	const double	distanceObjectSpace	= (positionObjectSpace - rayObjectSpace.position()).length();
 
 	Vector normalObjectSpace;
 	Vector tangent;
 	Vector bitangent;
 	Vector uv;
-	getIntersectionProperties(rayObjectSpace, distanceObjectSpace, normalObjectSpace, tangent, bitangent, uv);
+	getIntersectionProperties(rayObjectSpace, positionObjectSpace, normalObjectSpace, tangent, bitangent, uv);
 
 	assert(normalObjectSpace.isUnit());
 	assert(tangent.isUnit());
