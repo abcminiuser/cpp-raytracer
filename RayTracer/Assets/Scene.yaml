@@ -93,7 +93,7 @@ scene:
           type: Solid
           color: Red
 
-    # Green sphere in "V" group of spheres
+    # Blue sphere in "V" group of spheres
     - type: Sphere
       transform:
         position: Vector(2, 0, 2)
@@ -106,7 +106,7 @@ scene:
           type: Solid
           color: Blue
 
-    # Blue sphere in "V" group of spheres
+    # Green sphere in "V" group of spheres
     - type: Sphere
       transform:
         position: Vector(4, 0, 4)
