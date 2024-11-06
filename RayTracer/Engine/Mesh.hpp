@@ -26,16 +26,13 @@ public:
 
 	BoundingBox				boundingBox() const
 	{
-		return m_root ? m_root->boundingBox : BoundingBox();
+		return m_root.boundingBox;
 	}
 
 	template <typename BBTestCallable, typename TriangleCallable>
 	void					walk(BBTestCallable&& boundingBoxTest, TriangleCallable&& triangleTest) const
 	{
-		if (! m_root)
-			return;
-
-		walk(boundingBoxTest, triangleTest, *m_root);
+		walk(boundingBoxTest, triangleTest, m_root);
 	}
 
 private:
@@ -77,5 +74,5 @@ private:
 
 private:
 	std::vector<Vertex> 	m_vertices;
-	std::unique_ptr<Node>	m_root;
+	Node					m_root = {};
 };

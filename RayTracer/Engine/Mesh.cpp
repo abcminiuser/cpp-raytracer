@@ -29,7 +29,8 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<Triangle> triangles)
 	// Now build a tree of all the triangles, storing a bounding box for each node,
 	// along with either a list of triangles that intersect that bounding box, or
 	// an array of children nodes to search.
-	m_root = partition(std::move(triangles), 0);
+	auto newRoot = partition(std::move(triangles), 0);
+	m_root = newRoot ? std::move(*newRoot.release()) : Node{};
 
 	size_t nodeCount = 0;
 	walk(
