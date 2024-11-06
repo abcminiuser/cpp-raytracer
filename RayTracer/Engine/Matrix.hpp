@@ -1,8 +1,5 @@
 #pragma once
 
-#include "Engine/Vector.hpp"
-#include "Engine/Ray.hpp"
-
 #include <array>
 #include <concepts>
 #include <stdint.h>
@@ -21,19 +18,6 @@ public:
 		: m_elements({ std::forward<decltype(values)>(values)... })
 	{
 
-	}
-
-	constexpr Matrix<COLS, ROWS>			transposed() const
-	{
-		Matrix<COLS, ROWS> output;
-
-		for (size_t i = 0; i < ROWS; i++)
-		{
-			for (size_t k = 0; k < COLS; k++)
-				output(k, i) = operator()(i, k);
-		}
-
-		return output;
 	}
 
 	template <size_t OTHERCOLS>
