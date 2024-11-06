@@ -52,7 +52,7 @@ void MeshObject::getIntersectionProperties(const Vector& direction, const Vector
 			if (found)
 				return false;
 
-			// If out search point is contained in the bounding box, search this node.
+			// If our search point is contained in the bounding box, search this node.
 			return boundingBox.contains(position);
 		},
 		[&](const std::vector<Vertex>& vertices, const std::vector<Triangle>& triangles)

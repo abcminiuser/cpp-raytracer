@@ -27,9 +27,9 @@ public:
 	Scene									load(const std::string& path);
 
 private:
-	void									clearCache();
-
 	std::vector<std::shared_ptr<Object>>	parseObjects(const fkyaml::node& node, const std::string& property);
+
+	std::shared_ptr<Object>					parseObject(const fkyaml::node& node);
 	std::shared_ptr<Object>					parseBoxObject(const fkyaml::node& node);
 	std::shared_ptr<Object>					parseMeshObject(const fkyaml::node& node);
 	std::shared_ptr<Object>					parsePlaneObject(const fkyaml::node& node);

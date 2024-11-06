@@ -66,21 +66,16 @@ Scene SceneLoader::load(const std::string& path)
 
 	// Clear cache after each load; we want a reload of the same scene to reload
 	// the file on disk at least once, in case it's changed since we last used it.
-	clearCache();
+	m_cache = {};
 
 	return
 		Scene
 		{
-			.background = tryParseColor(sceneNode, "background").value_or(Palette::kBlack),
-			.camera = tryParseCamera(sceneNode, "camera").value_or(Camera()),
-			.objects = parseObjects(sceneNode, "objects"),
-			.samplesPerPixel = std::max<uint32_t>(static_cast<uint32_t>(tryParseDouble(sceneNode, "samplesPerPixel").value_or(100)), 1)
+			.background			= tryParseColor(sceneNode, "background").value_or(Palette::kBlack),
+			.camera				= tryParseCamera(sceneNode, "camera").value_or(Camera()),
+			.objects			= parseObjects(sceneNode, "objects"),
+			.samplesPerPixel	= std::max<uint32_t>(static_cast<uint32_t>(tryParseDouble(sceneNode, "samplesPerPixel").value_or(100)), 1)
 		};
-}
-
-void SceneLoader::clearCache()
-{
-	m_cache = {};
 }
 
 std::vector<std::shared_ptr<Object>> SceneLoader::parseObjects(const fkyaml::node& node, const std::string& property)
@@ -92,23 +87,26 @@ std::vector<std::shared_ptr<Object>> SceneLoader::parseObjects(const fkyaml::nod
 
 	std::vector<std::shared_ptr<Object>> objects;
 
-	for (const auto& yamlObject : objectsNode)
-	{
-		const auto type = yamlObject.at("type").get_value<std::string>();
-
-		if (type == "Box")
-			objects.push_back(parseBoxObject(yamlObject));
-		else if (type == "Mesh")
-			objects.push_back(parseMeshObject(yamlObject));
-		else if (type == "Plane")
-			objects.push_back(parsePlaneObject(yamlObject));
-		else if (type == "Sphere")
-			objects.push_back(parseSphereObject(yamlObject));
-		else
-			throw std::runtime_error("Unknown object type '" + type + "' in scene YAML file");
-	}
+	for (const auto& object : objectsNode)
+		objects.push_back(parseObject(object));
 
 	return objects;
+}
+
+std::shared_ptr<Object> SceneLoader::parseObject(const fkyaml::node& node)
+{
+	const auto type = node.at("type").get_value<std::string>();
+
+	if (type == "Box")
+		return parseBoxObject(node);
+	else if (type == "Mesh")
+		return parseMeshObject(node);
+	else if (type == "Plane")
+		return parsePlaneObject(node);
+	else if (type == "Sphere")
+		return parseSphereObject(node);
+	else
+		throw std::runtime_error("Unknown object type '" + type + "' in scene YAML file");
 }
 
 std::shared_ptr<Object> SceneLoader::parseBoxObject(const fkyaml::node& node)

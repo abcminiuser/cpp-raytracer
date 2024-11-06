@@ -55,7 +55,7 @@ Color Texture::sample(double u, double v) const
 			size_t nextP = (p + 1) % m_width;
 			size_t nextQ = (q + 1) % m_height;
 
-			color += colorAt(p    , q)		* (1 - dP)	* (1 - dQ);
+			color  = colorAt(p    , q)		* (1 - dP)	* (1 - dQ);
 			color += colorAt(nextP, q)		* dP		* (1 - dQ);
 			color += colorAt(p    , nextQ)	* (1 - dP)	* dQ;
 			color += colorAt(nextP, nextQ)	* dP		* dQ;

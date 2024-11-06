@@ -56,7 +56,7 @@ Color Object::illuminate(const Scene& scene, const Ray& ray, double distance, ui
 
 	assert(normalObjectSpace.isUnit());
 
-	const Vector 	normalWorldSpace	= m_transform.untransformDirection(normalObjectSpace);
+	const Vector 	normalWorldSpace		= m_transform.untransformDirection(normalObjectSpace);
 
 	assert(normalWorldSpace.isUnit());
 
