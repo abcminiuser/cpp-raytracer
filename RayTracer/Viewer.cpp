@@ -68,6 +68,8 @@ void Viewer::view(const std::string& path)
 {
 	enum class RenderType { CoarsePreview, Preview, Full };
 
+	SceneLoader sceneLoader;
+
 	RenderType nextRenderType = RenderType::Preview;
 	RenderType previousRenderType = RenderType::Preview;
 	std::chrono::steady_clock::time_point lastCoarsePreviewTime = {};
@@ -82,7 +84,7 @@ void Viewer::view(const std::string& path)
 
 	try
 	{
-		scene = SceneLoader::Load(path);
+		scene = sceneLoader.load(path);
 		fullQualitySamplesPerPixel = scene->samplesPerPixel;
 		sceneUpdatePending = true;
 	}
@@ -114,7 +116,7 @@ void Viewer::view(const std::string& path)
 
 						try
 						{
-							scene = SceneLoader::Load(path);
+							scene = sceneLoader.load(path);
 							fullQualitySamplesPerPixel = scene->samplesPerPixel;
 
 							nextRenderType = RenderType::CoarsePreview;
