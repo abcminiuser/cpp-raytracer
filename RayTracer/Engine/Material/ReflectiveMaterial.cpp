@@ -24,7 +24,7 @@ ReflectiveMaterial::ReflectiveMaterial(std::shared_ptr<Texture> texture, std::sh
 std::optional<Ray> ReflectiveMaterial::scatter(const Vector& incident, const Vector& position, const Vector& normal, const Vector& uv, Color& attenuation)
 {
 	// Reflect the incidence ray along the surface normal.
-	auto reflectionDirection = Reflect(incident, normal).unit();
+	auto reflectionDirection = Reflect(incident, normal);
 
 	// Perturb the reflected ray randomly, based on how (un-)polished this material is.
 	if (m_scuff)

@@ -43,7 +43,7 @@ Vector Material::mapNormal(const Vector& normal, const Vector& tangent, const Ve
 
 	const Matrix<3, 1> output = mappingMatrix * input;
 
-	return Vector(output(0, 0),output(0, 1), output(0, 2)).unit();
+	return Vector(output(0, 0), output(0, 1), output(0, 2)).unit();
 }
 
 Color Material::illuminate(const Scene& scene, const Ray& sourceRay, const Vector& position, const Vector& normal, const Vector& uv, uint32_t rayDepthRemaining)

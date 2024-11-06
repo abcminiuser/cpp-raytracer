@@ -62,8 +62,8 @@ void Camera::setOrientation(const Vector& orientation)
 void Camera::update()
 {
 	m_w = m_direction.inverted();
-	m_u	= m_orientation.crossProduct(m_direction).unit();
-	m_v	= m_w.crossProduct(m_u).unit();
+	m_u	= m_orientation.crossProduct(m_direction);
+	m_v	= m_w.crossProduct(m_u);
 
     m_viewHeight				= 2 * std::tan(m_verticalFov / 2) * m_focusDistance;
     m_viewWidth					= m_viewHeight * m_aspectRatio;
