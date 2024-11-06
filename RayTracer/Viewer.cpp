@@ -15,6 +15,14 @@
 namespace
 {
 	constexpr auto kCoarsePreviewModeExitDelay = std::chrono::milliseconds(500);
+
+	Transform RotationTransform(const Vector& rotation)
+	{
+		Transform transform;
+		transform.setRotation(rotation);
+
+		return transform;
+	}
 }
 
 Viewer::Viewer(size_t width, size_t height)
@@ -198,10 +206,10 @@ void Viewer::view(const std::string& path)
 
 						const std::map<sf::Keyboard::Key, Transform> cameraRotateAmount
 							{
-								{ sf::Keyboard::Key::I, Transform(StandardVectors::kZero, Vector(0, 0, kRotateDelta), StandardVectors::kUnit) },
-								{ sf::Keyboard::Key::J, Transform(StandardVectors::kZero, Vector(0, kRotateDelta, 0), StandardVectors::kUnit) },
-								{ sf::Keyboard::Key::K, Transform(StandardVectors::kZero, Vector(0, 0, -kRotateDelta), StandardVectors::kUnit) },
-								{ sf::Keyboard::Key::L, Transform(StandardVectors::kZero, Vector(0, -kRotateDelta, 0), StandardVectors::kUnit) },
+								{ sf::Keyboard::Key::I, RotationTransform(Vector(0, 0, kRotateDelta)) },
+								{ sf::Keyboard::Key::J, RotationTransform(Vector(0, kRotateDelta, 0)) },
+								{ sf::Keyboard::Key::K, RotationTransform(Vector(0, 0, -kRotateDelta)) },
+								{ sf::Keyboard::Key::L, RotationTransform(Vector(0, -kRotateDelta, 0)) },
 							};
 
 						scene->camera.setDirection(cameraRotateAmount.at(event.key.code).transformDirection(scene->camera.direction()));
@@ -218,8 +226,8 @@ void Viewer::view(const std::string& path)
 
 						static const std::map<sf::Keyboard::Key, Transform> cameraRotateAmount
 							{
-								{ sf::Keyboard::Key::U, Transform(StandardVectors::kZero, Vector(-kRotateDelta, 0, 0), StandardVectors::kUnit) },
-								{ sf::Keyboard::Key::O, Transform(StandardVectors::kZero, Vector(kRotateDelta, 0, 0), StandardVectors::kUnit) },
+								{ sf::Keyboard::Key::U, RotationTransform(Vector(-kRotateDelta, 0, 0)) },
+								{ sf::Keyboard::Key::O, RotationTransform(Vector(kRotateDelta, 0, 0)) },
 							};
 
 						scene->camera.setOrientation(cameraRotateAmount.at(event.key.code).transformDirection(scene->camera.orientation()));

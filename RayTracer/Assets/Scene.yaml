@@ -44,7 +44,7 @@ scene:
       transform:
         position: Vector(0, -1, 0)
         rotation: Zero
-        scale: Vector(.3, .3, .3)
+        scale: Vector(3, 3, 3)
       material:
         type: Diffuse
         texture:

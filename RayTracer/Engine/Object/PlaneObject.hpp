@@ -22,7 +22,4 @@ protected:
 
 private:
 	Vector		uvAt(const Vector& position, const Vector& normal) const;
-
-private:
-	Vector		m_uvScale;
 };

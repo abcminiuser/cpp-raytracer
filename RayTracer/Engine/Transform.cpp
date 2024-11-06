@@ -1,5 +1,7 @@
 #include "Engine/Transform.hpp"
 
+#include "Engine/Ray.hpp"
+
 #include <cmath>
 #include <stdexcept>
 
@@ -86,19 +88,7 @@ namespace
 }
 
 Transform::Transform()
-	: Transform(StandardVectors::kZero, StandardVectors::kZero, StandardVectors::kUnit)
 {
-
-}
-
-Transform::Transform(const Vector& position, const Vector& rotation, const Vector& scale)
-	: m_position(position)
-	, m_rotation(rotation)
-	, m_scale(scale)
-{
-	if (scale.length() == 0)
-		throw std::runtime_error("Transform created with zero scale.");
-
 	update();
 }
 
@@ -124,6 +114,9 @@ void Transform::setScale(const Vector& scale)
 {
 	if (m_scale == scale)
 		return;
+
+	if (scale.length() == 0)
+		throw std::runtime_error("Transform created with zero scale.");
 
 	m_scale = scale;
 	update();

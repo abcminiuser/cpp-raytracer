@@ -9,7 +9,6 @@ class Transform
 {
 public:
 					Transform();
-					Transform(const Vector& position, const Vector& rotation, const Vector& scale);
 
 	Vector			position() const { return m_position; }
 	Vector			rotation() const { return m_rotation; }
@@ -31,9 +30,9 @@ private:
 	void			update();
 
 private:
-	Vector			m_position;
-	Vector			m_rotation;
-	Vector			m_scale;
+	Vector			m_position = StandardVectors::kZero;
+	Vector			m_rotation = StandardVectors::kZero;
+	Vector			m_scale = StandardVectors::kUnit;
 
 	Matrix<4, 4>	m_forwardTransform;
 	Matrix<4, 4>	m_reverseTransform;

@@ -405,7 +405,12 @@ namespace
 		auto rotation			= TryParseVector(transformNode, "rotation").value_or(StandardVectors::kZero);
 		auto scale				= TryParseVector(transformNode, "scale").value_or(StandardVectors::kUnit);
 
-		return Transform(position, rotation, scale);
+		Transform transform;
+		transform.setPosition(position);
+		transform.setRotation(rotation);
+		transform.setScale(scale);
+
+		return transform;
 	}
 
 	std::shared_ptr<Object> ParseBoxObject(const fkyaml::node& node)

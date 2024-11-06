@@ -11,8 +11,7 @@ namespace
 }
 
 PlaneObject::PlaneObject(const Transform& transform, std::shared_ptr<Material> material)
-	: Object(Transform(transform.position(), transform.rotation(), StandardVectors::kUnit), std::move(material))
-	, m_uvScale(transform.scale())
+	: Object(transform, std::move(material))
 {
 
 }
@@ -42,10 +41,8 @@ void PlaneObject::getIntersectionProperties(const Ray& ray, const Vector& positi
 
 Vector PlaneObject::uvAt(const Vector& position, const Vector& normal) const
 {
-	const auto positionFromOrigin = position * m_uvScale;
-
-	auto u = kTangent.dotProduct(positionFromOrigin);
-	auto v = kBitangent.dotProduct(positionFromOrigin);
+	auto u = kTangent.dotProduct(position);
+	auto v = kBitangent.dotProduct(position);
 
 	return Vector(u, v, 0);
 }
