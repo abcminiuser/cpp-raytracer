@@ -69,6 +69,8 @@ private:
 
 	std::unique_ptr<Node>	partition(std::vector<Triangle> triangles, uint32_t depth);
 
+	BoundingBox				boundingBoxForTriangles(const std::vector<Triangle>& triangles) const;
+
 	std::vector<Triangle>	trianglesInBox(const BoundingBox& boundingBox, const std::vector<Triangle>& triangles) const;
 	bool					boxContainsTriangle(const BoundingBox& boundingBox, const Triangle& triangle) const;
 

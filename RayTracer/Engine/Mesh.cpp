@@ -15,15 +15,7 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<Triangle> triangles)
 	m_vertices.shrink_to_fit();
 
 	// First find the bounding box for all triangles in the mesh.
-	BoundingBox meshBoundingBox(StandardVectors::kMax, StandardVectors::kMin);
-	for (const auto& t : triangles)
-	{
-		for (const auto& p : t)
-		{
-			meshBoundingBox.setLower(VectorUtils::MinPoint(meshBoundingBox.lower(), m_vertices[p].position));
-			meshBoundingBox.setUpper(VectorUtils::MaxPoint(meshBoundingBox.upper(), m_vertices[p].position));
-		}
-	}
+	BoundingBox meshBoundingBox = boundingBoxForTriangles(triangles);
 	printf("Partitioning mesh %s size %s - %zu triangles\n", meshBoundingBox.lower().string().c_str(), meshBoundingBox.size().string().c_str(), triangles.size());
 
 	// Now build a tree of all the triangles, storing a bounding box for each node,
@@ -52,17 +44,8 @@ std::unique_ptr<Mesh::Node> Mesh::partition(std::vector<Triangle> triangles, uin
 		return nullptr;
 
 	auto node = std::make_unique<Node>();
-	node->boundingBox	= BoundingBox(StandardVectors::kMax, StandardVectors::kMin);
+	node->boundingBox	= boundingBoxForTriangles(triangles);
 	node->triangles		= std::move(triangles);
-
-	for (const auto& t : node->triangles)
-	{
-		for (const auto& p : t)
-		{
-			node->boundingBox.setLower(VectorUtils::MinPoint(node->boundingBox.lower(), m_vertices[p].position));
-			node->boundingBox.setUpper(VectorUtils::MaxPoint(node->boundingBox.upper(), m_vertices[p].position));
-		}
-	}
 
 	// If we've hit our depth limit, we'll just adopt all the matching triangles here and bail out.
 	if (depth >= kMaxOctreePartitionDepth)
@@ -105,6 +88,22 @@ std::unique_ptr<Mesh::Node> Mesh::partition(std::vector<Triangle> triangles, uin
 		node->children[i] = partition(std::move(childrenTriangles[i]), depth + 1);
 
 	return node;
+}
+
+BoundingBox Mesh::boundingBoxForTriangles(const std::vector<Triangle>& triangles) const
+{
+	BoundingBox boundingBox(StandardVectors::kMax, StandardVectors::kMin);
+
+	for (const auto& t : triangles)
+	{
+		for (const auto& p : t)
+		{
+			boundingBox.setLower(VectorUtils::MinPoint(boundingBox.lower(), m_vertices[p].position));
+			boundingBox.setUpper(VectorUtils::MaxPoint(boundingBox.upper(), m_vertices[p].position));
+		}
+	}
+
+	return boundingBox;
 }
 
 std::vector<Triangle> Mesh::trianglesInBox(const BoundingBox& boundingBox, const std::vector<Triangle>& triangles) const

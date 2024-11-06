@@ -332,7 +332,7 @@ std::optional<Color> SceneLoader::tryParseColor(const NodeHolder& node)
 	if (! node)
 		return std::nullopt;
 
-	std::string value = TrimWhitespace(node.getValue<std::string>());
+	const std::string value = TrimWhitespace(node.getValue<std::string>());
 
 	static const std::regex normColorRegex("Color\\(" "([^\\,]+)" "," "([^\\,]+)" "," "([^\\)]+)" "\\)");
 	if (std::smatch matches; std::regex_match(value, matches, normColorRegex))
@@ -376,7 +376,7 @@ std::optional<Vector> SceneLoader::tryParseVector(const NodeHolder& node)
 	if (! node)
 		return std::nullopt;
 
-	std::string value = TrimWhitespace(node.getValue<std::string>());
+	const std::string value = TrimWhitespace(node.getValue<std::string>());
 
 	static const std::regex vectorRegex("Vector\\(" "([^\\,]+)" "," "([^\\,]+)" "," "([^\\)]+)" "\\)");
 	if (std::smatch matches; std::regex_match(value, matches, vectorRegex))
@@ -418,7 +418,7 @@ std::optional<Texture::Interpolation> SceneLoader::tryParseInterpolation(const N
 	if (! node)
 		return std::nullopt;
 
-	std::string value = TrimWhitespace(node.getValue<std::string>());
+	const std::string value = TrimWhitespace(node.getValue<std::string>());
 
 	static const std::unordered_map<std::string, Texture::Interpolation> kKnownNames
 		{
@@ -513,6 +513,8 @@ std::shared_ptr<ImageTexture> SceneLoader::makeImageTexture(const std::string& p
 	if (cachedEntry != m_cache.imageTextures.end())
 		return cachedEntry->second;
 
+	printf("Loading image '%s'\n", path.c_str());
+
 	sf::Image imageTexture;
 	if (! imageTexture.loadFromFile(path))
 		throw std::runtime_error("Failed to load image: " + path);
@@ -528,6 +530,8 @@ std::shared_ptr<Mesh> SceneLoader::makeObjectMesh(const std::string& path)
 	auto cachedEntry = m_cache.meshes.find(path);
 	if (cachedEntry != m_cache.meshes.end())
 		return cachedEntry->second;
+
+	printf("Loading mesh '%s'\n", path.c_str());
 
 	objl::Loader objLoader;
 	if (! objLoader.LoadFile(path))
@@ -550,15 +554,40 @@ std::shared_ptr<Mesh> SceneLoader::makeObjectMesh(const std::string& path)
 			vertices.emplace_back(
 				Vertex
 				{
-					.position	= Vector(static_cast<double>(v.Position.X), static_cast<double>(v.Position.Y), static_cast<double>(v.Position.Z)),
-					.normal		= Vector(static_cast<double>(v.Normal.X), static_cast<double>(v.Normal.Y), static_cast<double>(v.Normal.Z)),
-					.texture	= Vector(static_cast<double>(v.TextureCoordinate.X), static_cast<double>(v.TextureCoordinate.Y), 0.0)
+					.position =
+						Vector(
+							static_cast<double>(v.Position.X),
+							static_cast<double>(v.Position.Y),
+							static_cast<double>(v.Position.Z)
+						),
+
+					.normal =
+						Vector(
+							static_cast<double>(v.Normal.X),
+							static_cast<double>(v.Normal.Y),
+							static_cast<double>(v.Normal.Z)
+						),
+
+					.texture =
+						Vector(
+							static_cast<double>(v.TextureCoordinate.X),
+							static_cast<double>(v.TextureCoordinate.Y),
+							0.0
+						)
 				}
 			);
 		}
 
 		for (size_t i = 0; i < mesh.Indices.size(); i += 3)
-			triangles.emplace_back(Triangle{ meshStartPos + mesh.Indices[i + 0], meshStartPos + mesh.Indices[i + 1], meshStartPos + mesh.Indices[i + 2] });
+		{
+			triangles.emplace_back(
+				Triangle{
+					meshStartPos + mesh.Indices[i + 0],
+					meshStartPos + mesh.Indices[i + 1],
+					meshStartPos + mesh.Indices[i + 2]
+				}
+			);
+		}
 	}
 
 	return std::make_shared<Mesh>(std::move(vertices), std::move(triangles));
