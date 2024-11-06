@@ -15,8 +15,6 @@
 #include <unordered_map>
 #include <vector>
 
-#include <fkYAML/node.hpp>
-
 class ImageTexture;
 
 class SceneLoader
@@ -27,33 +25,36 @@ public:
 	Scene									load(const std::string& path);
 
 private:
-	std::vector<std::shared_ptr<Object>>	parseObjects(const fkyaml::node& node, const std::string& property);
+	struct NodeHolder;
 
-	std::shared_ptr<Object>					parseObject(const fkyaml::node& node);
-	std::shared_ptr<Object>					parseBoxObject(const fkyaml::node& node);
-	std::shared_ptr<Object>					parseMeshObject(const fkyaml::node& node);
-	std::shared_ptr<Object>					parsePlaneObject(const fkyaml::node& node);
-	std::shared_ptr<Object>					parseSphereObject(const fkyaml::node& node);
+	Scene									parseScene(const NodeHolder& node);
+	std::vector<std::shared_ptr<Object>>	parseObjects(const NodeHolder& node);
 
-	std::shared_ptr<Texture>				parseTexture(const fkyaml::node& node, const std::string& property);
-	std::shared_ptr<Texture>				parseCheckerboardTexture(const fkyaml::node& node);
-	std::shared_ptr<Texture>				parseImageTexture(const fkyaml::node& node);
-	std::shared_ptr<Texture>				parseSolidTexture(const fkyaml::node& node);
+	std::shared_ptr<Object>					parseObject(const NodeHolder& node);
+	std::shared_ptr<Object>					parseBoxObject(const NodeHolder& node);
+	std::shared_ptr<Object>					parseMeshObject(const NodeHolder& node);
+	std::shared_ptr<Object>					parsePlaneObject(const NodeHolder& node);
+	std::shared_ptr<Object>					parseSphereObject(const NodeHolder& node);
 
-	std::shared_ptr<Material>				parseMaterial(const fkyaml::node& node, const std::string& property);
-	std::shared_ptr<Material>				parseDebugMaterial(const fkyaml::node& node);
-	std::shared_ptr<Material>				parseDielectricMaterial(const fkyaml::node& node);
-	std::shared_ptr<Material>				parseDiffuseMaterial(const fkyaml::node& node);
-	std::shared_ptr<Material>				parseLightMaterial(const fkyaml::node& node);
-	std::shared_ptr<Material>				parseReflectiveMaterial(const fkyaml::node& node);
+	std::shared_ptr<Texture>				parseTexture(const NodeHolder& node);
+	std::shared_ptr<Texture>				parseCheckerboardTexture(const NodeHolder& node);
+	std::shared_ptr<Texture>				parseImageTexture(const NodeHolder& node);
+	std::shared_ptr<Texture>				parseSolidTexture(const NodeHolder& node);
 
-	std::optional<Color>					tryParseColor(const fkyaml::node& node, const std::string& property);
-	std::optional<Vector>					tryParseVector(const fkyaml::node& node, const std::string& property);
-	std::optional<Texture::Interpolation>	tryParseInterpolation(const fkyaml::node& node, const std::string& property);
-	std::optional<double>					tryParseAspectRatio(const fkyaml::node& node, const std::string& property);
-	std::optional<double>					tryParseDouble(const fkyaml::node& node, const std::string& property);
-	std::optional<Camera>					tryParseCamera(const fkyaml::node& node, const std::string& property);
-	std::optional<Transform>				tryParseTransform(const fkyaml::node& node, const std::string& property);
+	std::shared_ptr<Material>				parseMaterial(const NodeHolder& node);
+	std::shared_ptr<Material>				parseDebugMaterial(const NodeHolder& node);
+	std::shared_ptr<Material>				parseDielectricMaterial(const NodeHolder& node);
+	std::shared_ptr<Material>				parseDiffuseMaterial(const NodeHolder& node);
+	std::shared_ptr<Material>				parseLightMaterial(const NodeHolder& node);
+	std::shared_ptr<Material>				parseReflectiveMaterial(const NodeHolder& node);
+
+	std::optional<Color>					tryParseColor(const NodeHolder& node);
+	std::optional<Vector>					tryParseVector(const NodeHolder& node);
+	std::optional<Texture::Interpolation>	tryParseInterpolation(const NodeHolder& node);
+	std::optional<double>					tryParseAspectRatio(const NodeHolder& node);
+	std::optional<double>					tryParseDouble(const NodeHolder& node);
+	std::optional<Camera>					tryParseCamera(const NodeHolder& node);
+	std::optional<Transform>				tryParseTransform(const NodeHolder& node);
 
 	std::shared_ptr<ImageTexture>			makeImageTexture(const std::string& path, const Color& multiplier, Texture::Interpolation interpolation);
 	std::shared_ptr<Mesh>					makeObjectMesh(const std::string& path);

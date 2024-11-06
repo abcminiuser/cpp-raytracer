@@ -17,6 +17,8 @@
 
 #include <OBJ_Loader.h>
 
+#include <fkYAML/node.hpp>
+
 #include <fstream>
 #include <numbers>
 #include <regex>
@@ -55,47 +57,120 @@ namespace
 	}
 }
 
+struct SceneLoader::NodeHolder
+{
+public:
+	NodeHolder(const fkyaml::node& node, const std::string& path = "")
+		: m_node(node)
+		, m_path(path)
+	{}
+
+	NodeHolder(const NodeHolder& parent, const std::string& property, bool required = false)
+		: m_path(parent.path())
+	{
+		if (! property.empty())
+		{
+			if (parent.node().contains(property))
+			{
+				m_node = parent.node().at(property);
+				m_path += std::string("/") + property;
+			}
+			else if (required)
+			{
+				throw std::runtime_error("Failed to find mandatory property '" + property + "' (" + m_path + ")");
+			}
+		}
+		else
+		{
+			m_node = parent.node();
+		}
+	}
+
+	NodeHolder getChild(const std::string property, bool required = false) const
+	{
+		return NodeHolder(*this, property, required);
+	}
+
+	template <typename T>
+	T getValue() const
+	{
+		try
+		{
+			return node().get_value<T>();
+		}
+		catch (fkyaml::exception& e)
+		{
+			throw std::runtime_error("Failed to read property: " + std::string(e.what()) + " (" + m_path + ")");
+		}
+	}
+
+	operator bool() const
+	{
+		return ! m_node.is_null();
+	}
+
+	const fkyaml::node& node() const
+	{
+		return m_node;
+	}
+
+	const std::string path() const
+	{
+		return m_path;
+	}
+
+private:
+	fkyaml::node	m_node;
+	std::string		m_path;
+};
+
 Scene SceneLoader::load(const std::string& path)
 {
 	std::ifstream config(path);
 	if (! config)
 		throw std::runtime_error("Failed to read scene YAML file '" + path + "'");
 
-	fkyaml::node rootNode = fkyaml::node::deserialize(config);
-	fkyaml::node sceneNode = rootNode.at("scene");
+	NodeHolder rootNode(fkyaml::node::deserialize(config));
+
+	Scene scene = parseScene(rootNode.getChild("scene", true));
 
 	// Clear cache after each load; we want a reload of the same scene to reload
 	// the file on disk at least once, in case it's changed since we last used it.
 	m_cache = {};
 
+	return scene;
+}
+
+Scene SceneLoader::parseScene(const NodeHolder& node)
+{
+	if (! node)
+		return {};
+
 	return
-		Scene
 		{
-			.background			= tryParseColor(sceneNode, "background").value_or(Palette::kBlack),
-			.camera				= tryParseCamera(sceneNode, "camera").value_or(Camera()),
-			.objects			= parseObjects(sceneNode, "objects"),
-			.samplesPerPixel	= std::max<uint32_t>(static_cast<uint32_t>(tryParseDouble(sceneNode, "samplesPerPixel").value_or(100)), 1)
+			.background			= tryParseColor(node.getChild("background")).value_or(Palette::kBlack),
+			.camera				= tryParseCamera(node.getChild("camera")).value_or(Camera()),
+			.objects			= parseObjects(node.getChild("objects")),
+			.samplesPerPixel	= std::max<uint32_t>(static_cast<uint32_t>(tryParseDouble(node.getChild("samplesPerPixel")).value_or(100)), 1)
 		};
 }
 
-std::vector<std::shared_ptr<Object>> SceneLoader::parseObjects(const fkyaml::node& node, const std::string& property)
+std::vector<std::shared_ptr<Object>> SceneLoader::parseObjects(const NodeHolder& node)
 {
-	if (! node.contains(property))
+	if (! node)
 		return {};
-
-	const auto objectsNode = node.at(property);
 
 	std::vector<std::shared_ptr<Object>> objects;
 
-	for (const auto& object : objectsNode)
-		objects.push_back(parseObject(object));
+	for (const auto& object : node.node())
+		objects.push_back(parseObject(NodeHolder(object, node.path() + "[" + std::to_string(objects.size()) + "]")));
 
 	return objects;
 }
 
-std::shared_ptr<Object> SceneLoader::parseObject(const fkyaml::node& node)
+std::shared_ptr<Object> SceneLoader::parseObject(const NodeHolder& node)
 {
-	const auto type = node.at("type").get_value<std::string>();
+	const auto type = node.getChild("type", true).getValue<std::string>();
 
 	if (type == "Box")
 		return parseBoxObject(node);
@@ -106,162 +181,158 @@ std::shared_ptr<Object> SceneLoader::parseObject(const fkyaml::node& node)
 	else if (type == "Sphere")
 		return parseSphereObject(node);
 	else
-		throw std::runtime_error("Unknown object type '" + type + "' in scene YAML file");
+		throw std::runtime_error("Unknown object type '" + type + "' in scene YAML file (" + node.path() + ")");
 }
 
-std::shared_ptr<Object> SceneLoader::parseBoxObject(const fkyaml::node& node)
+std::shared_ptr<Object> SceneLoader::parseBoxObject(const NodeHolder& node)
 {
-	auto transform			= tryParseTransform(node, "transform").value_or(Transform());
-	auto material			= parseMaterial(node, "material");
+	auto transform			= tryParseTransform(node.getChild("transform")).value_or(Transform());
+	auto material			= parseMaterial(node.getChild("material"));
 
 	return std::make_shared<BoxObject>(transform, std::move(material));
 }
 
-std::shared_ptr<Object> SceneLoader::parseMeshObject(const fkyaml::node& node)
+std::shared_ptr<Object> SceneLoader::parseMeshObject(const NodeHolder& node)
 {
-	auto transform			= tryParseTransform(node, "transform").value_or(Transform());
-	auto material			= parseMaterial(node, "material");
-	auto path				= node.at("path").get_value<std::string>();
+	auto transform			= tryParseTransform(node.getChild("transform")).value_or(Transform());
+	auto material			= parseMaterial(node.getChild("material"));
+	auto path				= node.getChild("path", true).getValue<std::string>();
 
 	return std::make_shared<MeshObject>(transform, std::move(material), makeObjectMesh(path));
 }
 
-std::shared_ptr<Object> SceneLoader::parsePlaneObject(const fkyaml::node& node)
+std::shared_ptr<Object> SceneLoader::parsePlaneObject(const NodeHolder& node)
 {
-	auto transform			= tryParseTransform(node, "transform").value_or(Transform());
-	auto material			= parseMaterial(node, "material");
+	auto transform			= tryParseTransform(node.getChild("transform")).value_or(Transform());
+	auto material			= parseMaterial(node.getChild("material"));
 
 	return std::make_shared<PlaneObject>(transform, std::move(material));
 }
 
-std::shared_ptr<Object> SceneLoader::parseSphereObject(const fkyaml::node& node)
+std::shared_ptr<Object> SceneLoader::parseSphereObject(const NodeHolder& node)
 {
-	auto transform			= tryParseTransform(node, "transform").value_or(Transform());
-	auto material			= parseMaterial(node, "material");
+	auto transform			= tryParseTransform(node.getChild("transform")).value_or(Transform());
+	auto material			= parseMaterial(node.getChild("material"));
 
 	return std::make_shared<SphereObject>(transform, std::move(material));
 }
 
-std::shared_ptr<Texture> SceneLoader::parseTexture(const fkyaml::node& node, const std::string& property)
+std::shared_ptr<Texture> SceneLoader::parseTexture(const NodeHolder& node)
 {
-	if (! node.contains(property))
+	if (! node)
 		return nullptr;
 
-	const auto textureNode = node.at(property);
-
-	const auto type = textureNode.at("type").get_value<std::string>();
+	const auto type = node.getChild("type", true).getValue<std::string>();
 
 	if (type == "Checkerboard")
-		return parseCheckerboardTexture(textureNode);
+		return parseCheckerboardTexture(node);
 	else if (type == "Image")
-		return parseImageTexture(textureNode);
+		return parseImageTexture(node);
 	else if (type == "Solid")
-		return parseSolidTexture(textureNode);
+		return parseSolidTexture(node);
 	else
-		throw std::runtime_error("Unknown texture type '" + type + "' specified in scene YAML file");
+		throw std::runtime_error("Unknown texture type '" + type + "' in scene YAML file (" + node.path() + ")");
 }
 
-std::shared_ptr<Texture> SceneLoader::parseCheckerboardTexture(const fkyaml::node& node)
+std::shared_ptr<Texture> SceneLoader::parseCheckerboardTexture(const NodeHolder& node)
 {
-	auto color1				= tryParseColor(node, "color1").value_or(Palette::kMagenta);
-	auto color2				= tryParseColor(node, "color2").value_or(Palette::kYellow);
-	auto rowsCols			= tryParseDouble(node, "rowsCols").value_or(2);
-	auto interpolation		= tryParseInterpolation(node, "interpolation").value_or(Texture::Interpolation::Bilinear);
+	auto color1				= tryParseColor(node.getChild("color1")).value_or(Palette::kMagenta);
+	auto color2				= tryParseColor(node.getChild("color2")).value_or(Palette::kYellow);
+	auto rowsCols			= tryParseDouble(node.getChild("rowsCols")).value_or(2);
+	auto interpolation		= tryParseInterpolation(node.getChild("interpolation")).value_or(Texture::Interpolation::Bilinear);
 
 	return std::make_shared<CheckerboardTexture>(interpolation, color1, color2, static_cast<uint8_t>(rowsCols));
 }
 
-std::shared_ptr<Texture> SceneLoader::parseImageTexture(const fkyaml::node& node)
+std::shared_ptr<Texture> SceneLoader::parseImageTexture(const NodeHolder& node)
 {
-	auto path				= node.at("path").get_value<std::string>();
-	auto multiplier			= tryParseColor(node, "multiplier").value_or(Palette::kWhite);
-	auto interpolation		= tryParseInterpolation(node, "interpolation").value_or(Texture::Interpolation::Bilinear);
+	auto path				= node.getChild("path", true).getValue<std::string>();
+	auto multiplier			= tryParseColor(node.getChild("multiplier")).value_or(Palette::kWhite);
+	auto interpolation		= tryParseInterpolation(node.getChild("interpolation")).value_or(Texture::Interpolation::Bilinear);
 
 	return makeImageTexture(path, multiplier, interpolation);
 }
 
-std::shared_ptr<Texture> SceneLoader::parseSolidTexture(const fkyaml::node& node)
+std::shared_ptr<Texture> SceneLoader::parseSolidTexture(const NodeHolder& node)
 {
-	auto color				= tryParseColor(node, "color").value_or(Palette::kWhite);
+	auto color				= tryParseColor(node.getChild("color")).value_or(Palette::kWhite);
 
 	return std::make_shared<SolidTexture>(color);
 }
 
-std::shared_ptr<Material> SceneLoader::parseMaterial(const fkyaml::node& node, const std::string& property)
+std::shared_ptr<Material> SceneLoader::parseMaterial(const NodeHolder& node)
 {
-	if (! node.contains(property))
+	if (! node)
 		return nullptr;
 
-	const auto materialNode = node.at(property);
-
-	const auto type = materialNode.at("type").get_value<std::string>();
+	const auto type = node.getChild("type", true).getValue<std::string>();
 
 	if (type == "Debug")
-		return parseDebugMaterial(materialNode);
+		return parseDebugMaterial(node);
 	else if (type == "Dielectric")
-		return parseDielectricMaterial(materialNode);
+		return parseDielectricMaterial(node);
 	else if (type == "Diffuse")
-		return parseDiffuseMaterial(materialNode);
+		return parseDiffuseMaterial(node);
 	else if (type == "Light")
-		return parseLightMaterial(materialNode);
+		return parseLightMaterial(node);
 	else if (type == "Reflective")
-		return parseReflectiveMaterial(materialNode);
+		return parseReflectiveMaterial(node);
 	else
-		throw std::runtime_error("Unknown material type '" + type + "' specified in scene YAML file");
+		throw std::runtime_error("Unknown material type '" + type + "' in scene YAML file (" + node.path() + ")");
 }
 
-std::shared_ptr<Material> SceneLoader::parseDebugMaterial(const fkyaml::node& node)
+std::shared_ptr<Material> SceneLoader::parseDebugMaterial(const NodeHolder& node)
 {
-	const auto mode = node.at("mode").get_value<std::string>();
+	const auto mode = node.getChild("mode", true).getValue<std::string>();
 
 	if (mode == "Normal")
 		return std::make_shared<DebugMaterial>(DebugMaterial::Mode::Normal);
 	else if (mode == "UV")
 		return std::make_shared<DebugMaterial>(DebugMaterial::Mode::UV);
 	else
-		throw std::runtime_error("Unknown debug material mode '" + mode + "' specified in scene YAML file");
+		throw std::runtime_error("Unknown debug material mode '" + mode + "' in scene YAML file (" + node.path() + ")");
 }
 
-std::shared_ptr<Material> SceneLoader::parseDielectricMaterial(const fkyaml::node& node)
+std::shared_ptr<Material> SceneLoader::parseDielectricMaterial(const NodeHolder& node)
 {
-	auto texture			= parseTexture(node, "texture");
-	auto normals			= parseTexture(node, "normals");
-	auto refractionIndex	= tryParseDouble(node, "refractionIndex").value_or(1.0);
+	auto texture			= parseTexture(node.getChild("texture"));
+	auto normals			= parseTexture(node.getChild("normals"));
+	auto refractionIndex	= tryParseDouble(node.getChild("refractionIndex")).value_or(1.0);
 
 	return std::make_shared<DielectricMaterial>(std::move(texture), std::move(normals), refractionIndex);
 }
 
-std::shared_ptr<Material> SceneLoader::parseDiffuseMaterial(const fkyaml::node& node)
+std::shared_ptr<Material> SceneLoader::parseDiffuseMaterial(const NodeHolder& node)
 {
-	auto texture			= parseTexture(node, "texture");
-	auto normals			= parseTexture(node, "normals");
+	auto texture			= parseTexture(node.getChild("texture"));
+	auto normals			= parseTexture(node.getChild("normals"));
 
 	return std::make_shared<DiffuseMaterial>(std::move(texture), std::move(normals));
 }
 
-std::shared_ptr<Material> SceneLoader::parseLightMaterial(const fkyaml::node& node)
+std::shared_ptr<Material> SceneLoader::parseLightMaterial(const NodeHolder& node)
 {
-	auto texture			= parseTexture(node, "texture");
-	auto normals			= parseTexture(node, "normals");
+	auto texture			= parseTexture(node.getChild("texture"));
+	auto normals			= parseTexture(node.getChild("normals"));
 
 	return std::make_shared<LightMaterial>(std::move(texture), std::move(normals));
 }
 
-std::shared_ptr<Material> SceneLoader::parseReflectiveMaterial(const fkyaml::node& node)
+std::shared_ptr<Material> SceneLoader::parseReflectiveMaterial(const NodeHolder& node)
 {
-	auto texture			= parseTexture(node, "texture");
-	auto normals			= parseTexture(node, "normals");
-	auto polish				= tryParseDouble(node, "polish").value_or(1.0);
+	auto texture			= parseTexture(node.getChild("texture"));
+	auto normals			= parseTexture(node.getChild("normals"));
+	auto polish				= tryParseDouble(node.getChild("polish")).value_or(1.0);
 
 	return std::make_shared<ReflectiveMaterial>(std::move(texture), std::move(normals), polish);
 }
 
-std::optional<Color> SceneLoader::tryParseColor(const fkyaml::node& node, const std::string& property)
+std::optional<Color> SceneLoader::tryParseColor(const NodeHolder& node)
 {
-	if (! node.contains(property))
+	if (! node)
 		return std::nullopt;
 
-	std::string value = TrimWhitespace(node[property].get_value<std::string>());
+	std::string value = TrimWhitespace(node.getValue<std::string>());
 
 	static const std::regex normColorRegex("Color\\(" "([^\\,]+)" "," "([^\\,]+)" "," "([^\\)]+)" "\\)");
 	if (std::smatch matches; std::regex_match(value, matches, normColorRegex))
@@ -297,15 +368,15 @@ std::optional<Color> SceneLoader::tryParseColor(const fkyaml::node& node, const 
 	if (kKnownNames.contains(value))
 		return kKnownNames.at(value);
 
-	throw std::runtime_error("Unknown color type '" + value + "' specified in scene YAML file");
+	throw std::runtime_error("Unknown color type '" + value + "' in scene YAML file (" + node.path() + ")");
 }
 
-std::optional<Vector> SceneLoader::tryParseVector(const fkyaml::node& node, const std::string& property)
+std::optional<Vector> SceneLoader::tryParseVector(const NodeHolder& node)
 {
-	if (! node.contains(property))
+	if (! node)
 		return std::nullopt;
 
-	std::string value = TrimWhitespace(node[property].get_value<std::string>());
+	std::string value = TrimWhitespace(node.getValue<std::string>());
 
 	static const std::regex vectorRegex("Vector\\(" "([^\\,]+)" "," "([^\\,]+)" "," "([^\\)]+)" "\\)");
 	if (std::smatch matches; std::regex_match(value, matches, vectorRegex))
@@ -339,15 +410,15 @@ std::optional<Vector> SceneLoader::tryParseVector(const fkyaml::node& node, cons
 	if (kKnownNames.contains(value))
 		return kKnownNames.at(value);
 
-	throw std::runtime_error("Unknown vector type '" + value + "' specified in scene YAML file");
+	throw std::runtime_error("Unknown vector type '" + value + "' in scene YAML file (" + node.path() + ")");
 }
 
-std::optional<Texture::Interpolation> SceneLoader::tryParseInterpolation(const fkyaml::node& node, const std::string& property)
+std::optional<Texture::Interpolation> SceneLoader::tryParseInterpolation(const NodeHolder& node)
 {
-	if (! node.contains(property))
+	if (! node)
 		return std::nullopt;
 
-	std::string value = TrimWhitespace(node[property].get_value<std::string>());
+	std::string value = TrimWhitespace(node.getValue<std::string>());
 
 	static const std::unordered_map<std::string, Texture::Interpolation> kKnownNames
 		{
@@ -357,15 +428,15 @@ std::optional<Texture::Interpolation> SceneLoader::tryParseInterpolation(const f
 	if (kKnownNames.contains(value))
 		return kKnownNames.at(value);
 
-	throw std::runtime_error("Unknown interpolation type '" + value + "' specified in scene YAML file");
+	throw std::runtime_error("Unknown interpolation type '" + value + "' in scene YAML file (" + node.path() + ")");
 }
 
-std::optional<double> SceneLoader::tryParseAspectRatio(const fkyaml::node& node, const std::string& property)
+std::optional<double> SceneLoader::tryParseAspectRatio(const NodeHolder& node)
 {
-	if (! node.contains(property))
+	if (! node)
 		return std::nullopt;
 
-	const auto& valueNode = node[property];
+	const auto& valueNode = node.node();
 
 	if (valueNode.is_float_number())
 	{
@@ -373,7 +444,7 @@ std::optional<double> SceneLoader::tryParseAspectRatio(const fkyaml::node& node,
 	}
 	else
 	{
-		std::string value = TrimWhitespace(node[property].get_value<std::string>());
+		std::string value = TrimWhitespace(valueNode.get_value<std::string>());
 
 		static const std::regex aspectRatioRegex("([^\\,]+)" ":" "([^\\,]+)");
 		if (std::smatch matches; std::regex_match(value, matches, aspectRatioRegex))
@@ -388,12 +459,12 @@ std::optional<double> SceneLoader::tryParseAspectRatio(const fkyaml::node& node,
 	throw std::runtime_error("Unknown aspect ratio type specified in scene YAML file");
 }
 
-std::optional<double> SceneLoader::tryParseDouble(const fkyaml::node& node, const std::string& property)
+std::optional<double> SceneLoader::tryParseDouble(const NodeHolder& node)
 {
-	if (! node.contains(property))
+	if (! node)
 		return std::nullopt;
 
-	const auto& valueNode = node[property];
+	const auto& valueNode = node.node();
 
 	if (valueNode.is_float_number())
 		return valueNode.get_value<double>();
@@ -403,34 +474,30 @@ std::optional<double> SceneLoader::tryParseDouble(const fkyaml::node& node, cons
 		return DoubleFromString(valueNode.get_value<std::string>());
 }
 
-std::optional<Camera> SceneLoader::tryParseCamera(const fkyaml::node& node, const std::string& property)
+std::optional<Camera> SceneLoader::tryParseCamera(const NodeHolder& node)
 {
-	if (! node.contains(property))
+	if (! node)
 		return std::nullopt;
 
-	const auto cameraNode = node.at(property);
-
-	auto position			= tryParseVector(cameraNode, "position").value_or(StandardVectors::kOrigin);
-	auto target				= tryParseVector(cameraNode, "target").value_or(StandardVectors::kUnitZ);
-	auto orientation		= tryParseVector(cameraNode, "orientation").value_or(StandardVectors::kUnitY);
-	auto aspectRatio		= tryParseAspectRatio(cameraNode, "aspectRatio").value_or(16.0 / 9.0);
-	auto verticalFov		= DegreesToRadians(tryParseDouble(cameraNode, "verticalFov").value_or(90));
-	auto focusDistance		= tryParseDouble(cameraNode, "focusDistance").value_or(1.0);
-	auto aperture			= tryParseDouble(cameraNode, "aperture").value_or(0.0);
+	auto position			= tryParseVector(node.getChild("position")).value_or(StandardVectors::kOrigin);
+	auto target				= tryParseVector(node.getChild("target")).value_or(StandardVectors::kUnitZ);
+	auto orientation		= tryParseVector(node.getChild("orientation")).value_or(StandardVectors::kUnitY);
+	auto aspectRatio		= tryParseAspectRatio(node.getChild("aspectRatio")).value_or(16.0 / 9.0);
+	auto verticalFov		= DegreesToRadians(tryParseDouble(node.getChild("verticalFov")).value_or(90));
+	auto focusDistance		= tryParseDouble(node.getChild("focusDistance")).value_or(1.0);
+	auto aperture			= tryParseDouble(node.getChild("aperture")).value_or(0.0);
 
 	return Camera(position, target, orientation, aspectRatio, verticalFov, focusDistance, aperture);
 }
 
-std::optional<Transform> SceneLoader::tryParseTransform(const fkyaml::node& node, const std::string& property)
+std::optional<Transform> SceneLoader::tryParseTransform(const NodeHolder& node)
 {
-	if (! node.contains(property))
+	if (! node)
 		return std::nullopt;
 
-	const auto transformNode = node.at(property);
-
-	auto position			= tryParseVector(transformNode, "position").value_or(StandardVectors::kOrigin);
-	auto rotation			= tryParseVector(transformNode, "rotation").value_or(StandardVectors::kZero);
-	auto scale				= tryParseVector(transformNode, "scale").value_or(StandardVectors::kUnit);
+	auto position			= tryParseVector(node.getChild("position")).value_or(StandardVectors::kOrigin);
+	auto rotation			= tryParseVector(node.getChild("rotation")).value_or(StandardVectors::kZero);
+	auto scale				= tryParseVector(node.getChild("scale")).value_or(StandardVectors::kUnit);
 
 	Transform transform;
 	transform.setPosition(position);
