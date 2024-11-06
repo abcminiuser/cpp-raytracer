@@ -27,7 +27,7 @@ double BoxObject::intersectWith(const Ray& ray) const
 	return BoundingBox(StandardVectors::kZero, StandardVectors::kUnit).intersect(ray);
 }
 
-void BoxObject::getIntersectionProperties(const Ray& ray, const Vector& position, Vector& normal, Vector& tangent, Vector& bitangent, Vector& uv) const
+void BoxObject::getIntersectionProperties(const Vector& direction, const Vector& position, Vector& normal, Vector& tangent, Vector& bitangent, Vector& uv) const
 {
 	if (std::abs(position.z()) < kComparisonThreshold)
 	{

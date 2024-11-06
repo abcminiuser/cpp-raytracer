@@ -41,7 +41,7 @@ double MeshObject::intersectWith(const Ray& ray) const
 	return distance;
 }
 
-void MeshObject::getIntersectionProperties(const Ray& ray, const Vector& position, Vector& normal, Vector& tangent, Vector& bitangent, Vector& uv) const
+void MeshObject::getIntersectionProperties(const Vector& direction, const Vector& position, Vector& normal, Vector& tangent, Vector& bitangent, Vector& uv) const
 {
 	bool found = false;
 

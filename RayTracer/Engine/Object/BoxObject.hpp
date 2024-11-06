@@ -18,7 +18,7 @@ public:
 // Object i/f:
 protected:
 	double		intersectWith(const Ray& ray) const override;
-	void		getIntersectionProperties(const Ray& ray, const Vector& position, Vector& normal, Vector& tangent, Vector& bitangent, Vector& uv) const override;
+	void		getIntersectionProperties(const Vector& direction, const Vector& position, Vector& normal, Vector& tangent, Vector& bitangent, Vector& uv) const override;
 
 private:
 	Vector		uvAt(const Vector& position, const Vector& normal) const;

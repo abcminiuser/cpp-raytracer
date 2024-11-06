@@ -36,16 +36,16 @@ double Object::intersect(const Ray& ray) const
 
 Color Object::illuminate(const Scene& scene, const Ray& ray, double distance, uint32_t rayDepthRemaining) const
 {
-	const Ray		rayObjectSpace		= m_transform.transformRay(ray);
+	const Vector	directionObjectSpace	= m_transform.transformDirection(ray.direction());
 
-	const Vector	positionWorldSpace	= ray.at(distance);
-	const Vector	positionObjectSpace = m_transform.transformPosition(positionWorldSpace);
+	const Vector	positionWorldSpace		= ray.at(distance);
+	const Vector	positionObjectSpace 	= m_transform.transformPosition(positionWorldSpace);
 
 	Vector normalObjectSpace;
 	Vector tangent;
 	Vector bitangent;
 	Vector uv;
-	getIntersectionProperties(rayObjectSpace, positionObjectSpace, normalObjectSpace, tangent, bitangent, uv);
+	getIntersectionProperties(directionObjectSpace, positionObjectSpace, normalObjectSpace, tangent, bitangent, uv);
 
 	assert(normalObjectSpace.isUnit());
 	assert(tangent.isUnit());
