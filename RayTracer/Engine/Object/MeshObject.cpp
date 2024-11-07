@@ -3,6 +3,7 @@
 #include "Engine/Ray.hpp"
 #include "Engine/Vector.hpp"
 
+#include <algorithm>
 #include <stdexcept>
 
 MeshObject::MeshObject(const Transform& transform, std::shared_ptr<Material> material, std::shared_ptr<Mesh> mesh)

@@ -9,7 +9,11 @@
 
 namespace
 {
-	constexpr auto kBoundingBox = BoundingBox(StandardVectors::kUnit.inverted() / 2, StandardVectors::kUnit / 2);
+	constexpr auto kBoundingBox =
+		BoundingBox(
+			StandardVectors::kUnit.inverted() / 2,
+			StandardVectors::kUnit / 2
+		);
 }
 
 SphereObject::SphereObject(const Transform& transform, std::shared_ptr<Material> material)

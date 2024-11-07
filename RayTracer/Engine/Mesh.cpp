@@ -47,6 +47,8 @@ std::unique_ptr<Mesh::Node> Mesh::partition(std::vector<Triangle> triangles, uin
 	node->boundingBox	= boundingBoxForTriangles(triangles);
 	node->triangles		= std::move(triangles);
 
+	node->triangles.shrink_to_fit();
+
 	// If we've hit our depth limit, we'll just adopt all the matching triangles here and bail out.
 	if (depth >= kMaxOctreePartitionDepth)
 		return node;
