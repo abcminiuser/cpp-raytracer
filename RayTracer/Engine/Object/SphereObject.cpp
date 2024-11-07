@@ -7,8 +7,13 @@
 #include <cmath>
 #include <numbers>
 
+namespace
+{
+	constexpr auto kBoundingBox = BoundingBox(StandardVectors::kUnit.inverted() / 2, StandardVectors::kUnit / 2);
+}
+
 SphereObject::SphereObject(const Transform& transform, std::shared_ptr<Material> material)
-	: Object(BoundingBox(StandardVectors::kUnit.inverted() / 2, StandardVectors::kUnit / 2), transform, std::move(material))
+	: Object(kBoundingBox, transform, std::move(material))
 {
 
 }

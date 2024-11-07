@@ -5,13 +5,19 @@
 
 namespace
 {
-	constexpr Vector kNormal 	= StandardVectors::kUnitY;
-	constexpr Vector kTangent	= StandardVectors::kUnitX;
-	constexpr Vector kBitangent	= StandardVectors::kUnitZ;
+	constexpr auto kNormal 		= StandardVectors::kUnitY;
+	constexpr auto kTangent		= StandardVectors::kUnitX;
+	constexpr auto kBitangent	= StandardVectors::kUnitZ;
+
+	constexpr auto kBoundingBox	=
+		BoundingBox(
+			Vector(std::numeric_limits<double>::lowest(), 0, std::numeric_limits<double>::lowest()),
+			Vector(std::numeric_limits<double>::max(), 1, std::numeric_limits<double>::max())
+		);
 }
 
 PlaneObject::PlaneObject(const Transform& transform, std::shared_ptr<Material> material)
-	: Object(BoundingBox(StandardVectors::kMin, StandardVectors::kMax), transform, std::move(material))
+	: Object(kBoundingBox, transform, std::move(material))
 {
 
 }

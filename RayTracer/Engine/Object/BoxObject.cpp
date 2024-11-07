@@ -14,10 +14,12 @@ namespace
 	constexpr auto kBottomNormal	= StandardVectors::kUnitY;
 	constexpr auto kRightNormal		= StandardVectors::kUnitX;
 	constexpr auto kBackNormal		= StandardVectors::kUnitZ;
+
+	constexpr auto kBoundingBox		= BoundingBox(StandardVectors::kZero, StandardVectors::kUnit);
 }
 
 BoxObject::BoxObject(const Transform& transform, std::shared_ptr<Material> material)
-	: Object(BoundingBox(StandardVectors::kZero, StandardVectors::kUnit), transform, std::move(material))
+	: Object(kBoundingBox, transform, std::move(material))
 {
 
 }

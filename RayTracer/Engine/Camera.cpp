@@ -65,10 +65,10 @@ void Camera::update()
 	m_u	= m_orientation.crossProduct(m_direction);
 	m_v	= m_w.crossProduct(m_u);
 
-    m_viewHeight				= 2 * std::tan(m_verticalFov / 2) * m_focusDistance;
-    m_viewWidth					= m_viewHeight * m_aspectRatio;
+	m_viewHeight				= 2 * std::tan(m_verticalFov / 2) * m_focusDistance;
+	m_viewWidth					= m_viewHeight * m_aspectRatio;
 
-    m_defocusRadius				= m_focusDistance * (m_aperture / 2);
+	m_defocusRadius				= m_focusDistance * (m_aperture / 2);
 
 	m_viewportHorizontalScan	= m_u * m_viewWidth * m_focusDistance;
 	m_viewportVerticalScan		= m_v * m_viewHeight * m_focusDistance;
