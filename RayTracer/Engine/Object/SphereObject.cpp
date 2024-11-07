@@ -16,7 +16,7 @@ SphereObject::SphereObject(const Transform& transform, std::shared_ptr<Material>
 double SphereObject::intersectWith(const Ray& ray) const
 {
 	const double b = 2 * ray.position().dotProduct(ray.direction());
-	const double c = ray.position().lengthSquared() - 1;
+	const double c = ray.position().lengthSquared() - .25;
 	const double d = (b * b) - 4 * c;
 
 	if (d < 0)
@@ -46,7 +46,7 @@ void SphereObject::getIntersectionProperties(const Vector& direction, const Vect
 {
 	normal		= position.unit();
 	tangent		= normal.crossProduct(direction).unit();
-	bitangent	= tangent.crossProduct(normal);
+	bitangent	= tangent.crossProduct(normal).unit();
 	uv			= uvAt(position, normal);
 }
 

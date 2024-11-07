@@ -32,7 +32,7 @@ scene:
       transform:
         position: Vector(-6, 3, -6)
         rotation: Zero
-        scale: Vector(1, 1, 1)
+        scale: Vector(2, 2, 2)
       material:
         type: Light
         texture:
@@ -59,7 +59,7 @@ scene:
       transform:
         position: Vector(-4, 0, 4)
         rotation: Zero
-        scale: Vector(1, 1, 1)
+        scale: Vector(2, 2, 2)
       material:
         type: Diffuse
         texture:
@@ -71,7 +71,7 @@ scene:
       transform:
         position: Vector(-2, 0, 2)
         rotation: VectorDegrees(-15, -15, -15)
-        scale: Vector(1, 1, 1)
+        scale: Vector(2, 2, 2)
       material:
         type: Diffuse
         texture:
@@ -85,7 +85,7 @@ scene:
       transform:
         position: Vector(0, 0, 0)
         rotation: Zero
-        scale: Vector(1, 1, 1)
+        scale: Vector(2, 2, 2)
       material:
         type: Reflective
         polish: 0.90
@@ -98,7 +98,7 @@ scene:
       transform:
         position: Vector(2, 0, 2)
         rotation: Zero
-        scale: Vector(1, 1, 1)
+        scale: Vector(2, 2, 2)
       material:
         type: Reflective
         polish: 0.90
@@ -111,7 +111,7 @@ scene:
       transform:
         position: Vector(4, 0, 4)
         rotation: Zero
-        scale: Vector(1, 1, 1)
+        scale: Vector(2, 2, 2)
       material:
         type: Reflective
         polish: 0.90
@@ -124,7 +124,7 @@ scene:
       transform:
         position: Vector(6, 0, 0)
         rotation: Zero
-        scale: Vector(1, 1, 1)
+        scale: Vector(2, 2, 2)
       material:
         type: Reflective
         polish: 0.5
@@ -140,7 +140,7 @@ scene:
       transform:
         position: Vector(-6, 0, 0)
         rotation: Zero
-        scale: Vector(1.2, 1.2, 1.2)
+        scale: Vector(2.2, 2.2, 2.2)
       material:
         type: Diffuse
         texture:
@@ -155,7 +155,7 @@ scene:
       transform:
         position: Vector(-3, 0, -3)
         rotation: Zero
-        scale: Vector(1, 1, 1)
+        scale: Vector(2, 2, 2)
       material:
         type: Dielectric
         refractionIndex: 2.2
