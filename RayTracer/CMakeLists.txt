@@ -3,7 +3,7 @@
 set (VENDOR_BASE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../Vendor")
 
 if (MSVC)
-    list (APPEND CMAKE_PREFIX_PATH ${CMAKE_SOURCE_DIR}/Vendor/Libraries)
+    list (APPEND CMAKE_PREFIX_PATH "${VENDOR_BASE_DIR}/Libraries")
     set (SFML_STATIC_LIBRARIES TRUE)
 endif ()
 
@@ -91,12 +91,12 @@ set(VENDOR_ASSET_DIRS
     uvchecker.vinzi.xyz
 )
 
-foreach(VENDOR_ASSET_DIR ${VENDOR_ASSET_DIRS})
+foreach (VENDOR_ASSET_DIR ${VENDOR_ASSET_DIRS})
 	add_custom_command (TARGET RayTracer POST_BUILD
 		COMMAND ${CMAKE_COMMAND}
 		ARGS -E copy_directory "${VENDOR_BASE_DIR}/Assets/${VENDOR_ASSET_DIR}/Assets" "$<TARGET_FILE_DIR:RayTracer>/Assets"
 		COMMENT "Copying '${VENDOR_ASSET_DIR}' third party assets...")
-endforeach()
+endforeach ()
 
 install (FILES
 	$<TARGET_FILE:RayTracer>
