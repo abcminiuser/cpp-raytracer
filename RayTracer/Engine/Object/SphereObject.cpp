@@ -8,7 +8,7 @@
 #include <numbers>
 
 SphereObject::SphereObject(const Transform& transform, std::shared_ptr<Material> material)
-	: Object(transform, std::move(material))
+	: Object(BoundingBox(StandardVectors::kUnit.inverted() / 2, StandardVectors::kUnit / 2), transform, std::move(material))
 {
 
 }

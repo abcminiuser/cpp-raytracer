@@ -6,7 +6,7 @@
 #include <stdexcept>
 
 MeshObject::MeshObject(const Transform& transform, std::shared_ptr<Material> material, std::shared_ptr<Mesh> mesh)
-	: Object(transform, std::move(material))
+	: Object(mesh->boundingBox(), transform, std::move(material))
 	, m_mesh(std::move(mesh))
 {
 	if (! m_mesh)

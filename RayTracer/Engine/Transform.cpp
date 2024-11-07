@@ -1,7 +1,9 @@
 #include "Engine/Transform.hpp"
 
+#include "Engine/BoundingBox.hpp"
 #include "Engine/Ray.hpp"
 
+#include <array>
 #include <cmath>
 #include <stdexcept>
 
@@ -152,6 +154,32 @@ Ray Transform::transformRay(const Ray& ray) const
 	return Ray(transformPosition(ray.position()), transformDirection(ray.direction()));
 }
 
+BoundingBox Transform::transformBoundingBox(const BoundingBox& boundingBox) const
+{
+	std::array bbPoints
+		{
+			Vector(boundingBox.lower().x(), boundingBox.lower().y(), boundingBox.lower().z()),
+			Vector(boundingBox.lower().x(), boundingBox.upper().y(), boundingBox.lower().z()),
+			Vector(boundingBox.lower().x(), boundingBox.upper().y(), boundingBox.upper().z()),
+			Vector(boundingBox.upper().x(), boundingBox.lower().y(), boundingBox.lower().z()),
+			Vector(boundingBox.upper().x(), boundingBox.lower().y(), boundingBox.upper().z()),
+			Vector(boundingBox.upper().x(), boundingBox.upper().y(), boundingBox.upper().z()),
+		};
+
+	for (auto& bbPoint : bbPoints)
+		bbPoint = transformPosition(bbPoint);
+
+	BoundingBox transformedBox(StandardVectors::kMax, StandardVectors::kMin);
+
+	for (const auto& p : bbPoints)
+	{
+		transformedBox.setLower(VectorUtils::MinPoint(transformedBox.lower(), p));
+		transformedBox.setUpper(VectorUtils::MaxPoint(transformedBox.upper(), p));
+	}
+
+	return transformedBox;
+}
+
 Vector Transform::untransformPosition(const Vector& vector) const
 {
 	return TransformVector(vector, m_reverseTransform, true);
@@ -165,4 +193,30 @@ Vector Transform::untransformDirection(const Vector& vector) const
 Ray Transform::untransformRay(const Ray& ray) const
 {
 	return Ray(untransformPosition(ray.position()), untransformDirection(ray.direction()));
+}
+
+BoundingBox Transform::untransformBoundingBox(const BoundingBox& boundingBox) const
+{
+	std::array bbPoints
+		{
+			Vector(boundingBox.lower().x(), boundingBox.lower().y(), boundingBox.lower().z()),
+			Vector(boundingBox.lower().x(), boundingBox.upper().y(), boundingBox.lower().z()),
+			Vector(boundingBox.lower().x(), boundingBox.upper().y(), boundingBox.upper().z()),
+			Vector(boundingBox.upper().x(), boundingBox.lower().y(), boundingBox.lower().z()),
+			Vector(boundingBox.upper().x(), boundingBox.lower().y(), boundingBox.upper().z()),
+			Vector(boundingBox.upper().x(), boundingBox.upper().y(), boundingBox.upper().z()),
+		};
+
+	for (auto& bbPoint : bbPoints)
+		bbPoint = untransformPosition(bbPoint);
+
+	BoundingBox transformedBox(StandardVectors::kMax, StandardVectors::kMin);
+
+	for (const auto& p : bbPoints)
+	{
+		transformedBox.setLower(VectorUtils::MinPoint(transformedBox.lower(), p));
+		transformedBox.setUpper(VectorUtils::MaxPoint(transformedBox.upper(), p));
+	}
+
+	return transformedBox;
 }

@@ -24,7 +24,7 @@ public:
 
 							Mesh(std::vector<Vertex> vertices, std::vector<Triangle> triangles);
 
-	BoundingBox				boundingBox() const
+	const BoundingBox&		boundingBox() const
 	{
 		return m_root.boundingBox;
 	}

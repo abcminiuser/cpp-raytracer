@@ -11,7 +11,7 @@ namespace
 }
 
 PlaneObject::PlaneObject(const Transform& transform, std::shared_ptr<Material> material)
-	: Object(transform, std::move(material))
+	: Object(BoundingBox(StandardVectors::kMin, StandardVectors::kMax), transform, std::move(material))
 {
 
 }

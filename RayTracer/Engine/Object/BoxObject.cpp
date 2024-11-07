@@ -17,7 +17,7 @@ namespace
 }
 
 BoxObject::BoxObject(const Transform& transform, std::shared_ptr<Material> material)
-	: Object(transform, std::move(material))
+	: Object(BoundingBox(StandardVectors::kZero, StandardVectors::kUnit), transform, std::move(material))
 {
 
 }

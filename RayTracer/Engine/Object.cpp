@@ -12,15 +12,23 @@ namespace
 	const auto kDefaultMaterial = std::make_shared<DiffuseMaterial>(nullptr, nullptr);
 }
 
-Object::Object(const Transform& transform, std::shared_ptr<Material> material)
-	: m_transform(transform)
+Object::Object(const BoundingBox& boundingBox, const Transform& transform, std::shared_ptr<Material> material)
+	: m_boundingBox(boundingBox)
+	, m_transform(transform)
 	, m_material(material ? std::move(material) : kDefaultMaterial)
 {
-
+	// Transform the bounding box into world space, as that's how we'll use it for fast
+	// intersection pre-checks.
+	m_boundingBox = m_transform.untransformBoundingBox(m_boundingBox);
 }
 
 double Object::intersect(const Ray& ray) const
 {
+	// Test for intersection in the world-space bounding box first, so we can potentially
+	// skip a bunch of work.
+	if (m_boundingBox.intersect(ray) == Ray::kNoIntersection)
+		return Ray::kNoIntersection;
+
 	const Ray 		rayObjectSpace		= m_transform.transformRay(ray);
 
 	const double closestIntersectionDistance = intersectWith(rayObjectSpace);
