@@ -12,7 +12,7 @@ class LightMaterial final
 {
 public:
 							LightMaterial(std::shared_ptr<Texture> texture, std::shared_ptr<Texture> normals);
-							~LightMaterial() = default;
+							~LightMaterial() override = default;
 
 // Material i/f:
 public:

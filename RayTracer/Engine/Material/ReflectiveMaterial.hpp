@@ -13,7 +13,7 @@ class ReflectiveMaterial final
 {
 public:
 							ReflectiveMaterial(std::shared_ptr<Texture> texture, std::shared_ptr<Texture> normals, double polish);
-							~ReflectiveMaterial() = default;
+							~ReflectiveMaterial() override = default;
 
 // Material i/f:
 public:

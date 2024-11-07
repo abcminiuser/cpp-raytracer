@@ -17,8 +17,8 @@ public:
 		UV
 	};
 
-							DebugMaterial(Mode mode);
-							~DebugMaterial() = default;
+	explicit				DebugMaterial(Mode mode);
+							~DebugMaterial() override = default;
 
 // Material i/f:
 public:

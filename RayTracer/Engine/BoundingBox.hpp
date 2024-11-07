@@ -13,7 +13,7 @@ public:
 
 	}
 
-	constexpr			BoundingBox(Vector lower, Vector upper)
+	constexpr			BoundingBox(const Vector& lower, const Vector& upper)
 		: m_lower(lower)
 		, m_upper(upper)
 	{

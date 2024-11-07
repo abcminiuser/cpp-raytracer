@@ -13,7 +13,7 @@ class DielectricMaterial final
 {
 public:
 							DielectricMaterial(std::shared_ptr<Texture> texture, std::shared_ptr<Texture> normals, double refractionIndex);
-							~DielectricMaterial() = default;
+							~DielectricMaterial() override = default;
 
 // Material i/f:
 public:

@@ -60,13 +60,15 @@ namespace
 struct SceneLoader::NodeHolder
 {
 public:
-	NodeHolder(const fkyaml::node& node, const std::string& path = "")
-		: m_node(node)
-		, m_path(path)
-	{}
+						NodeHolder(const fkyaml::node& node, const std::string& path)
+							: m_node(node)
+							, m_path(path)
+	{
 
-	NodeHolder(const NodeHolder& parent, const std::string& property, bool required = false)
-		: m_path(parent.path())
+	}
+
+						NodeHolder(const NodeHolder& parent, const std::string& property, bool required = false)
+							: m_path(parent.path())
 	{
 		if (! property.empty())
 		{
@@ -86,13 +88,13 @@ public:
 		}
 	}
 
-	NodeHolder getChild(const std::string property, bool required = false) const
+	NodeHolder			getChild(const std::string& property, bool required = false) const
 	{
 		return NodeHolder(*this, property, required);
 	}
 
 	template <typename T>
-	T getValue() const
+	T					getValue() const
 	{
 		try
 		{
@@ -104,17 +106,17 @@ public:
 		}
 	}
 
-	operator bool() const
+	operator			bool() const
 	{
 		return ! m_node.is_null();
 	}
 
-	const fkyaml::node& node() const
+	const fkyaml::node&	node() const
 	{
 		return m_node;
 	}
 
-	const std::string path() const
+	const std::string&	path() const
 	{
 		return m_path;
 	}

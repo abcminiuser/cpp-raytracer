@@ -12,9 +12,9 @@ class Transform
 public:
 					Transform();
 
-	Vector			position() const { return m_position; }
-	Vector			rotation() const { return m_rotation; }
-	Vector			scale() const { return m_scale; }
+	const Vector&	position() const	{ return m_position; }
+	const Vector&	rotation() const	{ return m_rotation; }
+	const Vector&	scale() const		{ return m_scale; }
 
 	void			setPosition(const Vector& position);
 	void			setRotation(const Vector& roation);

@@ -7,13 +7,13 @@ class SolidTexture final
 	: public Texture
 {
 public:
-			SolidTexture(const Color& color);
-			~SolidTexture() override = default;
+	explicit	SolidTexture(const Color& color);
+				~SolidTexture() override = default;
 
 // Texture i/f:
 public:
-	Color	colorAt(size_t x, size_t y) const override;
+	Color		colorAt(size_t x, size_t y) const override;
 
 private:
-	Color	m_color;
+	Color		m_color;
 };
