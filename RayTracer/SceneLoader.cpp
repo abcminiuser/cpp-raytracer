@@ -100,9 +100,22 @@ public:
 		{
 			return node().get_value<T>();
 		}
-		catch (fkyaml::exception& e)
+		catch (const fkyaml::exception& e)
 		{
 			throw std::runtime_error("Failed to read property: " + std::string(e.what()) + " (" + m_path + ")");
+		}
+	}
+
+	template <typename T>
+	std::optional<T>	tryGetValue() const
+	{
+		try
+		{
+			return node().get_value<T>();
+		}
+		catch (const fkyaml::exception&)
+		{
+			return std::nullopt;
 		}
 	}
 
@@ -132,7 +145,7 @@ Scene SceneLoader::load(const std::string& path)
 	if (! config)
 		throw std::runtime_error("Failed to read scene YAML file '" + path + "'");
 
-	NodeHolder rootNode(fkyaml::node::deserialize(config));
+	NodeHolder rootNode(fkyaml::node::deserialize(config), "");
 
 	Scene scene = parseScene(rootNode.getChild("scene", true));
 
@@ -438,15 +451,13 @@ std::optional<double> SceneLoader::tryParseAspectRatio(const NodeHolder& node)
 	if (! node)
 		return std::nullopt;
 
-	const auto& valueNode = node.node();
-
-	if (valueNode.is_float_number())
+	if (const auto doubleValue = node.tryGetValue<double>())
 	{
-		return valueNode.get_value<double>();
+		return *doubleValue;
 	}
-	else
+	else if (const auto stringValue = node.tryGetValue<std::string>())
 	{
-		std::string value = TrimWhitespace(valueNode.get_value<std::string>());
+		std::string value = TrimWhitespace(*stringValue);
 
 		static const std::regex aspectRatioRegex("([^\\,]+)" ":" "([^\\,]+)");
 		if (std::smatch matches; std::regex_match(value, matches, aspectRatioRegex))
@@ -458,7 +469,7 @@ std::optional<double> SceneLoader::tryParseAspectRatio(const NodeHolder& node)
 		}
 	}
 
-	throw std::runtime_error("Unknown aspect ratio type specified in scene YAML file");
+	throw std::runtime_error("Unknown aspect ratio type in scene YAML file (" + node.path() + ")");
 }
 
 std::optional<double> SceneLoader::tryParseDouble(const NodeHolder& node)
@@ -466,14 +477,14 @@ std::optional<double> SceneLoader::tryParseDouble(const NodeHolder& node)
 	if (! node)
 		return std::nullopt;
 
-	const auto& valueNode = node.node();
+	if (const auto doubleValue = node.tryGetValue<double>())
+		return *doubleValue;
+	else if (const auto intValue = node.tryGetValue<int64_t>())
+		return static_cast<double>(*intValue);
+	else if (const auto stringValue = node.tryGetValue<std::string>())
+		return DoubleFromString(*stringValue);
 
-	if (valueNode.is_float_number())
-		return valueNode.get_value<double>();
-	else if (valueNode.is_integer())
-		return static_cast<double>(valueNode.get_value<int64_t>());
-	else
-		return DoubleFromString(valueNode.get_value<std::string>());
+	throw std::runtime_error("Unknown value type in scene YAML file (" + node.path() + ")");
 }
 
 std::optional<Camera> SceneLoader::tryParseCamera(const NodeHolder& node)
