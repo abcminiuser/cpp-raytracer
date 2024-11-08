@@ -4,6 +4,7 @@
 #include "Engine/Vector.hpp"
 
 #include <algorithm>
+#include <cassert>
 #include <stdexcept>
 
 MeshObject::MeshObject(const Transform& transform, std::shared_ptr<Material> material, std::shared_ptr<Mesh> mesh)
@@ -85,6 +86,8 @@ void MeshObject::getIntersectionProperties(const Vector& direction, const Vector
 
 	if (! found)
 	{
+		assert(false);
+
 		normal		= StandardVectors::kUnitZ;
 		tangent		= StandardVectors::kUnitY;
 		bitangent	= StandardVectors::kUnitX;
@@ -147,10 +150,10 @@ bool MeshObject::pointOn(const Vector& point, const Vertex& v0, const Vertex& v1
 	const Vector v = c.crossProduct(a);
 	const Vector w = a.crossProduct(b);
 
-	if (u.dotProduct(v) < kComparisonThreshold)
+	if (u.dotProduct(v) < 0)
 		return false;
 
-	if (u.dotProduct(w) < kComparisonThreshold)
+	if (u.dotProduct(w) < 0)
 		return false;
 
 	return true;
