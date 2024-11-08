@@ -21,14 +21,14 @@ Color Ray::trace(const Scene& scene, uint32_t rayDepthRemaining) const
 	double	closestIntersectionDistance = Ray::kNoIntersection;
 	Object*	closestObject = nullptr;
 
-	for (const auto& o : scene.objects)
+	for (const auto& object : scene.objects)
 	{
-		double intersectionDistance = o->intersect(*this);
+		double intersectionDistance = object->intersect(*this);
 		if (intersectionDistance >= closestIntersectionDistance)
 			continue;
 
 		closestIntersectionDistance = intersectionDistance;
-		closestObject = o.get();
+		closestObject = object.get();
 	}
 
 	if (closestIntersectionDistance == Ray::kNoIntersection)
