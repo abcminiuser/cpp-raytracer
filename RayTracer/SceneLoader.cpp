@@ -23,6 +23,7 @@
 #include <numbers>
 #include <regex>
 #include <stdexcept>
+#include <stddef.h>
 #include <stdint.h>
 
 namespace
