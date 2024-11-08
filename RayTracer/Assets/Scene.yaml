@@ -203,3 +203,15 @@ scene:
         texture:
           type: Solid
           color: White
+
+    # Bunny
+    - type: Mesh
+      transform:
+        position: Vector(-5, 0, 5)
+        scale: Vector(20, 20, 20)
+      path: "Assets/Bunny.obj"
+      material:
+        type: Diffuse
+        texture:
+          type: Solid
+          color: White

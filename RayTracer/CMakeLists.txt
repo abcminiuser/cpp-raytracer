@@ -84,9 +84,10 @@ add_custom_command (TARGET RayTracer POST_BUILD
 
 set(VENDOR_ASSET_DIRS
     Blender
-    cs.utah.edu
-    openfontlibrary.org
     PublicDomainTextures.com
+    cs.utah.edu
+    graphics.stanford.edu
+    openfontlibrary.org
     thebasemesh.com
     uvchecker.vinzi.xyz
 )
