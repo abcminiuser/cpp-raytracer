@@ -2,6 +2,7 @@
 
 #include <array>
 #include <concepts>
+#include <stddef.h>
 #include <stdint.h>
 
 template <size_t ROWS, size_t COLS>
