@@ -571,14 +571,14 @@ std::shared_ptr<Mesh> SceneLoader::makeObjectMesh(const std::string& path)
 						Vector(
 							static_cast<double>(v.Position.X),
 							static_cast<double>(v.Position.Y),
-							static_cast<double>(v.Position.Z)
+							static_cast<double>(-v.Position.Z)
 						),
 
 					.normal =
 						Vector(
 							static_cast<double>(v.Normal.X),
 							static_cast<double>(v.Normal.Y),
-							static_cast<double>(v.Normal.Z)
+							static_cast<double>(-v.Normal.Z)
 						),
 
 					.texture =

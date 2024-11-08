@@ -194,7 +194,7 @@ scene:
     - type: Mesh
       transform:
         position: Vector(0, 0, 6)
-        rotation: VectorDegrees(0, -50, 0)
+        rotation: VectorDegrees(0, 125, 0)
         scale: Vector(1.15, 1.15, 1.15)
       path: "Assets/Teapot.obj"
       material:
