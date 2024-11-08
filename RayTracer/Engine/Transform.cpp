@@ -156,14 +156,17 @@ Ray Transform::transformRay(const Ray& ray) const
 
 BoundingBox Transform::transformBoundingBox(const BoundingBox& boundingBox) const
 {
+	const auto& lower = boundingBox.lower();
+	const auto& upper = boundingBox.upper();
+
 	std::array bbPoints
 		{
-			Vector(boundingBox.lower().x(), boundingBox.lower().y(), boundingBox.lower().z()),
-			Vector(boundingBox.lower().x(), boundingBox.upper().y(), boundingBox.lower().z()),
-			Vector(boundingBox.lower().x(), boundingBox.upper().y(), boundingBox.upper().z()),
-			Vector(boundingBox.upper().x(), boundingBox.lower().y(), boundingBox.lower().z()),
-			Vector(boundingBox.upper().x(), boundingBox.lower().y(), boundingBox.upper().z()),
-			Vector(boundingBox.upper().x(), boundingBox.upper().y(), boundingBox.upper().z()),
+			Vector(lower.x(), lower.y(), lower.z()),
+			Vector(lower.x(), upper.y(), lower.z()),
+			Vector(lower.x(), upper.y(), upper.z()),
+			Vector(upper.x(), lower.y(), lower.z()),
+			Vector(upper.x(), lower.y(), upper.z()),
+			Vector(upper.x(), upper.y(), upper.z()),
 		};
 
 	for (auto& bbPoint : bbPoints)
@@ -197,14 +200,17 @@ Ray Transform::untransformRay(const Ray& ray) const
 
 BoundingBox Transform::untransformBoundingBox(const BoundingBox& boundingBox) const
 {
+	const auto& lower = boundingBox.lower();
+	const auto& upper = boundingBox.upper();
+
 	std::array bbPoints
 		{
-			Vector(boundingBox.lower().x(), boundingBox.lower().y(), boundingBox.lower().z()),
-			Vector(boundingBox.lower().x(), boundingBox.upper().y(), boundingBox.lower().z()),
-			Vector(boundingBox.lower().x(), boundingBox.upper().y(), boundingBox.upper().z()),
-			Vector(boundingBox.upper().x(), boundingBox.lower().y(), boundingBox.lower().z()),
-			Vector(boundingBox.upper().x(), boundingBox.lower().y(), boundingBox.upper().z()),
-			Vector(boundingBox.upper().x(), boundingBox.upper().y(), boundingBox.upper().z()),
+			Vector(lower.x(), lower.y(), lower.z()),
+			Vector(lower.x(), upper.y(), lower.z()),
+			Vector(lower.x(), upper.y(), upper.z()),
+			Vector(upper.x(), lower.y(), lower.z()),
+			Vector(upper.x(), lower.y(), upper.z()),
+			Vector(upper.x(), upper.y(), upper.z()),
 		};
 
 	for (auto& bbPoint : bbPoints)
