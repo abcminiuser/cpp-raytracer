@@ -1,5 +1,7 @@
 scene:
-  background: Color(0.1, 0.1, 0.1)
+  background:
+    type: Solid
+    color: Color(0.1, 0.1, 0.1)
 
   samplesPerPixel: 150
 

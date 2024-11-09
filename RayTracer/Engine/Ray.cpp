@@ -4,6 +4,8 @@
 #include "Engine/Scene.hpp"
 
 #include <cassert>
+#include <cmath>
+#include <numbers>
 
 Ray::Ray(const Vector& position, const Vector& direction)
 	: m_position(position)
@@ -32,7 +34,12 @@ Color Ray::trace(const Scene& scene, uint32_t rayDepthRemaining) const
 	}
 
 	if (closestIntersectionDistance == Ray::kNoIntersection)
-		return scene.background;
+	{
+		double u = .5 + std::atan2(m_direction.z(), m_direction.x()) / (2 * std::numbers::pi);
+		double v = .5 + std::asin(m_direction.y()) / std::numbers::pi;
+
+		return scene.background->sample(u, v);
+	}
 
 	return closestObject->illuminate(scene, *this, closestIntersectionDistance, rayDepthRemaining);
 }

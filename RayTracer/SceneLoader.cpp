@@ -164,7 +164,7 @@ Scene SceneLoader::parseScene(const NodeHolder& node)
 
 	return
 		{
-			.background			= tryParseColor(node.getChild("background")).value_or(Palette::kBlack),
+			.background			= parseTexture(node.getChild("background")),
 			.camera				= tryParseCamera(node.getChild("camera")).value_or(Camera()),
 			.objects			= parseObjects(node.getChild("objects")),
 			.samplesPerPixel	= std::max<uint32_t>(static_cast<uint32_t>(tryParseDouble(node.getChild("samplesPerPixel")).value_or(100)), 1)
