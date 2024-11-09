@@ -1,11 +1,11 @@
 #include "Engine/Object/SphereObject.hpp"
 
+#include "Engine/MathUtil.hpp"
 #include "Engine/Ray.hpp"
 #include "Engine/Vector.hpp"
 
 #include <algorithm>
 #include <cmath>
-#include <numbers>
 
 namespace
 {
@@ -61,8 +61,10 @@ void SphereObject::getIntersectionProperties(const Vector& direction, const Vect
 
 Vector SphereObject::uvAt(const Vector& position, const Vector& normal) const
 {
-	double u = .5 + std::atan2(normal.z(), normal.x()) / (2 * std::numbers::pi);
-	double v = .5 + std::asin(normal.y()) / std::numbers::pi;
+	Vector polarNormal = MathUtil::CartesianToPolar(normal);
+
+	double u = .5 + polarNormal.x();
+	double v = .5 + polarNormal.y();
 
 	return Vector(u, v, 0);
 }

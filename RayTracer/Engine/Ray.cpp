@@ -1,11 +1,10 @@
 #include "Engine/Ray.hpp"
 
+#include "Engine/MathUtil.hpp"
 #include "Engine/Object.hpp"
 #include "Engine/Scene.hpp"
 
 #include <cassert>
-#include <cmath>
-#include <numbers>
 
 Ray::Ray(const Vector& position, const Vector& direction)
 	: m_position(position)
@@ -35,9 +34,10 @@ Color Ray::trace(const Scene& scene, uint32_t rayDepthRemaining) const
 
 	if (closestIntersectionDistance == Ray::kNoIntersection)
 	{
-		double u = .5 + std::atan2(m_direction.z(), m_direction.x()) / (2 * std::numbers::pi);
-		double v = .5 + std::asin(m_direction.y()) / std::numbers::pi;
+		Vector polarDirection = MathUtil::CartesianToPolar(m_direction);
 
+		double u = .5 + polarDirection.x();
+		double v = .5 + polarDirection.y();
 		return scene.background->sample(u, v);
 	}
 
