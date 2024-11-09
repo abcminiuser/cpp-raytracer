@@ -2,8 +2,8 @@
 
 namespace
 {
-	constexpr auto kMaxOctreePartitionDepth		= 10;
-	constexpr auto kMinTrianglesForPartition	= 50;
+	constexpr auto kMaxOctreePartitionDepth		= 8;
+	constexpr auto kMinTrianglesForPartition	= 48;
 }
 
 Mesh::Mesh(std::vector<Vertex> vertices, std::vector<Triangle> triangles)
