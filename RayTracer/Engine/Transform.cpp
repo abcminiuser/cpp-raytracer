@@ -3,7 +3,6 @@
 #include "Engine/BoundingBox.hpp"
 #include "Engine/Ray.hpp"
 
-#include <array>
 #include <cmath>
 #include <stdexcept>
 
@@ -156,29 +155,10 @@ Ray Transform::transformRay(const Ray& ray) const
 
 BoundingBox Transform::transformBoundingBox(const BoundingBox& boundingBox) const
 {
-	const auto& lower = boundingBox.lower();
-	const auto& upper = boundingBox.upper();
+	BoundingBox transformedBox;
 
-	std::array bbPoints
-		{
-			Vector(lower.x(), lower.y(), lower.z()),
-			Vector(lower.x(), upper.y(), lower.z()),
-			Vector(lower.x(), upper.y(), upper.z()),
-			Vector(upper.x(), lower.y(), lower.z()),
-			Vector(upper.x(), lower.y(), upper.z()),
-			Vector(upper.x(), upper.y(), upper.z()),
-		};
-
-	for (auto& bbPoint : bbPoints)
-		bbPoint = transformPosition(bbPoint);
-
-	BoundingBox transformedBox(StandardVectors::kMax, StandardVectors::kMin);
-
-	for (const auto& p : bbPoints)
-	{
-		transformedBox.setLower(VectorUtils::MinPoint(transformedBox.lower(), p));
-		transformedBox.setUpper(VectorUtils::MaxPoint(transformedBox.upper(), p));
-	}
+	for (const auto& p : boundingBox.points())
+		transformedBox.include(transformPosition(p));
 
 	return transformedBox;
 }
@@ -200,29 +180,10 @@ Ray Transform::untransformRay(const Ray& ray) const
 
 BoundingBox Transform::untransformBoundingBox(const BoundingBox& boundingBox) const
 {
-	const auto& lower = boundingBox.lower();
-	const auto& upper = boundingBox.upper();
+	BoundingBox transformedBox;
 
-	std::array bbPoints
-		{
-			Vector(lower.x(), lower.y(), lower.z()),
-			Vector(lower.x(), upper.y(), lower.z()),
-			Vector(lower.x(), upper.y(), upper.z()),
-			Vector(upper.x(), lower.y(), lower.z()),
-			Vector(upper.x(), lower.y(), upper.z()),
-			Vector(upper.x(), upper.y(), upper.z()),
-		};
-
-	for (auto& bbPoint : bbPoints)
-		bbPoint = untransformPosition(bbPoint);
-
-	BoundingBox transformedBox(StandardVectors::kMax, StandardVectors::kMin);
-
-	for (const auto& p : bbPoints)
-	{
-		transformedBox.setLower(VectorUtils::MinPoint(transformedBox.lower(), p));
-		transformedBox.setUpper(VectorUtils::MaxPoint(transformedBox.upper(), p));
-	}
+	for (const auto& p : boundingBox.points())
+		transformedBox.include(untransformPosition(p));
 
 	return transformedBox;
 }

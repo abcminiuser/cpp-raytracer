@@ -94,15 +94,12 @@ std::unique_ptr<Mesh::Node> Mesh::partition(std::vector<Triangle> triangles, uin
 
 BoundingBox Mesh::boundingBoxForTriangles(const std::vector<Triangle>& triangles) const
 {
-	BoundingBox boundingBox(StandardVectors::kMax, StandardVectors::kMin);
+	BoundingBox boundingBox;
 
 	for (const auto& t : triangles)
 	{
 		for (const auto& p : t)
-		{
-			boundingBox.setLower(VectorUtils::MinPoint(boundingBox.lower(), m_vertices[p].position));
-			boundingBox.setUpper(VectorUtils::MaxPoint(boundingBox.upper(), m_vertices[p].position));
-		}
+			boundingBox.include(m_vertices[p].position);
 	}
 
 	return boundingBox;
@@ -126,12 +123,10 @@ std::vector<Triangle> Mesh::trianglesInBox(const BoundingBox& boundingBox, const
 bool Mesh::boxContainsTriangle(const BoundingBox& boundingBox, const Triangle& triangle) const
 {
 	// Determine the bounding box for this triangle.
-	BoundingBox triangleBoundingBox(StandardVectors::kMax, StandardVectors::kMin);
+	BoundingBox triangleBoundingBox;
+
 	for (const auto& p : triangle)
-	{
-		triangleBoundingBox.setLower(VectorUtils::MinPoint(triangleBoundingBox.lower(), m_vertices[p].position));
-		triangleBoundingBox.setUpper(VectorUtils::MaxPoint(triangleBoundingBox.upper(), m_vertices[p].position));
-	}
+		triangleBoundingBox.include(m_vertices[p].position);
 
 	return boundingBox.intersects(triangleBoundingBox);
 }

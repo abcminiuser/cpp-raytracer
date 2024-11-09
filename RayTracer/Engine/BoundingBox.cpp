@@ -2,6 +2,24 @@
 
 #include "Engine/Ray.hpp"
 
+void BoundingBox::include(const Vector& point)
+{
+	if (! m_isSet)
+	{
+		// If no explicit bounds/points set on this box yet, adopt the the point.
+
+		m_lower = point;
+		m_upper = point;
+		m_isSet = true;
+
+		return;
+	}
+
+	// Constrain our box to include the new point.
+	m_lower = VectorUtils::MinPoint(m_lower, point);
+	m_upper = VectorUtils::MaxPoint(m_upper, point);
+}
+
 double BoundingBox::intersect(const Ray& ray) const
 {
 	const Vector t1 = (m_lower - ray.position()) * ray.directionInverse();
