@@ -16,12 +16,12 @@ namespace
 {
 	constexpr auto kCoarsePreviewModeExitDelay = std::chrono::milliseconds(500);
 
-	Transform RotationTransform(const Vector& rotation)
+	Vector RotateVector(const Vector& vector, const Vector& rotation)
 	{
 		Transform transform;
 		transform.setRotation(rotation);
 
-		return transform;
+		return transform.transformDirection(vector);
 	}
 }
 
@@ -180,59 +180,33 @@ void Viewer::view(const std::string& path)
 					case sf::Keyboard::Key::D:
 					case sf::Keyboard::Key::R:
 					case sf::Keyboard::Key::F:
-					{
-						static const std::map<sf::Keyboard::Key, std::function<Vector()>> cameraMoveAmount
-							{
-								{ sf::Keyboard::Key::W, [&]() { return scene->camera.w().inverted(); }},
-								{ sf::Keyboard::Key::A, [&]() { return scene->camera.u().inverted(); } },
-								{ sf::Keyboard::Key::S, [&]() { return scene->camera.w(); } },
-								{ sf::Keyboard::Key::D, [&]() { return scene->camera.u(); } },
-								{ sf::Keyboard::Key::R, [&]() { return scene->camera.v().inverted(); } },
-								{ sf::Keyboard::Key::F, [&]() { return scene->camera.v(); } },
-							};
-
-						constexpr auto kMoveDelta = .1;
-						scene->camera.setPosition(scene->camera.position() + cameraMoveAmount.at(event.key.code)() * kMoveDelta);
-
-						nextRenderType = RenderType::CoarsePreview;
-						sceneUpdatePending = true;
-						break;
-					}
-
 					case sf::Keyboard::Key::I:
 					case sf::Keyboard::Key::J:
 					case sf::Keyboard::Key::K:
 					case sf::Keyboard::Key::L:
-					{
-						constexpr auto kRotateDelta = std::numbers::pi / 360.0;
-
-						const std::map<sf::Keyboard::Key, Transform> cameraRotateAmount
-							{
-								{ sf::Keyboard::Key::I, RotationTransform(Vector(0, 0, kRotateDelta)) },
-								{ sf::Keyboard::Key::J, RotationTransform(Vector(0, kRotateDelta, 0)) },
-								{ sf::Keyboard::Key::K, RotationTransform(Vector(0, 0, -kRotateDelta)) },
-								{ sf::Keyboard::Key::L, RotationTransform(Vector(0, -kRotateDelta, 0)) },
-							};
-
-						scene->camera.setDirection(cameraRotateAmount.at(event.key.code).transformDirection(scene->camera.direction()));
-
-						nextRenderType = RenderType::CoarsePreview;
-						sceneUpdatePending = true;
-						break;
-					}
-
 					case sf::Keyboard::Key::U:
 					case sf::Keyboard::Key::O:
 					{
+						constexpr auto kMoveDelta = .1;
 						constexpr auto kRotateDelta = std::numbers::pi / 360.0;
 
-						static const std::map<sf::Keyboard::Key, Transform> cameraRotateAmount
+						static const std::map<sf::Keyboard::Key, std::function<void()>> action
 							{
-								{ sf::Keyboard::Key::U, RotationTransform(Vector(-kRotateDelta, 0, 0)) },
-								{ sf::Keyboard::Key::O, RotationTransform(Vector(kRotateDelta, 0, 0)) },
+								{ sf::Keyboard::Key::W, [&]() { scene->camera.setPosition(scene->camera.position() + scene->camera.w().inverted() * kMoveDelta); }},
+								{ sf::Keyboard::Key::A, [&]() { scene->camera.setPosition(scene->camera.position() + scene->camera.u().inverted() * kMoveDelta); } },
+								{ sf::Keyboard::Key::S, [&]() { scene->camera.setPosition(scene->camera.position() + scene->camera.w() * kMoveDelta); } },
+								{ sf::Keyboard::Key::D, [&]() { scene->camera.setPosition(scene->camera.position() + scene->camera.u() * kMoveDelta); } },
+								{ sf::Keyboard::Key::R, [&]() { scene->camera.setPosition(scene->camera.position() + scene->camera.v().inverted() * kMoveDelta); } },
+								{ sf::Keyboard::Key::F, [&]() { scene->camera.setPosition(scene->camera.position() + scene->camera.v() * kMoveDelta); } },
+								{ sf::Keyboard::Key::I, [&]() { scene->camera.setDirection(RotateVector(scene->camera.direction(), StandardVectors::kUnitZ * kRotateDelta)); } },
+								{ sf::Keyboard::Key::J, [&]() { scene->camera.setDirection(RotateVector(scene->camera.direction(), StandardVectors::kUnitY * kRotateDelta)); } },
+								{ sf::Keyboard::Key::K, [&]() { scene->camera.setDirection(RotateVector(scene->camera.direction(), StandardVectors::kUnitZ.inverted() * kRotateDelta)); } },
+								{ sf::Keyboard::Key::L, [&]() { scene->camera.setDirection(RotateVector(scene->camera.direction(), StandardVectors::kUnitY.inverted() * kRotateDelta)); } },
+								{ sf::Keyboard::Key::U, [&]() { scene->camera.setOrientation(RotateVector(scene->camera.orientation(), StandardVectors::kUnitX.inverted() * kRotateDelta)); } },
+								{ sf::Keyboard::Key::O, [&]() { scene->camera.setOrientation(RotateVector(scene->camera.orientation(), StandardVectors::kUnitX * kRotateDelta)); } },
 							};
 
-						scene->camera.setOrientation(cameraRotateAmount.at(event.key.code).transformDirection(scene->camera.orientation()));
+						action.at(event.key.code)();
 
 						nextRenderType = RenderType::CoarsePreview;
 						sceneUpdatePending = true;
