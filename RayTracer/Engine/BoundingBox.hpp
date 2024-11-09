@@ -4,7 +4,7 @@
 
 class Ray;
 
-struct BoundingBox
+class BoundingBox
 {
 public:
 	constexpr			BoundingBox()
@@ -20,8 +20,8 @@ public:
 
 	}
 
-	void				setLower(const Vector& lower)	{ m_lower = lower; }
-	void				setUpper(const Vector& upper)	{ m_upper = upper; }
+	constexpr void		setLower(const Vector& lower)	{ m_lower = lower; }
+	constexpr void		setUpper(const Vector& upper)	{ m_upper = upper; }
 
 	const Vector&		lower() const					{ return m_lower; }
 	const Vector&		upper() const					{ return m_upper; }

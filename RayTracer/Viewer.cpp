@@ -1,6 +1,7 @@
 ﻿#include "Viewer.hpp"
 #include "SceneLoader.hpp"
 
+#include "Engine/MathUtil.hpp"
 #include "Engine/Transform.hpp"
 #include "Engine/Scene.hpp"
 
@@ -187,8 +188,8 @@ void Viewer::view(const std::string& path)
 					case sf::Keyboard::Key::U:
 					case sf::Keyboard::Key::O:
 					{
-						constexpr auto kMoveDelta = .1;
-						constexpr auto kRotateDelta = std::numbers::pi / 360.0;
+						constexpr auto kMoveDelta	= .1;
+						constexpr auto kRotateDelta	= MathUtil::DegreesToRadians(.5);
 
 						static const std::map<sf::Keyboard::Key, std::function<void()>> action
 							{

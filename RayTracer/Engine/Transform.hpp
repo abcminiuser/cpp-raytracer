@@ -3,8 +3,7 @@
 #include "Engine/Matrix.hpp"
 #include "Engine/Vector.hpp"
 
-struct BoundingBox;
-
+class BoundingBox;
 class Ray;
 
 class Transform

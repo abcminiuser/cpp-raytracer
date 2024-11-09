@@ -66,5 +66,5 @@ private:
 		std::unordered_map<std::string, std::shared_ptr<ImageTexture>>	imageTextures;
 	};
 
-	Cache 	m_cache;
+	Cache 									m_cache;
 };

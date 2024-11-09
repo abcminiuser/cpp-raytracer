@@ -1,12 +1,11 @@
 #include "Engine/Camera.hpp"
 
+#include "Engine/MathUtil.hpp"
 #include "Engine/Ray.hpp"
 #include "Engine/Scene.hpp"
 
-#include <numbers>
-
 Camera::Camera()
-	: Camera(StandardVectors::kOrigin, StandardVectors::kUnitZ, StandardVectors::kUnitY, 16.0 / 9.0, std::numbers::pi / 2, 1.0, 0.0)
+	: Camera(StandardVectors::kOrigin, StandardVectors::kUnitZ, StandardVectors::kUnitY, 16.0 / 9.0, MathUtil::DegreesToRadians(90), 1.0, 0.0)
 {
 
 }

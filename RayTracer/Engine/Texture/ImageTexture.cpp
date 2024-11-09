@@ -2,7 +2,6 @@
 
 #include "Engine/Texture.hpp"
 
-#include <cmath>
 #include <stdexcept>
 
 ImageTexture::ImageTexture(size_t width, size_t height, const Color& multiplier, Interpolation interpolation, const uint32_t* pixels)

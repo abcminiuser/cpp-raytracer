@@ -9,8 +9,8 @@
 
 namespace
 {
-	constexpr size_t	kMaxLinesToRenderPerChunk	= 10;
-	constexpr size_t	kCoarsePreviewSpacing		= 4;
+	constexpr size_t kMaxLinesToRenderPerChunk	= 10;
+	constexpr size_t kCoarsePreviewSpacing		= 4;
 }
 
 Renderer::Renderer(size_t width, size_t height, size_t numRenderThreads)

@@ -1,5 +1,6 @@
 #include "SceneLoader.hpp"
 
+#include "Engine/MathUtil.hpp"
 #include "Engine/Material/DebugMaterial.hpp"
 #include "Engine/Material/DielectricMaterial.hpp"
 #include "Engine/Material/DiffuseMaterial.hpp"
@@ -28,11 +29,6 @@
 
 namespace
 {
-	constexpr double DegreesToRadians(double degrees)
-	{
-		return degrees * (std::numbers::pi / 180);
-	}
-
 	std::string TrimWhitespace(std::string value)
 	{
 		if (auto pos = value.find_first_not_of(" \t"); pos != std::string::npos)
@@ -407,9 +403,9 @@ std::optional<Vector> SceneLoader::tryParseVector(const NodeHolder& node)
 	static const std::regex degreesVectorRegex("VectorDegrees\\(" "([^\\,]+)" "," "([^\\,]+)" "," "([^\\)]+)" "\\)");
 	if (std::smatch matches; std::regex_match(value, matches, degreesVectorRegex))
 	{
-		auto x = DegreesToRadians(DoubleFromString(matches[1]));
-		auto y = DegreesToRadians(DoubleFromString(matches[2]));
-		auto z = DegreesToRadians(DoubleFromString(matches[3]));
+		auto x = MathUtil::DegreesToRadians(DoubleFromString(matches[1]));
+		auto y = MathUtil::DegreesToRadians(DoubleFromString(matches[2]));
+		auto z = MathUtil::DegreesToRadians(DoubleFromString(matches[3]));
 
 		return Vector(x, y, z);
 	}
@@ -497,7 +493,7 @@ std::optional<Camera> SceneLoader::tryParseCamera(const NodeHolder& node)
 	auto target				= tryParseVector(node.getChild("target")).value_or(StandardVectors::kUnitZ);
 	auto orientation		= tryParseVector(node.getChild("orientation")).value_or(StandardVectors::kUnitY);
 	auto aspectRatio		= tryParseAspectRatio(node.getChild("aspectRatio")).value_or(16.0 / 9.0);
-	auto verticalFov		= DegreesToRadians(tryParseDouble(node.getChild("verticalFov")).value_or(90));
+	auto verticalFov		= MathUtil::DegreesToRadians(tryParseDouble(node.getChild("verticalFov")).value_or(90));
 	auto focusDistance		= tryParseDouble(node.getChild("focusDistance")).value_or(1.0);
 	auto aperture			= tryParseDouble(node.getChild("aperture")).value_or(0.0);
 
