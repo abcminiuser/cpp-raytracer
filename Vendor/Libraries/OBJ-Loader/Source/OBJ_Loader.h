@@ -22,7 +22,7 @@
 
 // Namespace: OBJL
 //
-// Description: The namespace that holds eveyrthing that
+// Description: The namespace that holds everything that
 //	is needed and used for the OBJ Model Loader
 namespace objl
 {
@@ -222,7 +222,7 @@ namespace objl
 	namespace math
 	{
 		// Vector3 Cross Product
-		Vector3 CrossV3(const Vector3 a, const Vector3 b)
+		static inline Vector3 CrossV3(const Vector3 a, const Vector3 b)
 		{
 			return Vector3(a.Y * b.Z - a.Z * b.Y,
 				a.Z * b.X - a.X * b.Z,
@@ -230,19 +230,19 @@ namespace objl
 		}
 
 		// Vector3 Magnitude Calculation
-		float MagnitudeV3(const Vector3 in)
+		static inline float MagnitudeV3(const Vector3 in)
 		{
 			return (sqrtf(powf(in.X, 2) + powf(in.Y, 2) + powf(in.Z, 2)));
 		}
 
 		// Vector3 DotProduct
-		float DotV3(const Vector3 a, const Vector3 b)
+		static inline float DotV3(const Vector3 a, const Vector3 b)
 		{
 			return (a.X * b.X) + (a.Y * b.Y) + (a.Z * b.Z);
 		}
 
 		// Angle between 2 Vector3 Objects
-		float AngleBetweenV3(const Vector3 a, const Vector3 b)
+		static inline float AngleBetweenV3(const Vector3 a, const Vector3 b)
 		{
 			float angle = DotV3(a, b);
 			angle /= (MagnitudeV3(a) * MagnitudeV3(b));
@@ -250,7 +250,7 @@ namespace objl
 		}
 
 		// Projection Calculation of a onto b
-		Vector3 ProjV3(const Vector3 a, const Vector3 b)
+		static inline Vector3 ProjV3(const Vector3 a, const Vector3 b)
 		{
 			Vector3 bn = b / MagnitudeV3(b);
 			return bn * DotV3(a, bn);
@@ -264,13 +264,13 @@ namespace objl
 	namespace algorithm
 	{
 		// Vector3 Multiplication Opertor Overload
-		Vector3 operator*(const float& left, const Vector3& right)
+		static inline Vector3 operator*(const float& left, const Vector3& right)
 		{
 			return Vector3(right.X * left, right.Y * left, right.Z * left);
 		}
 
 		// A test to see if P1 is on the same side as P2 of a line segment ab
-		bool SameSide(Vector3 p1, Vector3 p2, Vector3 a, Vector3 b)
+		static inline bool SameSide(Vector3 p1, Vector3 p2, Vector3 a, Vector3 b)
 		{
 			Vector3 cp1 = math::CrossV3(b - a, p1 - a);
 			Vector3 cp2 = math::CrossV3(b - a, p2 - a);
@@ -282,7 +282,7 @@ namespace objl
 		}
 
 		// Generate a cross produect normal for a triangle
-		Vector3 GenTriNormal(Vector3 t1, Vector3 t2, Vector3 t3)
+		static inline Vector3 GenTriNormal(Vector3 t1, Vector3 t2, Vector3 t3)
 		{
 			Vector3 u = t2 - t1;
 			Vector3 v = t3 - t1;
@@ -293,7 +293,7 @@ namespace objl
 		}
 
 		// Check to see if a Vector3 Point is within a 3 Vector3 Triangle
-		bool inTriangle(Vector3 point, Vector3 tri1, Vector3 tri2, Vector3 tri3)
+		static inline bool inTriangle(Vector3 point, Vector3 tri1, Vector3 tri2, Vector3 tri3)
 		{
 			// Test to see if it is within an infinite prism that the triangle outlines.
 			bool within_tri_prisim = SameSide(point, tri1, tri2, tri3) && SameSide(point, tri2, tri1, tri3)
@@ -303,7 +303,7 @@ namespace objl
 			if (!within_tri_prisim)
 				return false;
 
-			// Calulate Triangle's Normal
+			// Calculate Triangle's Normal
 			Vector3 n = GenTriNormal(tri1, tri2, tri3);
 
 			// Project the point onto this normal
@@ -318,7 +318,7 @@ namespace objl
 		}
 
 		// Split a String into a string array at a given token
-		inline void split(const std::string &in,
+		static inline void split(const std::string &in,
 			std::vector<std::string> &out,
 			std::string token)
 		{
@@ -357,7 +357,7 @@ namespace objl
 		}
 
 		// Get tail of string after first token and possibly following spaces
-		inline std::string tail(const std::string &in)
+		static inline std::string tail(const std::string &in)
 		{
 			size_t token_start = in.find_first_not_of(" \t");
 			size_t space_start = in.find_first_of(" \t", token_start);
@@ -375,7 +375,7 @@ namespace objl
 		}
 
 		// Get first token of string
-		inline std::string firstToken(const std::string &in)
+		static inline std::string firstToken(const std::string &in)
 		{
 			if (!in.empty())
 			{
@@ -395,7 +395,7 @@ namespace objl
 
 		// Get element at given index position
 		template <class T>
-		inline const T & getElement(const std::vector<T> &elements, std::string &index)
+		static inline const T & getElement(const std::vector<T> &elements, std::string &index)
 		{
 			int idx = std::stoi(index);
 			if (idx < 0)
