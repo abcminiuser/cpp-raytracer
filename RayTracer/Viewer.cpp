@@ -188,8 +188,8 @@ void Viewer::view(const std::string& path)
 					case sf::Keyboard::Key::U:
 					case sf::Keyboard::Key::O:
 					{
-						constexpr auto kMoveDelta	= .1;
-						constexpr auto kRotateDelta	= MathUtil::DegreesToRadians(.5);
+						static constexpr auto kMoveDelta	= .1;
+						static constexpr auto kRotateDelta	= MathUtil::DegreesToRadians(.5);
 
 						static const std::map<sf::Keyboard::Key, std::function<void()>> action
 							{
@@ -276,7 +276,7 @@ void Viewer::view(const std::string& path)
 			switch (previousRenderType)
 			{
 				case RenderType::CoarsePreview:
-					// Delay trransition out of coarse preview mode so we don't hammer the system
+					// Delay transition out of coarse preview mode so we don't hammer the system
 					// with repeated higher quality renders that get quickly abandoned.
 					if (std::chrono::steady_clock::now() - lastCoarsePreviewTime >= kCoarsePreviewModeExitDelay)
 						nextRenderType = RenderType::Preview;
