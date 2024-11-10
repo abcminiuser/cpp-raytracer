@@ -7,7 +7,7 @@
 #include <limits>
 #include <string>
 
-struct Vector final
+struct Vector
 {
 public:
 	constexpr			Vector() = default;

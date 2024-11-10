@@ -6,7 +6,7 @@
 #include <stdint.h>
 
 template <size_t ROWS, size_t COLS>
-class Matrix
+struct Matrix
 {
 public:
 	constexpr								Matrix()

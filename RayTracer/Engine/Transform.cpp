@@ -123,21 +123,6 @@ void Transform::setScale(const Vector& scale)
 	update();
 }
 
-void Transform::update()
-{
-	m_forwardTransform = (
-		ScaleMatrix(StandardVectors::kUnit / m_scale) *
-		RotateMatrix(m_rotation.inverted()) *
-		TranslateMatrix(m_position.inverted())
-	);
-
-	m_reverseTransform = (
-		TranslateMatrix(m_position) *
-		RotateMatrix(m_rotation) *
-		ScaleMatrix(m_scale)
-	);
-}
-
 Vector Transform::transformPosition(const Vector& vector) const
 {
 	return TransformVector(vector, m_forwardTransform, true);
@@ -186,4 +171,19 @@ BoundingBox Transform::untransformBoundingBox(const BoundingBox& boundingBox) co
 		transformedBox.include(untransformPosition(p));
 
 	return transformedBox;
+}
+
+void Transform::update()
+{
+	m_forwardTransform = (
+		ScaleMatrix(StandardVectors::kUnit / m_scale) *
+		RotateMatrix(m_rotation.inverted()) *
+		TranslateMatrix(m_position.inverted())
+	);
+
+	m_reverseTransform = (
+		TranslateMatrix(m_position) *
+		RotateMatrix(m_rotation) *
+		ScaleMatrix(m_scale)
+	);
 }

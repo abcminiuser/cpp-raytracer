@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include <string>
 
-struct Color final
+struct Color
 {
 public:
 	static constexpr Color	FromRGB888(uint8_t r, uint8_t g, uint8_t b)
