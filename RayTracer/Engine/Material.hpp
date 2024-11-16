@@ -18,7 +18,7 @@ public:
 	virtual							~Material() = default;
 
 	Vector							mapNormal(const Vector& normal, const Vector& tangent, const Vector& bitangent, const Vector& uv) const;
-	Color							illuminate(const Scene& scene, const Ray& sourceRay, const Vector& position, const Vector& normal, const Vector& uv, uint32_t rayDepthRemaining);
+	Color							illuminate(const Scene& scene, const Ray& sourceRay, const Vector& position, const Vector& normal, const Vector& uv, uint32_t rayDepth);
 
 public:
 	virtual Color					emit(const Vector& incident, const Vector& position, const Vector& normal, const Vector& uv)						{ return Palette::kBlack; }

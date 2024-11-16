@@ -15,6 +15,5 @@ public:
 	Camera									camera;
 	std::vector<std::shared_ptr<Object>>	objects;
 
-	uint32_t								maxRayDepth = 25;
 	uint32_t								samplesPerPixel = 25;
 };

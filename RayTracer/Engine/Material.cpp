@@ -1,10 +1,13 @@
 #include "Engine/Material.hpp"
 
 #include "Engine/Matrix.hpp"
+#include "Engine/Random.hpp"
 #include "Engine/Ray.hpp"
 #include "Engine/Scene.hpp"
 #include "Engine/Texture.hpp"
 #include "Engine/Texture/CheckerboardTexture.hpp"
+
+#include <algorithm>
 
 namespace
 {
@@ -46,16 +49,32 @@ Vector Material::mapNormal(const Vector& normal, const Vector& tangent, const Ve
 	return Vector(output(0, 0), output(0, 1), output(0, 2)).unit();
 }
 
-Color Material::illuminate(const Scene& scene, const Ray& sourceRay, const Vector& position, const Vector& normal, const Vector& uv, uint32_t rayDepthRemaining)
+Color Material::illuminate(const Scene& scene, const Ray& sourceRay, const Vector& position, const Vector& normal, const Vector& uv, uint32_t rayDepth)
 {
-	if (scene.maxRayDepth == 1)
-		return m_texture->sample(uv.x(), uv.y());
-
 	Color finalColor = emit(sourceRay.direction(), position, normal, uv);
 
 	Color attenuation;
 	if (auto scatterRay = scatter(sourceRay.direction(), position, normal, uv, attenuation))
-		finalColor += attenuation * scatterRay->trace(scene, rayDepthRemaining);
+	{
+		// Russian roulette termination; once we've reached at least three
+		// bounces, start pruning rays based on the survival probability.
+		if (rayDepth >= 3)
+		{
+			// Never allow a survival probability of 1.0, or we could potentially
+			// never terminate.
+			const double survivalProbability = std::min(attenuation.average(), 0.99);
+
+			// Check if we need to terminate this ray, or boost it based on the
+			// survival probability.
+			if (Random::UnsignedNormal() > survivalProbability)
+				attenuation = Color();
+			else
+				attenuation *= 1 / survivalProbability;
+		}
+
+		if (attenuation != Color())
+			finalColor += attenuation * scatterRay->trace(scene, rayDepth);
+	}
 
 	return finalColor;
 }

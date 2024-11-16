@@ -227,15 +227,10 @@ void Viewer::view(const std::string& path)
 			switch (nextRenderType)
 			{
 				case RenderType::CoarsePreview:
-					scene->maxRayDepth = 1;
-					scene->samplesPerPixel = 1;
-					break;
 				case RenderType::Preview:
-					scene->maxRayDepth = 5;
 					scene->samplesPerPixel = 1;
 					break;
 				case RenderType::Full:
-					scene->maxRayDepth = 10;
 					scene->samplesPerPixel = fullQualitySamplesPerPixel;
 					break;
 			}

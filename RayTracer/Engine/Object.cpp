@@ -42,7 +42,7 @@ double Object::intersect(const Ray& ray) const
 	return distanceWorldSpace;
 }
 
-Color Object::illuminate(const Scene& scene, const Ray& ray, double distance, uint32_t rayDepthRemaining) const
+Color Object::illuminate(const Scene& scene, const Ray& ray, double distance, uint32_t rayDepth) const
 {
 	const Vector	directionObjectSpace	= m_transform.transformDirection(ray.direction());
 
@@ -68,5 +68,5 @@ Color Object::illuminate(const Scene& scene, const Ray& ray, double distance, ui
 
 	assert(normalWorldSpace.isUnit());
 
-	return m_material->illuminate(scene, ray, positionWorldSpace, normalWorldSpace, uv, rayDepthRemaining);
+	return m_material->illuminate(scene, ray, positionWorldSpace, normalWorldSpace, uv, rayDepth);
 }

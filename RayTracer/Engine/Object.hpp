@@ -24,7 +24,7 @@ public:
 
 	const BoundingBox&				boundingBox() const { return m_boundingBox; }
 	double							intersect(const Ray& ray) const;
-	Color							illuminate(const Scene& scene, const Ray& ray, double distance, uint32_t rayDepthRemaining) const;
+	Color							illuminate(const Scene& scene, const Ray& ray, double distance, uint32_t rayDepth) const;
 
 protected:
 	virtual double					intersectWith(const Ray& ray) const = 0;

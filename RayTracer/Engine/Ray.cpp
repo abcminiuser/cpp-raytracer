@@ -14,11 +14,8 @@ Ray::Ray(const Vector& position, const Vector& direction)
 	assert(direction.isUnit());
 }
 
-Color Ray::trace(const Scene& scene, uint32_t rayDepthRemaining) const
+Color Ray::trace(const Scene& scene, uint32_t rayDepth) const
 {
-	if (rayDepthRemaining-- == 0)
-		return Palette::kBlack;
-
 	double	closestIntersectionDistance = Ray::kNoIntersection;
 	Object*	closestObject = nullptr;
 
@@ -41,5 +38,5 @@ Color Ray::trace(const Scene& scene, uint32_t rayDepthRemaining) const
 		return scene.background->sample(u, v);
 	}
 
-	return closestObject->illuminate(scene, *this, closestIntersectionDistance, rayDepthRemaining);
+	return closestObject->illuminate(scene, *this, closestIntersectionDistance, rayDepth + 1);
 }

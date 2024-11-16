@@ -37,7 +37,7 @@ Color Camera::trace(const Scene& scene, double u, double v) const
 		rayDirection	-= defocusXY;
 	}
 
-	return Ray(rayOrigin, rayDirection.unit()).trace(scene, scene.maxRayDepth);
+	return Ray(rayOrigin, rayDirection.unit()).trace(scene, 0);
 }
 
 void Camera::setPosition(const Vector& position)

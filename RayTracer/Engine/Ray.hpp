@@ -20,7 +20,7 @@ public:
 
 	const Vector		at(double distance) const	{ return m_position + (m_direction * distance); }
 
-	Color				trace(const Scene& scene, uint32_t rayDepthRemaining) const;
+	Color				trace(const Scene& scene, uint32_t rayDepth) const;
 
 private:
 	Vector				m_position;

@@ -154,6 +154,8 @@ public:
 			static_cast<uint32_t>(r * 255.0) << 0;
 	}
 
+	constexpr double		average() const { return (m_red + m_green + m_blue) / 3; }
+
 	constexpr double		red() const 	{ return m_red; }
 	constexpr double		green() const 	{ return m_green; }
 	constexpr double		blue() const	{ return m_blue; }
