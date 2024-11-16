@@ -94,15 +94,15 @@ std::unique_ptr<Mesh::Node> Mesh::partition(std::vector<Triangle> triangles, uin
 
 BoundingBox Mesh::boundingBoxForTriangles(const std::vector<Triangle>& triangles) const
 {
-	BoundingBox boundingBox;
+	BoundingBox trianglesBoundingBox;
 
 	for (const auto& t : triangles)
 	{
 		for (const auto& p : t)
-			boundingBox.include(m_vertices[p].position);
+			trianglesBoundingBox.include(m_vertices[p].position);
 	}
 
-	return boundingBox;
+	return trianglesBoundingBox;
 }
 
 std::vector<Triangle> Mesh::trianglesInBox(const BoundingBox& boundingBox, const std::vector<Triangle>& triangles) const

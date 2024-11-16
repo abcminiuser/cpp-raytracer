@@ -14,10 +14,7 @@ double BoundingBox::intersect(const Ray& ray) const
 	const Vector t1 = (m_lower - ray.position()) * ray.directionInverse();
 	const Vector t2 = (m_upper - ray.position()) * ray.directionInverse();
 
-	const Vector minPoint = VectorUtils::MinPoint(t1, t2);
 	const Vector maxPoint = VectorUtils::MaxPoint(t1, t2);
-
-	const double tMin = VectorUtils::MaxComponent(minPoint);
 	const double tMax = VectorUtils::MinComponent(maxPoint);
 
 	if (tMax < 0)
@@ -25,6 +22,9 @@ double BoundingBox::intersect(const Ray& ray) const
 		// Intersection is behind us
 		return Ray::kNoIntersection;
 	}
+
+	const Vector minPoint = VectorUtils::MinPoint(t1, t2);
+	const double tMin = VectorUtils::MaxComponent(minPoint);
 
 	if (tMin > tMax)
 	{
@@ -46,14 +46,9 @@ bool BoundingBox::intersects(const BoundingBox& boundingBox) const
 
 bool BoundingBox::contains(const Vector& point) const
 {
-	if (point.x() < m_lower.x() || point.x() > m_upper.x())
-		return false;
+	const auto xInBounds = m_lower.x() <= point.x() && point.x() <= m_upper.x();
+	const auto yInBounds = m_lower.y() <= point.y() && point.y() <= m_upper.y();
+	const auto zInBounds = m_lower.z() <= point.z() && point.z() <= m_upper.z();
 
-	if (point.y() < m_lower.y() || point.y() > m_upper.y())
-		return false;
-
-	if (point.z() < m_lower.z() || point.z() > m_upper.z())
-		return false;
-
-	return true;
+	return xInBounds && yInBounds && zInBounds;
 }

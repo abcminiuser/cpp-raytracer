@@ -35,7 +35,7 @@ namespace
 			value = value.substr(pos);
 
 		if (auto pos = value.find_last_not_of(" \t"); pos != std::string::npos)
-			value = value.substr(0, pos + 1);
+			value.resize(pos + 1);
 
 		return value;
 	}

@@ -16,8 +16,8 @@ Ray::Ray(const Vector& position, const Vector& direction)
 
 Color Ray::trace(const Scene& scene, uint32_t rayDepth) const
 {
-	double	closestIntersectionDistance = Ray::kNoIntersection;
-	Object*	closestObject = nullptr;
+	double			closestIntersectionDistance = Ray::kNoIntersection;
+	const Object*	closestObject = nullptr;
 
 	for (const auto& object : scene.objects)
 	{
