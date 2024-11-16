@@ -155,6 +155,7 @@ public:
 	}
 
 	constexpr double		average() const { return (m_red + m_green + m_blue) / 3; }
+	constexpr Color			clamped() const { return Color(std::min(m_red, 1.0), std::min(m_green, 1.0),std::min(m_blue, 1.0)); }
 
 	constexpr double		red() const 	{ return m_red; }
 	constexpr double		green() const 	{ return m_green; }

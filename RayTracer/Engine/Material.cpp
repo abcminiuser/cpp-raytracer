@@ -58,18 +58,18 @@ Color Material::illuminate(const Scene& scene, const Ray& sourceRay, const Vecto
 	{
 		// Russian roulette termination; once we've reached at least three
 		// bounces, start pruning rays based on the survival probability.
-		if (rayDepth >= 3)
+		if (rayDepth > 3)
 		{
 			// Never allow a survival probability of 1.0, or we could potentially
 			// never terminate.
-			const double survivalProbability = std::min(attenuation.average(), 0.99);
+			const double survivalProbability = std::min(attenuation.average(), 0.90);
 
 			// Check if we need to terminate this ray, or boost it based on the
 			// survival probability.
 			if (Random::UnsignedNormal() > survivalProbability)
 				attenuation = Color();
-			else
-				attenuation *= 1 / survivalProbability;
+			else if (attenuation != Color())
+				attenuation /= survivalProbability;
 		}
 
 		if (attenuation != Color())
