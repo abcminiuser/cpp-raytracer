@@ -412,7 +412,7 @@ std::optional<Vector> SceneLoader::tryParseVector(const NodeHolder& node)
 
 	static const std::unordered_map<std::string, Vector> kKnownNames
 		{
-			{ "Zero", Vector(0, 0, 0) },
+			{ "Zero", StandardVectors::kZero },
 			{ "Origin", StandardVectors::kOrigin },
 			{ "UnitX", StandardVectors::kUnitX },
 			{ "UnitY", StandardVectors::kUnitY },
@@ -476,8 +476,6 @@ std::optional<double> SceneLoader::tryParseDouble(const NodeHolder& node)
 
 	if (const auto doubleValue = node.tryGetValue<double>())
 		return *doubleValue;
-	else if (const auto intValue = node.tryGetValue<int64_t>())
-		return static_cast<double>(*intValue);
 	else if (const auto stringValue = node.tryGetValue<std::string>())
 		return DoubleFromString(*stringValue);
 
