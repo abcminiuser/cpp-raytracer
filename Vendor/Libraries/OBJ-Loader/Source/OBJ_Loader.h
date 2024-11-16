@@ -200,9 +200,10 @@ namespace objl
 		}
 		// Variable Set Constructor
 		Mesh(std::vector<Vertex>& _Vertices, std::vector<unsigned int>& _Indices)
+			: Vertices(std::move(_Vertices))
+			, Indices(std::move(_Indices))
 		{
-			Vertices = _Vertices;
-			Indices = _Indices;
+
 		}
 		// Mesh Name
 		std::string MeshName;
@@ -270,7 +271,7 @@ namespace objl
 		}
 
 		// A test to see if P1 is on the same side as P2 of a line segment ab
-		static inline bool SameSide(Vector3 p1, Vector3 p2, Vector3 a, Vector3 b)
+		static inline bool SameSide(const Vector3& p1, const Vector3& p2, const Vector3& a, const Vector3& b)
 		{
 			Vector3 cp1 = math::CrossV3(b - a, p1 - a);
 			Vector3 cp2 = math::CrossV3(b - a, p2 - a);
@@ -282,7 +283,7 @@ namespace objl
 		}
 
 		// Generate a cross produect normal for a triangle
-		static inline Vector3 GenTriNormal(Vector3 t1, Vector3 t2, Vector3 t3)
+		static inline Vector3 GenTriNormal(const Vector3& t1, const Vector3& t2, const Vector3& t3)
 		{
 			Vector3 u = t2 - t1;
 			Vector3 v = t3 - t1;
@@ -293,7 +294,7 @@ namespace objl
 		}
 
 		// Check to see if a Vector3 Point is within a 3 Vector3 Triangle
-		static inline bool inTriangle(Vector3 point, Vector3 tri1, Vector3 tri2, Vector3 tri3)
+		static inline bool inTriangle(const Vector3& point, const Vector3& tri1, const Vector3& tri2, const Vector3& tri3)
 		{
 			// Test to see if it is within an infinite prism that the triangle outlines.
 			bool within_tri_prisim = SameSide(point, tri1, tri2, tri3) && SameSide(point, tri2, tri1, tri3)
@@ -320,7 +321,7 @@ namespace objl
 		// Split a String into a string array at a given token
 		static inline void split(const std::string &in,
 			std::vector<std::string> &out,
-			std::string token)
+			const std::string& token)
 		{
 			out.clear();
 
@@ -428,7 +429,7 @@ namespace objl
 		//
 		// If the file is unable to be found
 		// or unable to be loaded return false
-		bool LoadFile(std::string Path)
+		bool LoadFile(const std::string& Path)
 		{
 			// If the file is not an .obj file return false
 			if (Path.substr(Path.size() - 4, 4) != ".obj")
@@ -618,7 +619,7 @@ namespace objl
 						while(1) {
 							tempMesh.MeshName = meshname + "_" + std::to_string(i);
 
-							for (auto &m : LoadedMeshes)
+							for (const auto &m : LoadedMeshes)
 								if (m.MeshName == tempMesh.MeshName)
 									continue;
 							break;
@@ -728,7 +729,7 @@ namespace objl
 			const std::vector<Vector3>& iPositions,
 			const std::vector<Vector2>& iTCoords,
 			const std::vector<Vector3>& iNormals,
-			std::string icurline)
+			const std::string& icurline)
 		{
 			std::vector<std::string> sface, svert;
 			Vertex vVert;
