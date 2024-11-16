@@ -12,8 +12,7 @@ public:
 	constexpr						BoundingBox() = default;
 
 	constexpr						BoundingBox(const Vector& lower, const Vector& upper)
-		: m_isSet(true)
-		, m_lower(lower)
+		: m_lower(lower)
 		, m_upper(upper)
 	{
 
@@ -46,7 +45,6 @@ public:
 	bool							contains(const Vector& point) const;
 
 private:
-	bool					m_isSet = false;
-	Vector					m_lower;
-	Vector					m_upper;
+	Vector							m_lower = StandardVectors::kMax;
+	Vector							m_upper = StandardVectors::kMin;
 };
