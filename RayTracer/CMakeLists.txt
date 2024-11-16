@@ -23,7 +23,7 @@ if (CPPCHECK_BIN)
 endif ()
 
 find_package (SFML CONFIG REQUIRED COMPONENTS graphics)
-find_package (fkYAML CONFIG REQUIRED HINTS ${CMAKE_SOURCE_DIR}/Vendor/Libraries/fkyaml-0.3.13/package)
+find_package (fkYAML CONFIG REQUIRED HINTS ${CMAKE_SOURCE_DIR}/Vendor/Libraries/fkyaml-0.3.14/package)
 
 add_library(objl INTERFACE)
 target_include_directories (objl INTERFACE ${CMAKE_SOURCE_DIR}/Vendor/Libraries/OBJ-Loader/Source)
