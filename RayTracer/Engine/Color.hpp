@@ -141,25 +141,32 @@ public:
 		);
 	}
 
-	constexpr uint32_t		toRGBA8888() const
+	constexpr double		average() const
 	{
-		const auto r = std::clamp(m_red, 0.0, 1.0);
-		const auto g = std::clamp(m_green, 0.0, 1.0);
-		const auto b = std::clamp(m_blue, 0.0, 1.0);
-
-		return
-			static_cast<uint32_t>(255) << 24 |
-			static_cast<uint32_t>(b * 255.0) << 16 |
-			static_cast<uint32_t>(g * 255.0) << 8 |
-			static_cast<uint32_t>(r * 255.0) << 0;
+		return (m_red + m_green + m_blue) / 3;
 	}
 
-	constexpr double		average() const { return (m_red + m_green + m_blue) / 3; }
-	constexpr Color			clamped() const { return Color(std::min(m_red, 1.0), std::min(m_green, 1.0),std::min(m_blue, 1.0)); }
+	constexpr Color			clamped() const
+	{
+		return Color(
+			std::clamp(m_red, 0.0, 1.0),
+			std::clamp(m_green, 0.0, 1.0),
+			std::clamp(m_blue, 0.0, 1.0)
+		);
+	}
 
 	constexpr double		red() const 	{ return m_red; }
 	constexpr double		green() const 	{ return m_green; }
 	constexpr double		blue() const	{ return m_blue; }
+
+	constexpr uint32_t		toRGBA8888() const
+	{
+		return
+			(static_cast<uint32_t>(255) & 0xFF) << 24 |
+			(static_cast<uint32_t>(m_blue * 255.0) & 0xFF) << 16 |
+			(static_cast<uint32_t>(m_green * 255.0) & 0xFF) << 8 |
+			(static_cast<uint32_t>(m_red * 255.0) & 0xFF) << 0;
+	}
 
 	std::string				string() const;
 

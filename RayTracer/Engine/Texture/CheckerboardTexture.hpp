@@ -3,7 +3,7 @@
 #include "Engine/Color.hpp"
 #include "Engine/Texture.hpp"
 
-#include <stdint.h>
+#include <stddef.h>
 
 class CheckerboardTexture final
 	: public Texture
