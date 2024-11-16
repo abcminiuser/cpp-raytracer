@@ -24,10 +24,7 @@ endif ()
 
 find_package (SFML CONFIG REQUIRED COMPONENTS graphics)
 find_package (fkYAML CONFIG REQUIRED HINTS ${CMAKE_SOURCE_DIR}/Vendor/Libraries/fkyaml-0.3.14/package)
-
-add_library(objl INTERFACE)
-target_include_directories (objl INTERFACE ${CMAKE_SOURCE_DIR}/Vendor/Libraries/OBJ-Loader/Source)
-add_library(objl::objl ALIAS objl)
+find_package (OBJ-Loader CONFIG REQUIRED HINTS ${CMAKE_SOURCE_DIR}/Vendor/Libraries/OBJ-Loader/package)
 
 add_executable (RayTracer
 	"Engine/BoundingBox.cpp"
@@ -63,7 +60,7 @@ target_include_directories (RayTracer PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries (RayTracer PRIVATE
 	sfml-graphics
 	fkYAML::fkYAML
-	objl::objl
+	OBJ-Loader::OBJ-Loader
 )
 target_compile_features (RayTracer PUBLIC cxx_std_20)
 
