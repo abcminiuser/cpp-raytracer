@@ -30,7 +30,7 @@ BoxObject::BoxObject(const Transform& transform, std::shared_ptr<Material> mater
 
 double BoxObject::intersectWith(const Ray& ray) const
 {
-	return BoundingBox(StandardVectors::kZero, StandardVectors::kUnit).intersect(ray);
+	return kBoundingBox.intersect(ray);
 }
 
 void BoxObject::getIntersectionProperties(const Vector& direction, const Vector& position, Vector& normal, Vector& tangent, Vector& bitangent, Vector& uv) const

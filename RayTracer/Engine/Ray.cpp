@@ -29,7 +29,7 @@ Color Ray::trace(const Scene& scene, uint32_t rayDepth) const
 		closestObject = object.get();
 	}
 
-	if (closestIntersectionDistance == Ray::kNoIntersection)
+	if (! closestObject)
 	{
 		Vector polarDirection = MathUtil::CartesianToPolar(m_direction);
 
