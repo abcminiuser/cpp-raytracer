@@ -55,7 +55,7 @@ void SphereObject::getIntersectionProperties(const Vector& direction, const Vect
 {
 	normal		= position.unit();
 	tangent		= normal.crossProduct(direction).unit();
-	bitangent	= tangent.crossProduct(normal).unit();
+	bitangent	= tangent.crossProduct(normal);
 	uv			= uvAt(position, normal);
 }
 
