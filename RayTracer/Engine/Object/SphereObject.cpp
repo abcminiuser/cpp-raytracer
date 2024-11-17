@@ -44,8 +44,14 @@ double SphereObject::intersectWith(const Ray& ray) const
 
 		const double dSqrt = std::sqrt(d);
 
-		const double solution1 = (-b - dSqrt) / 2;
-		const double solution2 = (-b + dSqrt) / 2;
+		double solution1 = (-b - dSqrt) / 2;
+		double solution2 = (-b + dSqrt) / 2;
+
+		if (solution1 < kComparisonThreshold)
+			solution1 = Ray::kNoIntersection;
+
+		if (solution2 < kComparisonThreshold)
+			solution2 = Ray::kNoIntersection;
 
 		return std::min(solution1, solution2);
 	}

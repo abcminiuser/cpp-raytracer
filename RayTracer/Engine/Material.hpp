@@ -26,7 +26,7 @@ public:
 
 protected:
 	Vector							reflect(const Vector& incident, const Vector& normal) const;
-	std::optional<Vector>			refract(const Vector& incident, const Vector& normal, double n1, double n2) const;
+	std::optional<Vector>			refract(const Vector& incident, const Vector& normal, double refractiveIndexRatio) const;
 
 protected:
 	const std::shared_ptr<Texture>	m_texture;

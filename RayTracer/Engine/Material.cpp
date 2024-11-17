@@ -8,6 +8,7 @@
 #include "Engine/Texture/CheckerboardTexture.hpp"
 
 #include <algorithm>
+#include <cmath>
 
 namespace
 {
@@ -84,17 +85,16 @@ Vector Material::reflect(const Vector& incident, const Vector& normal) const
 	return incident - (normal * 2 * incident.dotProduct(normal));
 }
 
-std::optional<Vector> Material::refract(const Vector& incident, const Vector& normal, double n1, double n2) const
+std::optional<Vector> Material::refract(const Vector& incident, const Vector& normal, double refractiveIndexRatio) const
 {
 	// https://graphics.stanford.edu/courses/cs148-10-summer/docs/2006--degreve--reflection_refraction.pdf
 
-	double n		= n1 / n2;
 	double cosI		= incident.dotProduct(normal);
-	double sinT2	= (n * n) * (1.0 - (cosI * cosI));
+	double sinT2	= (refractiveIndexRatio * refractiveIndexRatio) * (1.0 - (cosI * cosI));
 
 	if (sinT2 > 1.0)
 		return std::nullopt;
 
 	double cosT		= std::sqrt(1.0 - sinT2);
-	return (incident * n + normal * (n * cosI - cosT)).unit();
+	return (incident * refractiveIndexRatio + normal * (refractiveIndexRatio * cosI - cosT)).unit();
 }
