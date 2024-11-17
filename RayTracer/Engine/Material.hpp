@@ -25,6 +25,10 @@ public:
 	virtual std::optional<Ray>		scatter(const Vector& incident, const Vector& position, const Vector& normal, const Vector& uv, Color& attenuation)	{ return std::nullopt; }
 
 protected:
+	Vector							reflect(const Vector& incident, const Vector& normal) const;
+	std::optional<Vector>			refract(const Vector& incident, const Vector& normal, double n1, double n2) const;
+
+protected:
 	const std::shared_ptr<Texture>	m_texture;
 	const std::shared_ptr<Texture>	m_normals;
 };

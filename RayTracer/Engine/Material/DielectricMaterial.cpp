@@ -9,21 +9,6 @@
 namespace
 {
 	constexpr double kAirRefractionIndex = 1.0;
-
-	std::optional<Vector> Refract(const Vector& incident, const Vector& normal, double n1, double n2)
-	{
-		// https://graphics.stanford.edu/courses/cs148-10-summer/docs/2006--degreve--reflection_refraction.pdf
-
-		double n		= n1 / n2;
-		double cosI		= incident.dotProduct(normal);
-		double sinT2	= (n * n) * (1.0 - (cosI * cosI));
-
-		if (sinT2 > 1.0)
-			return std::nullopt;
-
-		double cosT		= std::sqrt(1.0 - sinT2);
-		return (incident * n + normal * (n * cosI - cosT)).unit();
-	}
 }
 
 DielectricMaterial::DielectricMaterial(std::shared_ptr<Texture> texture, std::shared_ptr<Texture> normals, double refractionIndex)
@@ -35,10 +20,9 @@ DielectricMaterial::DielectricMaterial(std::shared_ptr<Texture> texture, std::sh
 
 std::optional<Ray> DielectricMaterial::scatter(const Vector& incident, const Vector& position, const Vector& normal, const Vector& uv, Color& attenuation)
 {
-	auto refractionDirection = Refract(incident, normal, kAirRefractionIndex, m_refractionIndex);
-	if (! refractionDirection)
-		return std::nullopt;
+	// Refract if possible, otherwise reflect.
+	auto scatterDirection = refract(incident, normal, kAirRefractionIndex, m_refractionIndex).value_or(reflect(incident, normal));
 
 	attenuation = m_texture->sample(uv.x(), uv.y());
-	return Ray(position, refractionDirection.value());
+	return Ray(position, scatterDirection);
 }

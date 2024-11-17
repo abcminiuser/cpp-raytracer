@@ -12,11 +12,11 @@ DiffuseMaterial::DiffuseMaterial(std::shared_ptr<Texture> texture, std::shared_p
 
 std::optional<Ray> DiffuseMaterial::scatter(const Vector& incident, const Vector& position, const Vector& normal, const Vector& uv, Color& attenuation)
 {
-	Vector direction = normal + VectorUtils::RandomUnitVector();
-	if (direction.lengthSquared() < 1e-10)
-		direction = normal;
+	// Scatter across the unit hemisphere around the surface normal.
+	auto scatterDirection = normal + VectorUtils::RandomUnitVector();
+	if (scatterDirection.lengthSquared() < 1e-10)
+		scatterDirection = normal;
 
-	// Lambertian diffusion; always scatter.
 	attenuation = m_texture->sample(uv.x(), uv.y());
-	return Ray(position, direction.unit());
+	return Ray(position, scatterDirection.unit());
 }
