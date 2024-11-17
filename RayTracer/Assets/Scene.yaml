@@ -56,7 +56,7 @@ scene:
           type: Image
           path: "Assets/BrickNormals.jpg"
 
-    # White sphere in "V" group of spheres
+    # Checkerboard sphere in "V" group of spheres
     - type: Sphere
       transform:
         position: Vector(-4, 0, 4)
@@ -65,10 +65,12 @@ scene:
       material:
         type: Diffuse
         texture:
-          type: Solid
-          color: White
+          type: Checkerboard
+          color1: Magenta
+          color2: Yellow
+          rowsCols: 8
 
-    # Checkerboard sphere in "V" group of spheres
+    # White sphere in "V" group of spheres
     - type: Sphere
       transform:
         position: Vector(-2, 0, 2)
@@ -77,10 +79,8 @@ scene:
       material:
         type: Diffuse
         texture:
-          type: Checkerboard
-          color1: Magenta
-          color2: Yellow
-          rowsCols: 8
+          type: Solid
+          color: White
 
     # Red sphere in "V" group of spheres
     - type: Sphere
