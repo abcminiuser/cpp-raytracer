@@ -22,7 +22,7 @@ namespace
 		Transform transform;
 		transform.setRotation(rotation);
 
-		return transform.transformDirection(vector);
+		return transform.transformDirection(vector).unit();
 	}
 }
 

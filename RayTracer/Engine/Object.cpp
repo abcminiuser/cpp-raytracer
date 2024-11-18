@@ -29,25 +29,22 @@ double Object::intersect(const Ray& ray) const
 	if (m_boundingBox.intersect(ray) == Ray::kNoIntersection)
 		return Ray::kNoIntersection;
 
-	const Ray 		rayObjectSpace		= m_transform.transformRay(ray);
+	// We can avoid an expensive transform back to world space, if we *don't* normalize our
+	// direction here. A non-normalized transformed ray will give an intersection  distance
+	// that is valid for both the world-space and object-space rays.
+	const Ray 		rayObjectSpaceUnnormalized	= Ray(m_transform.transformPosition(ray.position()), m_transform.transformDirection(ray.direction()));
 
-	const double closestIntersectionDistance = intersectWith(rayObjectSpace);
-	if (closestIntersectionDistance < kComparisonThreshold)
+	const double distance = intersectWith(rayObjectSpaceUnnormalized);
+	if (distance < kComparisonThreshold)
 		return Ray::kNoIntersection;
 
-	const Vector	positionObjectSpace	= rayObjectSpace.at(closestIntersectionDistance);
-	const Vector	positionWorldSpace	= m_transform.untransformPosition(positionObjectSpace);
-	const double	distanceWorldSpace	= (positionWorldSpace - ray.position()).length();
-
-	return distanceWorldSpace;
+	return distance;
 }
 
-Color Object::illuminate(const Scene& scene, const Ray& ray, double distance, uint32_t rayDepth) const
+Color Object::illuminate(const Scene& scene, const Ray& ray, const Vector& position, uint32_t rayDepth) const
 {
-	const Vector	directionObjectSpace	= m_transform.transformDirection(ray.direction());
-
-	const Vector	positionWorldSpace		= ray.at(distance);
-	const Vector	positionObjectSpace 	= m_transform.transformPosition(positionWorldSpace);
+	const Vector	directionObjectSpace		= m_transform.transformDirection(ray.direction()).unit();
+	const Vector	positionObjectSpace 		= m_transform.transformPosition(position);
 
 	Vector normalObjectSpace;
 	Vector tangent;
@@ -64,9 +61,9 @@ Color Object::illuminate(const Scene& scene, const Ray& ray, double distance, ui
 
 	assert(normalObjectSpace.isUnit());
 
-	const Vector 	normalWorldSpace		= m_transform.untransformDirection(normalObjectSpace);
+	const Vector 	normalWorldSpace			= m_transform.untransformDirection(normalObjectSpace).unit();
 
 	assert(normalWorldSpace.isUnit());
 
-	return m_material->illuminate(scene, ray, positionWorldSpace, normalWorldSpace, uv, rayDepth);
+	return m_material->illuminate(scene, ray, position, normalWorldSpace, uv, rayDepth);
 }

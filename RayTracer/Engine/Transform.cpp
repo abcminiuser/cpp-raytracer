@@ -1,7 +1,6 @@
 #include "Engine/Transform.hpp"
 
 #include "Engine/BoundingBox.hpp"
-#include "Engine/Ray.hpp"
 
 #include <cmath>
 #include <stdexcept>
@@ -130,12 +129,7 @@ Vector Transform::transformPosition(const Vector& vector) const
 
 Vector Transform::transformDirection(const Vector& vector) const
 {
-	return TransformVector(vector, m_forwardTransform, false).unit();
-}
-
-Ray Transform::transformRay(const Ray& ray) const
-{
-	return Ray(transformPosition(ray.position()), transformDirection(ray.direction()));
+	return TransformVector(vector, m_forwardTransform, false);
 }
 
 BoundingBox Transform::transformBoundingBox(const BoundingBox& boundingBox) const
@@ -155,12 +149,7 @@ Vector Transform::untransformPosition(const Vector& vector) const
 
 Vector Transform::untransformDirection(const Vector& vector) const
 {
-	return TransformVector(vector, m_reverseTransform, false).unit();
-}
-
-Ray Transform::untransformRay(const Ray& ray) const
-{
-	return Ray(untransformPosition(ray.position()), untransformDirection(ray.direction()));
+	return TransformVector(vector, m_reverseTransform, false);
 }
 
 BoundingBox Transform::untransformBoundingBox(const BoundingBox& boundingBox) const

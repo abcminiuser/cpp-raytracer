@@ -166,7 +166,7 @@ public:
 
 	bool				isUnit() const
 	{
-		return (length() - 1) <= std::numeric_limits<double>::epsilon();
+		return (length() - 1) < 1e-10;
 	}
 
 	constexpr double	x() const	{ return m_x; }

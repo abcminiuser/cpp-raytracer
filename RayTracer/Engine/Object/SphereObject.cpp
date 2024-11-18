@@ -24,37 +24,30 @@ SphereObject::SphereObject(const Transform& transform, std::shared_ptr<Material>
 
 double SphereObject::intersectWith(const Ray& ray) const
 {
-	const double b = 2 * ray.position().dotProduct(ray.direction());
-	const double c = ray.position().lengthSquared() - .25;
-	const double d = (b * b) - 4 * c;
+   	const auto oc = StandardVectors::kZero - ray.position();
+    const auto a = ray.direction().lengthSquared();
+    const auto h = ray.direction().dotProduct(oc);
+    const auto c = oc.lengthSquared() - .25;
+	const double d = h*h - a*c;
 
 	if (d < 0)
 	{
 		// No intersection
 		return Ray::kNoIntersection;
 	}
-	else if (d == 0)
-	{
-		// Single intersection (we hit along the edge)
-		return -b / 2;
-	}
-	else
-	{
-		// Two intersection solutions (both sides of the sphere)
 
-		const double dSqrt = std::sqrt(d);
+	const double dSqrt = std::sqrt(d);
 
-		double solution1 = (-b - dSqrt) / 2;
-		double solution2 = (-b + dSqrt) / 2;
+	double solution1 = (h - dSqrt) / a;
+	double solution2 = (h + dSqrt) / a;
 
-		if (solution1 < kComparisonThreshold)
-			solution1 = Ray::kNoIntersection;
+	if (solution1 < kComparisonThreshold)
+		solution1 = Ray::kNoIntersection;
 
-		if (solution2 < kComparisonThreshold)
-			solution2 = Ray::kNoIntersection;
+	if (solution2 < kComparisonThreshold)
+		solution2 = Ray::kNoIntersection;
 
-		return std::min(solution1, solution2);
-	}
+	return std::min(solution1, solution2);
 }
 
 void SphereObject::getIntersectionProperties(const Vector& direction, const Vector& position, Vector& normal, Vector& tangent, Vector& bitangent, Vector& uv) const

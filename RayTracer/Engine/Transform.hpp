@@ -4,7 +4,6 @@
 #include "Engine/Vector.hpp"
 
 class BoundingBox;
-class Ray;
 
 class Transform
 {
@@ -21,12 +20,10 @@ public:
 
 	Vector			transformPosition(const Vector& vector) const;
 	Vector			transformDirection(const Vector& vector) const;
-	Ray				transformRay(const Ray& ray) const;
 	BoundingBox		transformBoundingBox(const BoundingBox& boundingBox) const;
 
 	Vector			untransformPosition(const Vector& vector) const;
 	Vector			untransformDirection(const Vector& vector) const;
-	Ray				untransformRay(const Ray& ray) const;
 	BoundingBox		untransformBoundingBox(const BoundingBox& boundingBox) const;
 
 private:
