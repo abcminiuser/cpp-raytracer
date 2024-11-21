@@ -59,8 +59,8 @@ scene:
     # Checkerboard sphere in "V" group of spheres
     - type: Sphere
       transform:
-        position: Vector(-4, 0, 4)
-        rotation: Zero
+        position: Vector(-2, 0, 2)
+        rotation: VectorDegrees(-15, -15, -15)
         scale: Vector(2, 2, 2)
       material:
         type: Diffuse
@@ -73,8 +73,8 @@ scene:
     # White sphere in "V" group of spheres
     - type: Sphere
       transform:
-        position: Vector(-2, 0, 2)
-        rotation: VectorDegrees(-15, -15, -15)
+        position: Vector(-4, 0, 4)
+        rotation: Zero
         scale: Vector(2, 2, 2)
       material:
         type: Diffuse
