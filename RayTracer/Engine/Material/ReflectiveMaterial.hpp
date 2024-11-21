@@ -17,7 +17,8 @@ public:
 
 // Material i/f:
 public:
-	std::optional<Ray>		scatter(const Vector& incident, const Vector& position, const Vector& normal, const Vector& uv, Color& attenuation) override;
+	std::optional<Ray>		scatter(const Vector& incident, const Vector& position, const Vector& normal, const Vector& uv, Color& attenuation, double& pdf) override;
+	double					scatterPdf(const Vector& incident, const Vector& position, const Vector& normal, const Vector& scatteredDirection) override;
 
 private:
 	double					m_scuff;

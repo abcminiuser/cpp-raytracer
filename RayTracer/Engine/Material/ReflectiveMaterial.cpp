@@ -13,7 +13,7 @@ ReflectiveMaterial::ReflectiveMaterial(std::shared_ptr<Texture> texture, std::sh
 
 }
 
-std::optional<Ray> ReflectiveMaterial::scatter(const Vector& incident, const Vector& position, const Vector& normal, const Vector& uv, Color& attenuation)
+std::optional<Ray> ReflectiveMaterial::scatter(const Vector& incident, const Vector& position, const Vector& normal, const Vector& uv, Color& attenuation, double& pdf)
 {
 	// Reflect the incidence ray along the surface normal.
 	auto scatterDirection = reflect(incident, normal);
@@ -27,5 +27,11 @@ std::optional<Ray> ReflectiveMaterial::scatter(const Vector& incident, const Vec
 		return std::nullopt;
 
 	attenuation = m_texture->sample(uv.x(), uv.y());
+	pdf = 1;
 	return Ray(position, scatterDirection);
+}
+
+double ReflectiveMaterial::scatterPdf(const Vector& incident, const Vector& position, const Vector& normal, const Vector& scatteredDirection)
+{
+	 return 1;
 }

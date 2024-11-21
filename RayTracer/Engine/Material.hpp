@@ -21,8 +21,10 @@ public:
 	Color							illuminate(const Scene& scene, const Ray& sourceRay, const Vector& position, const Vector& normal, const Vector& uv, uint32_t rayDepth);
 
 public:
-	virtual Color					emit(const Vector& incident, const Vector& position, const Vector& normal, const Vector& uv)						{ return Palette::kBlack; }
-	virtual std::optional<Ray>		scatter(const Vector& incident, const Vector& position, const Vector& normal, const Vector& uv, Color& attenuation)	{ return std::nullopt; }
+	virtual Color					emit(const Vector& incident, const Vector& position, const Vector& normal, const Vector& uv)										{ return Palette::kBlack; }
+
+	virtual std::optional<Ray>		scatter(const Vector& incident, const Vector& position, const Vector& normal, const Vector& uv, Color& attenuation, double& pdf)	{ return std::nullopt; }
+	virtual	double					scatterPdf(const Vector& incident, const Vector& position, const Vector& normal, const Vector& scatteredDirection)					{ return 0; }
 
 protected:
 	Vector							reflect(const Vector& incident, const Vector& normal) const;

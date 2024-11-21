@@ -25,7 +25,7 @@ DielectricMaterial::DielectricMaterial(std::shared_ptr<Texture> texture, std::sh
 
 }
 
-std::optional<Ray> DielectricMaterial::scatter(const Vector& incident, const Vector& position, const Vector& normal, const Vector& uv, Color& attenuation)
+std::optional<Ray> DielectricMaterial::scatter(const Vector& incident, const Vector& position, const Vector& normal, const Vector& uv, Color& attenuation, double& pdf)
 {
 	double refractionIndex;
 	Vector refractionNormal;
@@ -54,5 +54,11 @@ std::optional<Ray> DielectricMaterial::scatter(const Vector& incident, const Vec
 	auto scatterDirection = refractionDirection.value_or(reflect(incident, normal));
 
 	attenuation = m_texture->sample(uv.x(), uv.y());
+	pdf = 1;
 	return Ray(position, scatterDirection);
+}
+
+double DielectricMaterial::scatterPdf(const Vector& incident, const Vector& position, const Vector& normal, const Vector& scatteredDirection)
+{
+	 return 1;
 }

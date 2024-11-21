@@ -55,7 +55,8 @@ Color Material::illuminate(const Scene& scene, const Ray& sourceRay, const Vecto
 	Color finalColor = emit(sourceRay.direction(), position, normal, uv);
 
 	Color attenuation;
-	if (auto scatterRay = scatter(sourceRay.direction(), position, normal, uv, attenuation))
+	double pdf;
+	if (auto scatterRay = scatter(sourceRay.direction(), position, normal, uv, attenuation, pdf))
 	{
 		// Russian roulette termination; once we've reached at least three
 		// bounces, start pruning rays based on the survival probability.
@@ -74,7 +75,10 @@ Color Material::illuminate(const Scene& scene, const Ray& sourceRay, const Vecto
 		}
 
 		if (attenuation != Color())
-			finalColor += attenuation * scatterRay->trace(scene, rayDepth);
+		{
+			double scatteringPdf = scatterPdf(sourceRay.direction(), position, normal, scatterRay->direction());
+			finalColor += attenuation * scatteringPdf * scatterRay->trace(scene, rayDepth) / pdf;
+		}
 	}
 
 	return finalColor;
