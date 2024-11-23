@@ -487,15 +487,13 @@ std::optional<Camera> SceneLoader::tryParseCamera(const NodeHolder& node)
 	if (! node)
 		return std::nullopt;
 
-	auto position			= tryParseVector(node.getChild("position")).value_or(StandardVectors::kOrigin);
-	auto target				= tryParseVector(node.getChild("target")).value_or(StandardVectors::kUnitZ);
-	auto orientation		= tryParseVector(node.getChild("orientation")).value_or(StandardVectors::kUnitY);
+	auto transform			= tryParseTransform(node.getChild("transform")).value_or(Transform());
 	auto aspectRatio		= tryParseAspectRatio(node.getChild("aspectRatio")).value_or(16.0 / 9.0);
 	auto verticalFov		= MathUtil::DegreesToRadians(tryParseDouble(node.getChild("verticalFov")).value_or(90));
 	auto focusDistance		= tryParseDouble(node.getChild("focusDistance")).value_or(1.0);
 	auto aperture			= tryParseDouble(node.getChild("aperture")).value_or(0.0);
 
-	return Camera(position, target, orientation, aspectRatio, verticalFov, focusDistance, aperture);
+	return Camera(transform, aspectRatio, verticalFov, focusDistance, aperture);
 }
 
 std::optional<Transform> SceneLoader::tryParseTransform(const NodeHolder& node)

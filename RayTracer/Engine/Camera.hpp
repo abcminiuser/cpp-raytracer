@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Engine/Color.hpp"
+#include "Engine/Transform.hpp"
 #include "Engine/Vector.hpp"
 
 struct Scene;
@@ -8,45 +9,31 @@ struct Scene;
 class Camera
 {
 public:
-					Camera();
-					Camera(const Vector& position, const Vector& target, const Vector& orientation, double aspectRatio, double verticalFov, double focusDistance, double aperture);
+						Camera();
+						Camera(const Transform& transform, double aspectRatio, double verticalFov, double focusDistance, double aperture);
 
-	const Vector&	position() const	{ return m_position; }
-	const Vector&	direction() const	{ return m_direction; }
-	const Vector&	orientation() const	{ return m_orientation; }
+	const Transform&	transform() const { return m_transform; }
 
-	const Vector&	u() const			{ return m_u; }
-	const Vector&	v() const			{ return m_v; }
-	const Vector&	w() const			{ return m_w; }
+	void				setTransform(const Transform& transform);
 
-	void			setPosition(const Vector& position);
-	void			setDirection(const Vector& direction);
-	void			setOrientation(const Vector& orientation);
-
-	Color			trace(const Scene& scene, double u, double v) const;
+	Color				trace(const Scene& scene, double u, double v) const;
 
 private:
-	void			update();
+	void				update();
 
 private:
-	Vector			m_position;
-	Vector			m_direction;
-	Vector			m_orientation;
+	Transform			m_transform;
 
-	double			m_aspectRatio;
-	double			m_verticalFov;
-	double			m_focusDistance;
-	double			m_aperture;
+	double				m_aspectRatio;
+	double				m_verticalFov;
+	double				m_focusDistance;
+	double				m_aperture;
 
-	double			m_viewWidth;
-	double			m_viewHeight;
-	double			m_defocusRadius;
+	double				m_viewWidth;
+	double				m_viewHeight;
+	double				m_defocusRadius;
 
-	Vector			m_viewportHorizontalScan;
-	Vector			m_viewportVerticalScan;
-	Vector			m_viewportUpperLeftCorner;
-
-	Vector			m_u;
-	Vector			m_v;
-	Vector			m_w;
+	Vector				m_viewportHorizontalScan;
+	Vector				m_viewportVerticalScan;
+	Vector				m_viewportUpperLeftCorner;
 };

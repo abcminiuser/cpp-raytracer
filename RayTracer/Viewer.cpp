@@ -16,14 +16,6 @@
 namespace
 {
 	constexpr auto kCoarsePreviewModeExitDelay = std::chrono::milliseconds(500);
-
-	Vector RotateVector(const Vector& vector, const Vector& rotation)
-	{
-		Transform transform;
-		transform.setRotation(rotation);
-
-		return transform.transformDirection(vector).unit();
-	}
 }
 
 Viewer::Viewer(size_t width, size_t height)
@@ -191,20 +183,40 @@ void Viewer::view(const std::string& path)
 						static constexpr auto kMoveDelta	= .1;
 						static constexpr auto kRotateDelta	= MathUtil::DegreesToRadians(.5);
 
+						auto MoveCamera =
+							[&](const Vector& amount)
+							{
+								Transform newTransform = scene->camera.transform();
+
+								newTransform.setPosition(newTransform.position() + newTransform.untransformDirection(amount));
+
+								scene->camera.setTransform(newTransform);
+							};
+
+						auto RotateCamera =
+							[&](const Vector& amount)
+							{
+								Transform newTransform = scene->camera.transform();
+
+								newTransform.setRotation(newTransform.rotation() + amount);
+
+								scene->camera.setTransform(newTransform);
+							};
+
 						static const std::map<sf::Keyboard::Key, std::function<void()>> action
 							{
-								{ sf::Keyboard::Key::W, [&]() { scene->camera.setPosition(scene->camera.position() + scene->camera.w().inverted() * kMoveDelta); }},
-								{ sf::Keyboard::Key::A, [&]() { scene->camera.setPosition(scene->camera.position() + scene->camera.u().inverted() * kMoveDelta); } },
-								{ sf::Keyboard::Key::S, [&]() { scene->camera.setPosition(scene->camera.position() + scene->camera.w() * kMoveDelta); } },
-								{ sf::Keyboard::Key::D, [&]() { scene->camera.setPosition(scene->camera.position() + scene->camera.u() * kMoveDelta); } },
-								{ sf::Keyboard::Key::R, [&]() { scene->camera.setPosition(scene->camera.position() + scene->camera.v().inverted() * kMoveDelta); } },
-								{ sf::Keyboard::Key::F, [&]() { scene->camera.setPosition(scene->camera.position() + scene->camera.v() * kMoveDelta); } },
-								{ sf::Keyboard::Key::I, [&]() { scene->camera.setDirection(RotateVector(scene->camera.direction(), StandardVectors::kUnitZ * kRotateDelta)); } },
-								{ sf::Keyboard::Key::J, [&]() { scene->camera.setDirection(RotateVector(scene->camera.direction(), StandardVectors::kUnitY * kRotateDelta)); } },
-								{ sf::Keyboard::Key::K, [&]() { scene->camera.setDirection(RotateVector(scene->camera.direction(), StandardVectors::kUnitZ.inverted() * kRotateDelta)); } },
-								{ sf::Keyboard::Key::L, [&]() { scene->camera.setDirection(RotateVector(scene->camera.direction(), StandardVectors::kUnitY.inverted() * kRotateDelta)); } },
-								{ sf::Keyboard::Key::U, [&]() { scene->camera.setOrientation(RotateVector(scene->camera.orientation(), StandardVectors::kUnitX.inverted() * kRotateDelta)); } },
-								{ sf::Keyboard::Key::O, [&]() { scene->camera.setOrientation(RotateVector(scene->camera.orientation(), StandardVectors::kUnitX * kRotateDelta)); } },
+								{ sf::Keyboard::Key::W, [&]() { MoveCamera(StandardVectors::kUnitZ * kMoveDelta); } },
+								{ sf::Keyboard::Key::A, [&]() { MoveCamera(StandardVectors::kUnitX.inverted() * kMoveDelta); } },
+								{ sf::Keyboard::Key::S, [&]() { MoveCamera(StandardVectors::kUnitZ.inverted() * kMoveDelta); } },
+								{ sf::Keyboard::Key::D, [&]() { MoveCamera(StandardVectors::kUnitX * kMoveDelta); } },
+								{ sf::Keyboard::Key::R, [&]() { MoveCamera(StandardVectors::kUnitY * kMoveDelta); } },
+								{ sf::Keyboard::Key::F, [&]() { MoveCamera(StandardVectors::kUnitY.inverted() * kMoveDelta); } },
+								{ sf::Keyboard::Key::I, [&]() { RotateCamera(StandardVectors::kUnitZ.inverted() * kRotateDelta); } },
+								{ sf::Keyboard::Key::J, [&]() { RotateCamera(StandardVectors::kUnitY.inverted() * kRotateDelta); } },
+								{ sf::Keyboard::Key::K, [&]() { RotateCamera(StandardVectors::kUnitZ * kRotateDelta); } },
+								{ sf::Keyboard::Key::L, [&]() { RotateCamera(StandardVectors::kUnitY * kRotateDelta); } },
+								{ sf::Keyboard::Key::U, [&]() { RotateCamera(StandardVectors::kUnitX * kRotateDelta); } },
+								{ sf::Keyboard::Key::O, [&]() { RotateCamera(StandardVectors::kUnitX.inverted() * kRotateDelta); } },
 							};
 
 						action.at(event.key.code)();
@@ -300,9 +312,9 @@ void Viewer::view(const std::string& path)
 
 			if (scene)
 			{
-				infoMessage += "Camera Position:  " + scene->camera.position().string() + "\n";
-				infoMessage += "Camera Direction: " + scene->camera.direction().string() + "\n";
-				infoMessage += "Camera Orientation: " + scene->camera.orientation().string() + "\n";
+				infoMessage += "Camera Position: " + scene->camera.transform().position().string() + "\n";
+				infoMessage += "Camera Rotation: " + scene->camera.transform().rotation().string() + "\n";
+				infoMessage += "Camera Scale:    " + scene->camera.transform().scale().string() + "\n";
 
 				if (isRendering)
 					infoMessage += std::string("Rendering In Progress (" + std::string(previousRenderType != RenderType::Full ? "Preview" : "Full") + " - " + std::to_string(m_renderer.renderPercentage()) + "%, " + std::to_string(scene->samplesPerPixel) + " samples/pixel)");
