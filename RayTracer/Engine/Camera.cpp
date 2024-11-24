@@ -63,7 +63,7 @@ Color Camera::trace(const Scene& scene, double u, double v) const
 	if (m_defocusRadius)
 	{
 		const Vector defocusX	= StandardVectors::kUnitX * (Random::SignedNormal() * m_defocusRadius);
-		const Vector defocusY	= StandardVectors::kUnitY.inverted() * (Random::SignedNormal() * m_defocusRadius);
+		const Vector defocusY	= StandardVectors::kUnitY * (Random::SignedNormal() * m_defocusRadius);
 		const Vector defocusXY	= defocusX + defocusY;
 
 		rayOrigin		+= defocusXY;
