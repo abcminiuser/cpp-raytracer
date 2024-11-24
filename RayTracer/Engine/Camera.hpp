@@ -12,9 +12,17 @@ public:
 						Camera();
 						Camera(const Transform& transform, double aspectRatio, double verticalFov, double focusDistance, double aperture);
 
-	const Transform&	transform() const { return m_transform; }
+	const Transform&	transform() const		{ return m_transform; }
+	double				aspectRatio() const		{ return m_aspectRatio; }
+	double				verticalFov() const		{ return m_verticalFov; }
+	double				focusDistance() const	{ return m_focusDistance; }
+	double				aperture() const		{ return m_aperture; }
 
 	void				setTransform(const Transform& transform);
+	void				setAspectRatio(double aspectRatio);
+	void				setVerticalFov(double verticalFov);
+	void				setFocusDistance(double focusDistance);
+	void				setAperture(double aperture);
 
 	Color				trace(const Scene& scene, double u, double v) const;
 

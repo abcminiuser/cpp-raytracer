@@ -12,6 +12,11 @@ namespace MathUtil
 		return degrees * (std::numbers::pi / 180);
 	}
 
+	constexpr double RadiansToDegrees(double radians)
+	{
+		return radians * (180 / std::numbers::pi);
+	}
+
 	constexpr Vector CartesianToPolar(const Vector& vector)
 	{
 		return Vector(

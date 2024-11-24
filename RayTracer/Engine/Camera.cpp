@@ -4,6 +4,8 @@
 #include "Engine/Ray.hpp"
 #include "Engine/Scene.hpp"
 
+#include <cassert>
+
 Camera::Camera()
 	: Camera(Transform(), 16.0 / 9.0, MathUtil::DegreesToRadians(90), 1.0, 0.0)
 {
@@ -26,8 +28,35 @@ void Camera::setTransform(const Transform& transform)
 	update();
 }
 
+void Camera::setAspectRatio(double aspectRatio)
+{
+	m_aspectRatio = std::max(aspectRatio, 0.0001);
+	update();
+}
+
+void Camera::setVerticalFov(double verticalFov)
+{
+	m_verticalFov = std::clamp(verticalFov, MathUtil::DegreesToRadians(1), MathUtil::DegreesToRadians(180));
+	update();
+}
+
+void Camera::setFocusDistance(double focusDistance)
+{
+	m_focusDistance = std::max(focusDistance, 0.0001);
+	update();
+}
+
+void Camera::setAperture(double aperture)
+{
+	m_aperture = std::max(aperture, 0.0001);
+	update();
+}
+
 Color Camera::trace(const Scene& scene, double u, double v) const
 {
+	assert(u == std::clamp(u, 0.0, 1.0));
+	assert(v == std::clamp(v, 0.0, 1.0));
+
 	Vector rayOrigin	= StandardVectors::kZero;
 	Vector rayDirection	= m_viewportUpperLeftCorner + (m_viewportHorizontalScan * u) + (m_viewportVerticalScan * v);
 

@@ -47,6 +47,9 @@ Viewer::Viewer(size_t width, size_t height)
 	instructionsMessage += "(Delete) Cancel Render\n";
 	instructionsMessage += "(W/A/S/D, R/F) Move Camera\n";
 	instructionsMessage += "(I/J/K/L, U/O) Rotate Camera\n";
+	instructionsMessage += "(Z/X) Adjust Vertical FOV\n";
+	instructionsMessage += "(N/M) Adjust Aperture\n";
+	instructionsMessage += "(</>) Adjust Focus Distance\n";
 
 	m_instructionsText.setFont(m_font);
 	m_instructionsText.setCharacterSize(16);
@@ -179,44 +182,61 @@ void Viewer::view(const std::string& path)
 					case sf::Keyboard::Key::L:
 					case sf::Keyboard::Key::U:
 					case sf::Keyboard::Key::O:
+					case sf::Keyboard::Key::Z:
+					case sf::Keyboard::Key::X:
+					case sf::Keyboard::Key::N:
+					case sf::Keyboard::Key::M:
+					case sf::Keyboard::Key::Comma:
+					case sf::Keyboard::Key::Period:
 					{
-						static constexpr auto kMoveDelta	= .1;
-						static constexpr auto kRotateDelta	= MathUtil::DegreesToRadians(.5);
+						static constexpr auto kMoveDelta			= .1;
+						static constexpr auto kRotateDelta			= MathUtil::DegreesToRadians(.5);
+						static constexpr auto kFocusDistanceDelta	= MathUtil::DegreesToRadians(.5);
+						static constexpr auto kVerticalFovDelta		= MathUtil::DegreesToRadians(.5);
+						static constexpr auto kApertureDelta		= .1;
 
-						auto MoveCamera =
+						auto& camera = scene->camera;
+
+						static auto MoveCamera =
 							[&](const Vector& amount)
 							{
-								Transform newTransform = scene->camera.transform();
+								auto newTransform = camera.transform();
 
 								newTransform.setPosition(newTransform.position() + newTransform.untransformDirection(amount));
 
-								scene->camera.setTransform(newTransform);
+								camera.setTransform(newTransform);
 							};
 
-						auto RotateCamera =
+						static auto RotateCamera =
 							[&](const Vector& amount)
 							{
-								Transform newTransform = scene->camera.transform();
+								auto newTransform = camera.transform();
 
 								newTransform.setRotation(newTransform.rotation() + amount);
 
-								scene->camera.setTransform(newTransform);
+								camera.setTransform(newTransform);
 							};
 
 						static const std::map<sf::Keyboard::Key, std::function<void()>> action
 							{
-								{ sf::Keyboard::Key::W, [&]() { MoveCamera(StandardVectors::kUnitZ * kMoveDelta); } },
-								{ sf::Keyboard::Key::A, [&]() { MoveCamera(StandardVectors::kUnitX.inverted() * kMoveDelta); } },
-								{ sf::Keyboard::Key::S, [&]() { MoveCamera(StandardVectors::kUnitZ.inverted() * kMoveDelta); } },
-								{ sf::Keyboard::Key::D, [&]() { MoveCamera(StandardVectors::kUnitX * kMoveDelta); } },
-								{ sf::Keyboard::Key::R, [&]() { MoveCamera(StandardVectors::kUnitY * kMoveDelta); } },
-								{ sf::Keyboard::Key::F, [&]() { MoveCamera(StandardVectors::kUnitY.inverted() * kMoveDelta); } },
-								{ sf::Keyboard::Key::I, [&]() { RotateCamera(StandardVectors::kUnitZ.inverted() * kRotateDelta); } },
-								{ sf::Keyboard::Key::J, [&]() { RotateCamera(StandardVectors::kUnitY.inverted() * kRotateDelta); } },
-								{ sf::Keyboard::Key::K, [&]() { RotateCamera(StandardVectors::kUnitZ * kRotateDelta); } },
-								{ sf::Keyboard::Key::L, [&]() { RotateCamera(StandardVectors::kUnitY * kRotateDelta); } },
-								{ sf::Keyboard::Key::U, [&]() { RotateCamera(StandardVectors::kUnitX * kRotateDelta); } },
-								{ sf::Keyboard::Key::O, [&]() { RotateCamera(StandardVectors::kUnitX.inverted() * kRotateDelta); } },
+								{ sf::Keyboard::Key::W,			[&]() { MoveCamera(StandardVectors::kUnitZ * kMoveDelta); } },
+								{ sf::Keyboard::Key::A,			[&]() { MoveCamera(StandardVectors::kUnitX.inverted() * kMoveDelta); } },
+								{ sf::Keyboard::Key::S,			[&]() { MoveCamera(StandardVectors::kUnitZ.inverted() * kMoveDelta); } },
+								{ sf::Keyboard::Key::D,			[&]() { MoveCamera(StandardVectors::kUnitX * kMoveDelta); } },
+								{ sf::Keyboard::Key::R,			[&]() { MoveCamera(StandardVectors::kUnitY * kMoveDelta); } },
+								{ sf::Keyboard::Key::F,			[&]() { MoveCamera(StandardVectors::kUnitY.inverted() * kMoveDelta); } },
+								{ sf::Keyboard::Key::I,			[&]() { RotateCamera(StandardVectors::kUnitZ.inverted() * kRotateDelta); } },
+								{ sf::Keyboard::Key::J,			[&]() { RotateCamera(StandardVectors::kUnitY.inverted() * kRotateDelta); } },
+								{ sf::Keyboard::Key::K,			[&]() { RotateCamera(StandardVectors::kUnitZ * kRotateDelta); } },
+								{ sf::Keyboard::Key::L,			[&]() { RotateCamera(StandardVectors::kUnitY * kRotateDelta); } },
+								{ sf::Keyboard::Key::U,			[&]() { RotateCamera(StandardVectors::kUnitX * kRotateDelta); } },
+								{ sf::Keyboard::Key::O,			[&]() { RotateCamera(StandardVectors::kUnitX.inverted() * kRotateDelta); } },
+								{ sf::Keyboard::Key::Z,			[&]() { camera.setVerticalFov(camera.verticalFov() - kVerticalFovDelta); } },
+								{ sf::Keyboard::Key::X,			[&]() { camera.setVerticalFov(camera.verticalFov() + kVerticalFovDelta); } },
+								{ sf::Keyboard::Key::N,			[&]() { camera.setAperture(camera.aperture() - kApertureDelta); } },
+								{ sf::Keyboard::Key::M,			[&]() { camera.setAperture(camera.aperture() + kApertureDelta); } },
+								{ sf::Keyboard::Key::Comma,		[&]() { camera.setFocusDistance(camera.focusDistance() - kFocusDistanceDelta); } },
+								{ sf::Keyboard::Key::Period,	[&]() { camera.setFocusDistance(camera.focusDistance() + kFocusDistanceDelta); } },
 							};
 
 						action.at(event.key.code)();
@@ -315,6 +335,9 @@ void Viewer::view(const std::string& path)
 				infoMessage += "Camera Position: " + scene->camera.transform().position().string() + "\n";
 				infoMessage += "Camera Rotation: " + scene->camera.transform().rotation().string() + "\n";
 				infoMessage += "Camera Scale:    " + scene->camera.transform().scale().string() + "\n";
+				infoMessage += "Vertical FOV:    " + std::to_string(MathUtil::RadiansToDegrees(scene->camera.verticalFov())) + " Degrees\n";
+				infoMessage += "Aperture:        " + std::to_string(scene->camera.aperture()) + "\n";
+				infoMessage += "Focus Distance:  " + std::to_string(scene->camera.focusDistance()) + "\n";
 
 				if (isRendering)
 					infoMessage += std::string("Rendering In Progress (" + std::string(previousRenderType != RenderType::Full ? "Preview" : "Full") + " - " + std::to_string(m_renderer.renderPercentage()) + "%, " + std::to_string(scene->samplesPerPixel) + " samples/pixel)");
