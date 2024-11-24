@@ -1,7 +1,7 @@
 #include "Engine/Color.hpp"
 
+#include <cstdio>
 #include <iterator>
-#include <stdio.h>
 
 std::string	Color::string() const
 {

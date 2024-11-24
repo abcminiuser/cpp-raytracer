@@ -4,8 +4,8 @@
 
 #include <atomic>
 #include <chrono>
-#include <stddef.h>
-#include <stdint.h>
+#include <cstddef>
+#include <cstdint>
 #include <thread>
 #include <vector>
 #include <condition_variable>

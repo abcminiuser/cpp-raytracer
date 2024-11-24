@@ -30,7 +30,7 @@ double Object::intersect(const Ray& ray) const
 		return Ray::kNoIntersection;
 
 	// We can avoid an expensive transform back to world space, if we *don't* normalize our
-	// direction here. A non-normalized transformed ray will give an intersection  distance
+	// direction here. A non-normalized transformed ray will give an intersection distance
 	// that is valid for both the world-space and object-space rays.
 	const Ray 		rayObjectSpaceUnnormalized	= Ray(m_transform.transformPosition(ray.position()), m_transform.transformDirection(ray.direction()));
 

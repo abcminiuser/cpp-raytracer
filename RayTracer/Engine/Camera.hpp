@@ -10,6 +10,7 @@ class Camera
 {
 public:
 						Camera();
+
 						Camera(const Transform& transform, double aspectRatio, double verticalFov, double focusDistance, double aperture);
 
 	const Transform&	transform() const		{ return m_transform; }

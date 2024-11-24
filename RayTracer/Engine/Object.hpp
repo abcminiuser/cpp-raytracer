@@ -5,9 +5,9 @@
 #include "Engine/Transform.hpp"
 #include "Engine/Vector.hpp"
 
+#include <cstdint>
 #include <limits>
 #include <memory>
-#include <stdint.h>
 
 class Material;
 class Ray;

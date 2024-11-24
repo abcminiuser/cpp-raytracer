@@ -20,12 +20,12 @@
 
 #include <fkYAML/node.hpp>
 
+#include <cstddef>
+#include <cstdint>
 #include <fstream>
 #include <numbers>
 #include <regex>
 #include <stdexcept>
-#include <stddef.h>
-#include <stdint.h>
 
 namespace
 {

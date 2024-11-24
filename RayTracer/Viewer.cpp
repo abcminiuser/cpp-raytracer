@@ -6,12 +6,12 @@
 #include "Engine/Scene.hpp"
 
 #include <chrono>
+#include <cstddef>
+#include <cstdint>
+#include <ctime>
 #include <functional>
 #include <numbers>
 #include <optional>
-#include <stddef.h>
-#include <stdint.h>
-#include <time.h>
 
 namespace
 {

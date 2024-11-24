@@ -3,8 +3,8 @@
 #include "Engine/Color.hpp"
 #include "Engine/Texture.hpp"
 
-#include <stdint.h>
-#include <stddef.h>
+#include <cstdint>
+#include <cstddef>
 #include <vector>
 
 class ImageTexture final

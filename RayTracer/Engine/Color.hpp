@@ -1,7 +1,7 @@
 #pragma once
 
 #include <algorithm>
-#include <stdint.h>
+#include <cstdint>
 #include <string>
 
 struct Color

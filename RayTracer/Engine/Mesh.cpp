@@ -76,17 +76,17 @@ std::unique_ptr<Mesh::Node> Mesh::partition(std::vector<Triangle> triangles, uin
 			Vector(oX, oY, oZ)
 		};
 
-	std::array<std::vector<Triangle>, 8> childrenTriangles;
+	std::array<std::vector<Triangle>, kOffsets.size()> childrenTriangles;
 
 	// Determine which of our triangles intersect each child's bounding box.
-	for (size_t i = 0; i < 8; i++)
+	for (size_t i = 0; i < kOffsets.size(); i++)
 		childrenTriangles[i] = trianglesInBox(BoundingBox(node->boundingBox.lower() + kOffsets[i], node->boundingBox.lower() + kOffsets[i] + partitionSize), node->triangles);
 
 	// Now we've partitioned our triangles, remove them from our node.
 	node->triangles.clear();
 
 	// Build child nodes from the list of triangles in each child's bounding box.
-	for (size_t i = 0; i < 8; i++)
+	for (size_t i = 0; i < kOffsets.size(); i++)
 		node->children[i] = partition(std::move(childrenTriangles[i]), depth + 1);
 
 	return node;
@@ -96,10 +96,10 @@ BoundingBox Mesh::boundingBoxForTriangles(const std::vector<Triangle>& triangles
 {
 	BoundingBox trianglesBoundingBox;
 
-	for (const auto& t : triangles)
+	for (const auto& triangle : triangles)
 	{
-		for (const auto& p : t)
-			trianglesBoundingBox.include(m_vertices[p].position);
+		for (const auto& point : triangle)
+			trianglesBoundingBox.include(m_vertices[point].position);
 	}
 
 	return trianglesBoundingBox;
@@ -125,8 +125,8 @@ bool Mesh::boxContainsTriangle(const BoundingBox& boundingBox, const Triangle& t
 	// Determine the bounding box for this triangle.
 	BoundingBox triangleBoundingBox;
 
-	for (const auto& p : triangle)
-		triangleBoundingBox.include(m_vertices[p].position);
+	for (const auto& point : triangle)
+		triangleBoundingBox.include(m_vertices[point].position);
 
 	return boundingBox.intersects(triangleBoundingBox);
 }

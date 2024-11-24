@@ -136,8 +136,8 @@ BoundingBox Transform::transformBoundingBox(const BoundingBox& boundingBox) cons
 {
 	BoundingBox transformedBox;
 
-	for (const auto& p : boundingBox.points())
-		transformedBox.include(transformPosition(p));
+	for (const auto& point : boundingBox.points())
+		transformedBox.include(transformPosition(point));
 
 	return transformedBox;
 }
@@ -156,8 +156,8 @@ BoundingBox Transform::untransformBoundingBox(const BoundingBox& boundingBox) co
 {
 	BoundingBox transformedBox;
 
-	for (const auto& p : boundingBox.points())
-		transformedBox.include(untransformPosition(p));
+	for (const auto& point : boundingBox.points())
+		transformedBox.include(untransformPosition(point));
 
 	return transformedBox;
 }

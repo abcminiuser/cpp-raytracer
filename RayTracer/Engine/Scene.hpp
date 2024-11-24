@@ -4,8 +4,8 @@
 #include "Engine/Object.hpp"
 #include "Engine/Texture.hpp"
 
+#include <cstdint>
 #include <memory>
-#include <stdint.h>
 #include <vector>
 
 struct Scene

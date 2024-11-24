@@ -2,18 +2,14 @@
 
 #include <array>
 #include <concepts>
-#include <stddef.h>
-#include <stdint.h>
+#include <cstddef>
+#include <cstdint>
 
 template <size_t ROWS, size_t COLS>
 struct Matrix
 {
 public:
-	constexpr								Matrix()
-		: m_elements({})
-	{
-
-	}
+	constexpr								Matrix() = default;
 
 	constexpr								Matrix(std::convertible_to<double> auto&&... values)
 		: m_elements({ std::forward<decltype(values)>(values)... })
@@ -49,5 +45,5 @@ public:
 	}
 
 private:
-	std::array<double, ROWS * COLS>			m_elements;
+	std::array<double, ROWS * COLS>			m_elements = {};
 };
