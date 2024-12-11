@@ -3,6 +3,8 @@
 #include "Engine/Ray.hpp"
 #include "Engine/Vector.hpp"
 
+#include <limits>
+
 namespace
 {
 	constexpr auto kNormal 		= StandardVectors::kUnitY;
