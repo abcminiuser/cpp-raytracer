@@ -13,13 +13,11 @@ namespace
 }
 
 Object::Object(const BoundingBox& boundingBox, const Transform& transform, std::shared_ptr<Material> material)
-	: m_boundingBox(boundingBox)
+	: m_boundingBox(transform.untransformBoundingBox(boundingBox)) // Transform the bounding box into world space, as that's how we'll use it for fast intersection pre-checks.
 	, m_transform(transform)
 	, m_material(material ? std::move(material) : kDefaultMaterial)
 {
-	// Transform the bounding box into world space, as that's how we'll use it for fast
-	// intersection pre-checks.
-	m_boundingBox = m_transform.untransformBoundingBox(m_boundingBox);
+
 }
 
 double Object::intersect(const Ray& ray) const

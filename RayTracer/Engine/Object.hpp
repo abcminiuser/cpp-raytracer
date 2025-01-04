@@ -31,7 +31,7 @@ protected:
 	virtual void					getIntersectionProperties(const Vector& direction, const Vector& position, Vector& normal, Vector& tangent, Vector& bitangent, Vector& uv) const = 0;
 
 private:
-	BoundingBox						m_boundingBox;
-	Transform						m_transform;
+	const BoundingBox				m_boundingBox;
+	const Transform					m_transform;
 	const std::shared_ptr<Material>	m_material;
 };
