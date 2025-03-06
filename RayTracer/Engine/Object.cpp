@@ -22,11 +22,6 @@ Object::Object(const BoundingBox& boundingBox, const Transform& transform, std::
 
 double Object::intersect(const Ray& ray) const
 {
-	// Test for intersection in the world-space bounding box first, so we can potentially
-	// skip a bunch of work.
-	if (m_boundingBox.intersect(ray) == Ray::kNoIntersection)
-		return Ray::kNoIntersection;
-
 	// We can avoid an expensive transform back to world space, if we *don't* normalize our
 	// direction here. A non-normalized transformed ray will give an intersection distance
 	// that is valid for both the world-space and object-space rays.
