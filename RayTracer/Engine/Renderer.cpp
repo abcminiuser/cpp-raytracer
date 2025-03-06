@@ -9,7 +9,7 @@
 
 namespace
 {
-	constexpr size_t kMaxLinesToRenderPerChunk	= 10;
+	constexpr size_t kMaxLinesToRenderPerChunk	= 1;
 	constexpr size_t kCoarsePreviewSpacing		= 4;
 }
 
