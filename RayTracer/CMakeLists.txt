@@ -64,12 +64,12 @@ target_link_libraries (RayTracer PRIVATE
 )
 target_compile_features (RayTracer PUBLIC cxx_std_20)
 
-set_property(TARGET RayTracer PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
+set_property (TARGET RayTracer PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
 
 if (MSVC)
     target_compile_options (RayTracer PUBLIC /W4 /WX /wd4100 /arch:AVX2 /Zi)
     target_compile_definitions (RayTracer PUBLIC _CRT_SECURE_NO_WARNINGS)
-    target_link_options(RayTracer PUBLIC /DEBUG)
+    target_link_options (RayTracer PUBLIC /DEBUG)
 else ()
     target_compile_options (RayTracer PUBLIC -Wall -Wextra -pedantic -Werror -Wno-unused-parameter -Wshadow -Wdouble-promotion -g)
 endif ()
@@ -79,7 +79,7 @@ add_custom_command (TARGET RayTracer POST_BUILD
 	ARGS -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/Assets" "$<TARGET_FILE_DIR:RayTracer>/Assets"
 	COMMENT "Copying original assets...")
 
-set(VENDOR_ASSET_DIRS
+set (VENDOR_ASSET_DIRS
     Blender
     PublicDomainTextures.com
     cs.utah.edu
