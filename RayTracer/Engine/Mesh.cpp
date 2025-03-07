@@ -43,19 +43,24 @@ std::unique_ptr<Mesh::Node> Mesh::partition(std::vector<Triangle> triangles, uin
 	if (triangles.empty())
 		return nullptr;
 
+	triangles.shrink_to_fit();
+
 	auto node = std::make_unique<Node>();
 	node->boundingBox	= boundingBoxForTriangles(triangles);
-	node->triangles		= std::move(triangles);
-
-	node->triangles.shrink_to_fit();
 
 	// If we've hit our depth limit, we'll just adopt all the matching triangles here and bail out.
 	if (depth >= kMaxOctreePartitionDepth)
+	{
+		node->contents		= std::move(triangles);
 		return node;
+	}
 
 	// If we have fewer triangles than the set limit, we don't partition further.
-	if (node->triangles.size() < kMinTrianglesForPartition)
+	if (triangles.size() < kMinTrianglesForPartition)
+	{
+		node->contents		= std::move(triangles);
 		return node;
+	}
 
 	// If we matched too many triangles for this node, split it up into eight smaller cubes within our bounding box.
 	const auto partitionSize = node->boundingBox.size() / 2;
@@ -80,15 +85,14 @@ std::unique_ptr<Mesh::Node> Mesh::partition(std::vector<Triangle> triangles, uin
 
 	// Determine which of our triangles intersect each child's bounding box.
 	for (size_t i = 0; i < kOffsets.size(); i++)
-		childrenTriangles[i] = trianglesInBox(BoundingBox(node->boundingBox.lower() + kOffsets[i], node->boundingBox.lower() + kOffsets[i] + partitionSize), node->triangles);
-
-	// Now we've partitioned our triangles, remove them from our node.
-	node->triangles.clear();
+		childrenTriangles[i] = trianglesInBox(BoundingBox(node->boundingBox.lower() + kOffsets[i], node->boundingBox.lower() + kOffsets[i] + partitionSize), triangles);
 
 	// Build child nodes from the list of triangles in each child's bounding box.
+	ChildNodes children;
 	for (size_t i = 0; i < kOffsets.size(); i++)
-		node->children[i] = partition(std::move(childrenTriangles[i]), depth + 1);
+		children[i] = partition(std::move(childrenTriangles[i]), depth + 1);
 
+	node->contents = std::move(children);
 	return node;
 }
 

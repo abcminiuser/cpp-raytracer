@@ -7,6 +7,7 @@
 #include <cstdint>
 #include <memory>
 #include <utility>
+#include <variant>
 #include <vector>
 
 using Triangle = std::array<size_t, 3>;
@@ -37,14 +38,22 @@ public:
 	}
 
 private:
+	struct Node;
+
+	using TriangleList	= std::vector<Triangle>;
+	using ChildNodes	= std::array<std::unique_ptr<Node>, 8>;
+
 	struct Node
 	{
 		BoundingBox								boundingBox;
-
-		std::vector<Triangle>					triangles;
-
-		std::array<std::unique_ptr<Node>, 8>	children = {};
+		std::variant<TriangleList, ChildNodes>	contents;
 	};
+
+	template<class... Ts>
+	struct VisitorOverloads : Ts... { using Ts::operator()...; };
+
+	template<class... Ts>
+	VisitorOverloads(Ts...) -> VisitorOverloads<Ts...>;
 
 	template <typename BBTestCallable, typename TriangleCallable>
 	void					walk(BBTestCallable&& boundingBoxTest, TriangleCallable&& triangleTest, const Node& node) const
@@ -52,20 +61,23 @@ private:
 		if (! boundingBoxTest(node.boundingBox))
 			return;
 
-		if (node.triangles.empty())
-		{
-			for (const auto& c : node.children)
+		std::visit(
+			VisitorOverloads
 			{
-				if (const auto* childNode = c.get())
-					walk(boundingBoxTest, triangleTest, *childNode);
-			}
-
-			return;
-		}
-		else
-		{
-			triangleTest(std::as_const(m_vertices), node.triangles);
-		}
+				[&](const TriangleList& triangles)
+				{
+					triangleTest(std::as_const(m_vertices), triangles);
+				},
+				[&](const ChildNodes& children)
+				{
+					for (const auto& c : children)
+					{
+						if (const auto* childNode = c.get())
+							walk(boundingBoxTest, triangleTest, *childNode);
+					}
+				},
+			},
+			node.contents);
 	}
 
 	std::unique_ptr<Node>	partition(std::vector<Triangle> triangles, uint32_t depth);
