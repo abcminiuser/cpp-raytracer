@@ -2,7 +2,19 @@
 
 #include <algorithm>
 #include <cassert>
-#include <cmath>
+
+namespace
+{
+	double WrapToNormalisedRegion(double n)
+	{
+		// Takes the absolute of the input, and returns the value mapped
+		// into the range of [0, 1) by wrapping. Faster than chaining
+		// std::abs() and std::fmod() together.
+
+		n = (n < 0) ? -n : n;
+		return n - (uint64_t)n;
+	}
+}
 
 Texture::Texture(size_t width, size_t height, const Color& multiplier, Interpolation interpolation)
 	: m_width(width)
@@ -16,16 +28,8 @@ Texture::Texture(size_t width, size_t height, const Color& multiplier, Interpola
 Color Texture::sample(double u, double v) const
 {
 	// Wrap U coordinate in both directions to be between [0, 1]
-	u = std::fmod(u, 1.0);
-	if (u < 0)
-		u += 1.0;
-
-	v = std::fmod(v, 1.0);
-	if (v < 0)
-		v += 1.0;
-
-	assert(u == std::clamp(u, 0.0, 1.0));
-	assert(v == std::clamp(v, 0.0, 1.0));
+	u = WrapToNormalisedRegion(u);
+	v = WrapToNormalisedRegion(v);
 
 	// Convert to pixel X/Y texture coordinate.
 	double x = (m_width - 1) * u;
