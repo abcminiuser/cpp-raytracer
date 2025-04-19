@@ -21,7 +21,7 @@ Color Ray::trace(const Scene& scene, uint32_t rayDepth) const
 	for (const auto& object : scene.objects)
 	{
 		// First do a check against the object's bounding box; if we don't hit that
-		// or hit it further away than our current clostest object, we can skip the
+		// or hit it further away than our current closest object, we can skip the
 		// expensive proper intersection test below.
 		if (object->boundingBox().intersect(*this) >= closestIntersectionDistance)
 			continue;
