@@ -32,7 +32,7 @@ Visual Studio 2019 (or newer), then build from within the IDE.
 Choosing the `install` option when right-clicking the top level
 `CMakelists.txt` in the Solution Explorer will generate a redistributable
 package on disk with all the required binaries and assets needed to run the
-game.
+program.
 
 The SFML library dependency is vendored in the repository, and statically
 linked.
