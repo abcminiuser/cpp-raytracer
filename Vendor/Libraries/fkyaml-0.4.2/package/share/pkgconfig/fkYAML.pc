@@ -1,0 +1,4 @@
+NAME: fkYAML
+Description: A header-only C++ library for YAML
+Version: 0.4.2
+Cflags: -I"/home/runner/work/fkYAML/fkYAML/build/fkYAML_single_header/include"

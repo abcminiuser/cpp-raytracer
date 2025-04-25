@@ -18,7 +18,7 @@ public:
 	}
 
 	template <size_t OTHERCOLS>
-	constexpr Matrix<ROWS, OTHERCOLS>		operator*(const Matrix<ROWS, OTHERCOLS>& other) const
+	constexpr inline Matrix<ROWS, OTHERCOLS>		operator*(const Matrix<ROWS, OTHERCOLS>& other) const
 	{
 		Matrix<ROWS, OTHERCOLS> result;
 

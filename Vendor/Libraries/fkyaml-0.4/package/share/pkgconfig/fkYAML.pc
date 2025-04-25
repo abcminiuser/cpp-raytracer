@@ -1,4 +1,0 @@
-NAME: fkYAML
-Description: A header-only C++ library for YAML
-Version: 0.4.0
-Cflags: -I"D:/a/fkYAML/fkYAML/build/package/include"
