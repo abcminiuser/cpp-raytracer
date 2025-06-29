@@ -70,7 +70,7 @@ Color Material::illuminate(const Scene& scene, const Ray& sourceRay, const Vecto
 			// survival probability.
 			if (Random::UnsignedNormal() > survivalProbability)
 				attenuation = Color();
-			else if (attenuation != Color())
+			else
 				attenuation /= survivalProbability;
 		}
 
