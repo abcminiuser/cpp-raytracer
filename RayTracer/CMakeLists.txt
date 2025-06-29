@@ -25,6 +25,7 @@ endif ()
 find_package (SFML CONFIG REQUIRED COMPONENTS graphics)
 find_package (fkYAML CONFIG REQUIRED HINTS ${CMAKE_SOURCE_DIR}/Vendor/Libraries/fkyaml-0.4.2/package)
 find_package (OBJ-Loader CONFIG REQUIRED HINTS ${CMAKE_SOURCE_DIR}/Vendor/Libraries/OBJ-Loader/package)
+find_package (Xoshiro-cpp CONFIG REQUIRED HINTS ${CMAKE_SOURCE_DIR}/Vendor/Libraries/Xoshiro-cpp-1.1/package)
 
 add_executable (RayTracer
 	"Engine/BoundingBox.cpp"
@@ -61,6 +62,7 @@ target_link_libraries (RayTracer PRIVATE
 	sfml-graphics
 	fkYAML::fkYAML
 	OBJ-Loader::OBJ-Loader
+	Xoshiro-cpp::Xoshiro-cpp
 )
 target_compile_features (RayTracer PUBLIC cxx_std_20)
 
